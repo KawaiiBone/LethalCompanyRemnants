@@ -1,4 +1,7 @@
 # LethalCompanyRemnants
+
+Adds store items as scrap, to be found in moons as scrap in Lethal Company.
+
  Why pay corporate for it if you can just find it out in the wild? 
  Let out your inner scavenger and find the tools that were left behind by former, less fortunate employees.
  
