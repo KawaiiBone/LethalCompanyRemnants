@@ -1,4 +1,4 @@
-# LethalCompanyRemnants
+# Remnants
 
 
  Why pay corporate for it if you can just find it out in the wild? 
