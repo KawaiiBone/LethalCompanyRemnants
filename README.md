@@ -14,6 +14,6 @@ Adds store items as scrap, to be found on moons as scrap in Lethal Company.
 If you find any bugs, issues, or have any feedback on how to improve the mod, you are always welcome to share it.
 
 ## Installing
-This mod will soon be available on the Thunderstore app.
+This mod is also available on the [thunderstore website](https://thunderstore.io/c/lethal-company/p/KawaiiBone/Remnants/).
 
 If you want to download this mod manually, you should know that it is dependent on [BepInEx](https://github.com/BepInEx) and [Lethal Lib](https://github.com/EvaisaDev/LethalLib).
