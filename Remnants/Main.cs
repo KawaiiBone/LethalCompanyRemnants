@@ -1,19 +1,13 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using Unity.Netcode;
-using Unity.Netcode.Components;
-using GameNetcodeStuff;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine.SceneManagement;
-using System.Threading.Tasks;
 using UnityEngine;
 using LethalLib.Modules;
-using System.Media;
-using System.Xml.Linq;
+
 
 namespace Remnants
 {
@@ -95,7 +89,7 @@ namespace Remnants
                     if (item.isScrap == false && item.creditsWorth > _minCreditCost)
                     {
                         int rarity = CalculateRarity(item.creditsWorth);
-                        _mls.LogInfo(item.name + "rarity: " + rarity);
+                        _mls.LogInfo(item.name + " rarity: " + rarity);
                        item.minValue = _minSellValue;
                         item.maxValue = _maxSellValue;       
                         Items.RegisterScrap(item, rarity, Levels.LevelTypes.All);
