@@ -5,17 +5,15 @@
  Let out your inner scavenger and find the tools that were left behind by former, less fortunate employees.
  
 This mod spreads items from the store around on the moons for you to find along with your usual scrap. 
-Battery levels may vary, for full battery levels, consult the lethal company store.
+Battery levels may vary. For full battery levels, consult the Lethal Company store.
 
-Adds store items as scrap, to be found in moons as scrap in Lethal Company.
+Adds store items as scrap, to be found on moons as scrap in Lethal Company.
 
 
 ## Feedback and issues
-If you find any bugs, issues or have any feedback to add more fun to the mod.
-
-You are always welcome to share it.
+If you find any bugs, issues, or have any feedback on how to improve the mod, you are always welcome to share it.
 
 ## Installing
-This mod is soon available on the thunderstore app.
+This mod will soon be available on the Thunderstore app.
 
-For downloading this mod by hand you should know that this mod is dependent on [BepInEx](https://github.com/BepInEx) and [Lethal Lib](https://github.com/EvaisaDev/LethalLib).
+If you want to download this mod manually, you should know that it is dependent on [BepInEx](https://github.com/BepInEx) and [Lethal Lib](https://github.com/EvaisaDev/LethalLib).
