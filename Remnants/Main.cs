@@ -7,6 +7,19 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using LethalLib.Modules;
+using GameNetcodeStuff;
+using System.Linq.Expressions;
+using Unity.Netcode;
+using System.IO.Ports;
+using Remnants.Patches;
+using LethalLib.Extras;
+using System.Reflection;
+using System.Xml.Linq;
+using System.Reflection.Emit;
+using System.Collections;
+using System.ComponentModel;
+using Remnants.Behaviours;
+
 
 
 namespace Remnants
@@ -25,12 +38,7 @@ namespace Remnants
         private readonly Harmony _harmony = new Harmony(modGUID);
         internal ManualLogSource _mls;
 
-        private List<Item> _allItems;
-        private bool _isAddingItems = false;
-        private string[] _bannedItemsNames = new string[4] { "Clipboard", "StickyNote", "Binoculars", "MapDevice" };
-        private const int _minStoreItemRarity = 1, _maxStoreItemRarity = 10;
-        private const int _minSellValue = 1, _maxSellValue = 2;
-        private const float _minCreditCost = 4f, _maxCreditCost = 300f;
+        private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
         #endregion
 
         #region Initialize 
@@ -42,97 +50,19 @@ namespace Remnants
             }
             _mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
             _mls.LogInfo("modGUID has started");
+            _harmony.PatchAll(typeof(ScrapBatteryPatch));
+            //_harmony.PatchAll(typeof(SpawnBodiesOnScrapPatch));
             _harmony.PatchAll(typeof(Remnants));
-            SceneManager.sceneLoaded += StoreItemsRegisterAsScrap;
+            _registerItemsBehaviour.Initialize();
             _mls.LogInfo("modGUID has loaded");
 
         }
         #endregion
 
         #region Methods
-        private void StoreItemsRegisterAsScrap(Scene scene, LoadSceneMode mode)
-        {
-            if (_isAddingItems)
-            {
-                _mls.LogInfo("Did not load items because items are already loading in.");
-                return;
-            }
-
-            _allItems = Resources.FindObjectsOfTypeAll<Item>().Concat(UnityEngine.Object.FindObjectsByType<Item>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)).ToList();
-            if (_allItems.Count == 0)
-            {
-                _mls.LogInfo("Did not load items because there are no items to load.");
-                return;
-            }
-
-            _mls.LogInfo("Loading in items.");
-            _isAddingItems = true;
-            AddStoreItemsToScrap();
-            _mls.LogInfo("Items Are loaded in.");
-            SceneManager.sceneLoaded -= StoreItemsRegisterAsScrap;
-        }
-
-
-        private void AddStoreItemsToScrap()
-        {
-            try
-            {
-                System.Random random = new System.Random();
-                foreach (Item item in _allItems)
-                {
-                    if (item == null)
-                        continue;
-
-                    if (HasBannedName(item.name))
-                        continue;
-
-                    if (item.isScrap == false && item.creditsWorth > _minCreditCost)
-                    {
-                        int rarity = CalculateRarity(item.creditsWorth);
-                        _mls.LogInfo(item.name + " rarity: " + rarity);
-                       item.minValue = _minSellValue;
-                        item.maxValue = _maxSellValue;       
-                        Items.RegisterScrap(item, rarity, Levels.LevelTypes.All);
-                        _mls.LogInfo("Added " + item.name + " as a scrap item.");
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                _mls.LogError(e.ToString());
-            }
-        }
-
-        private bool HasBannedName(string name)
-        {
-            return Array.FindIndex(_bannedItemsNames, x => x == name) != -1;
-        }
-
-        private int CalculateRarity(int itemCreditWorth)
-        {
-            float creditCapped = Mathf.Clamp(itemCreditWorth, _minCreditCost, _maxCreditCost);
-            float rarityPercentage = Mathf.Abs(((creditCapped / _maxCreditCost) * _maxStoreItemRarity) - _maxStoreItemRarity);
-            return Mathf.Clamp((int)rarityPercentage, _minStoreItemRarity, _maxStoreItemRarity);
-        }
         #endregion
 
         #region HarmonyMethods
-        [HarmonyPatch(typeof(RoundManager), "waitForScrapToSpawnToSync")]
-        [HarmonyPostfix]
-        static void UpdateSpawnedScrapCharge()
-        {
-            var mls = Remnants.Instance._mls;
-            System.Random random = new System.Random();
-            var grabbableObjects = Resources.FindObjectsOfTypeAll<MonoBehaviour>().OfType<GrabbableObject>();
-            foreach (GrabbableObject grObject in grabbableObjects)
-            {
-                if (grObject.insertedBattery != null && grObject.itemProperties.requiresBattery == true && grObject.isInFactory == true)
-                {
-                    grObject.insertedBattery.charge = (float)random.NextDouble();
-                    mls.LogInfo("Has updated " + grObject.itemProperties.name + " charge.");
-                }
-            }
-        }
         [HarmonyPatch(typeof(QuickMenuManager), "LeaveGameConfirm")]
         [HarmonyPostfix]
         //Whenever you landed on a moon (generated a world) and then you quit the game, you would get OccludeAudio errors of something being nullptr reference.
@@ -146,6 +76,15 @@ namespace Remnants
             {
                 occludeAudio.enabled = false;
             }
+        }
+
+        //This is to fix the grab error where you cant grab the body correctly
+        [HarmonyPatch(typeof(RagdollGrabbableObject), "Update")]
+        [HarmonyPrefix]
+        static void GrabbableBodyPatch(ref bool ___foundRagdollObject)
+        {
+            ___foundRagdollObject = true;
+
         }
         #endregion
     }

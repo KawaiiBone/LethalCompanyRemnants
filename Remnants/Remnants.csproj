@@ -72,10 +72,20 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\RegisterItemsBehaviour.cs" />
+    <Compile Include="Behaviours\SpawnBodyBehaviour.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Patches\ScrapBatteryPatch.cs" />
+    <Compile Include="Patches\SpawnBodiesOnScrapPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="utilities\CoroutineHelper.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
