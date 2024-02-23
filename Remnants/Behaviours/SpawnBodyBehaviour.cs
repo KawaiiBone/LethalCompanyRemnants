@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LethalLib.Modules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,41 @@ namespace Remnants.Behaviours
         #endregion
 
         #region Methods
+        public void CreateEnemyBody()
+        {
+            var mls = Remnants.Instance._mls;
+            RoundManager roundManager = RoundManager.Instance;
+            if (roundManager == null)
+                return;
+
+            Vector3 position = transform.localPosition;
+            EnemyVent[] enemyVents = FindObjectsOfType<EnemyVent>();
+            if(enemyVents == null)
+            {
+                mls.LogInfo("enemyVents is null");
+                return;
+            }
+
+            int enemyVentIndex = Array.FindIndex(enemyVents, enemyType => enemyType.enemyType.enemyName == RegisterEnemyBody.EnemyNameBody);
+            mls.LogInfo("enemyVents size: " + enemyVents.Length);
+            foreach (var enemyVent in enemyVents)
+            {         
+               mls.LogInfo(enemyVent.enemyType.enemyName);
+            }
+            if(enemyVentIndex == -1)
+            {
+                mls.LogInfo("Did not found enemytype: " + RegisterEnemyBody.EnemyNameBody + " in allEnemyVents");
+                return;
+            }
+            roundManager.SpawnEnemyOnServer(position, 0, enemyVentIndex);
+
+        }
+        //Spawn via Roundmanager
+        //RoundManager.Instance.
+        //Use ENemy ai to kill it self
+        // RemoveMask!
+        //Extra:
+        //Change suit
         public NetworkObject CreateAndSpawnBody()
         {
             if (_isSpawning)

@@ -39,6 +39,7 @@ namespace Remnants
         internal ManualLogSource _mls;
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
+        private RegisterEnemyBody _registerBodyBehaviour = new RegisterEnemyBody();
         #endregion
 
         #region Initialize 
@@ -54,8 +55,8 @@ namespace Remnants
             //_harmony.PatchAll(typeof(SpawnBodiesOnScrapPatch));
             _harmony.PatchAll(typeof(Remnants));
             _registerItemsBehaviour.Initialize();
+            //_registerBodyBehaviour.Initialize();
             _mls.LogInfo("modGUID has loaded");
-
         }
         #endregion
 

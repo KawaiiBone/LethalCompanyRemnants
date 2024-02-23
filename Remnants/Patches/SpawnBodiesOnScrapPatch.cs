@@ -4,10 +4,12 @@ using Remnants.Behaviours;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
+using static LethalLib.Modules.Enemies;
 
 namespace Remnants.Patches
 {
@@ -53,9 +55,7 @@ namespace Remnants.Patches
 
                 mls.LogInfo("Adding body to " + grabbableObject.itemProperties.name);
                 spawnBody = networkObject.gameObject.AddComponent<SpawnBodyBehaviour>();
-                NetworkObject bodyNetObj = spawnBody.CreateAndSpawnBody();
-                bodyNetObj.Spawn();
-                bodyNetObjList.Add(bodyNetObj);
+                spawnBody.CreateEnemyBody();
                 scrapValueList.Add(_bodyScrapValue);
             }
 

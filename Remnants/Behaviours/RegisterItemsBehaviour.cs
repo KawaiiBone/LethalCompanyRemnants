@@ -66,8 +66,11 @@ namespace Remnants.Behaviours
                     if (item == null)
                         continue;
 
-                    if (HasBannedName(item.name))
+                    if (HasBannedName(item.name) || Items.scrapItems.FindIndex(scrapItem => scrapItem.item.name == item.name) != -1)
+                    {
+                        mls.LogInfo("Barred from registerring: " + item.name);
                         continue;
+                    }
 
                     if ((item.isScrap == false && item.creditsWorth > _minCreditCost))
                     {
@@ -97,6 +100,11 @@ namespace Remnants.Behaviours
             float rarityPercentage = Mathf.Abs(((creditCapped / _maxCreditCost) * _maxStoreItemRarity) - _maxStoreItemRarity);
             return Mathf.Clamp((int)rarityPercentage, _minStoreItemRarity, _maxStoreItemRarity);
         }
+
+
+
+ 
+    
         #endregion
     }
 }
