@@ -15,7 +15,7 @@ namespace Remnants.Behaviours
         private bool _hasInitialized = false;
         private bool _isAddingItems = false;
         private string[] _bannedItemsNames = new string[4] { "Clipboard", "StickyNote", "Binoculars", "MapDevice" };
-        private const int _minStoreItemRarity = 99, _maxStoreItemRarity = 99;
+        private const int _minStoreItemRarity = 5, _maxStoreItemRarity = 25;
         private const int _minSellValue = 1, _maxSellValue = 2;
         private const float _minCreditCost = 4f, _maxCreditCost = 300f;
         #endregion
@@ -53,6 +53,8 @@ namespace Remnants.Behaviours
             AddStoreItemsToScrap(allItems);
             mls.LogInfo("Items Are loaded in.");
             SceneManager.sceneLoaded -= StoreItemsRegisterAsScrap;
+
+    
         }
 
         private void AddStoreItemsToScrap(List<Item> allItems)

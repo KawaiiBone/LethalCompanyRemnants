@@ -39,7 +39,7 @@ namespace Remnants
         internal ManualLogSource _mls;
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
-        private RegisterEnemyBody _registerBodyBehaviour = new RegisterEnemyBody();
+        private RegisterBodyBehaviour _registerBodyBehaviour = new RegisterBodyBehaviour();
         #endregion
 
         #region Initialize 
@@ -52,7 +52,6 @@ namespace Remnants
             _mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
             _mls.LogInfo("modGUID has started");
             _harmony.PatchAll(typeof(ScrapBatteryPatch));
-            //_harmony.PatchAll(typeof(SpawnBodiesOnScrapPatch));
             _harmony.PatchAll(typeof(Remnants));
             _registerItemsBehaviour.Initialize();
             //_registerBodyBehaviour.Initialize();
@@ -80,13 +79,13 @@ namespace Remnants
         }
 
         //This is to fix the grab error where you cant grab the body correctly
-        [HarmonyPatch(typeof(RagdollGrabbableObject), "Update")]
+        /*[HarmonyPatch(typeof(RagdollGrabbableObject), "Update")]
         [HarmonyPrefix]
         static void GrabbableBodyPatch(ref bool ___foundRagdollObject)
         {
             ___foundRagdollObject = true;
 
-        }
+        }*/
         #endregion
     }
 }
