@@ -4,21 +4,13 @@ using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.SceneManagement;
 using UnityEngine;
-using LethalLib.Modules;
-using GameNetcodeStuff;
-using System.Linq.Expressions;
-using Unity.Netcode;
-using System.IO.Ports;
 using Remnants.Patches;
-using LethalLib.Extras;
 using System.Reflection;
-using System.Xml.Linq;
-using System.Reflection.Emit;
-using System.Collections;
-using System.ComponentModel;
 using Remnants.Behaviours;
+using UnityEditor;
+using System.IO;
+
 
 
 
@@ -49,9 +41,13 @@ namespace Remnants
             {
                 Instance = this;
             }
+
+
+
             _mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
             _mls.LogInfo("modGUID has started");
             _harmony.PatchAll(typeof(ScrapBatteryPatch));
+            _harmony.PatchAll(typeof(SpawnableScrapPatch));
             _harmony.PatchAll(typeof(Remnants));
             _registerItemsBehaviour.Initialize();
             //_registerBodyBehaviour.Initialize();
@@ -86,6 +82,7 @@ namespace Remnants
             ___foundRagdollObject = true;
 
         }*/
+
         #endregion
     }
 }

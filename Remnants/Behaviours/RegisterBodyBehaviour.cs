@@ -25,6 +25,7 @@ namespace Remnants.Behaviours
         private string _itemName = "BodyCorpse";
         private int _scrapCost = 5;
         private Item _bodyItem = null;
+        private bool _isCreating = false;
         #endregion
 
         #region Initialize 

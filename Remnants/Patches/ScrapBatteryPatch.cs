@@ -10,9 +10,10 @@ namespace Remnants.Patches
 {
     internal class ScrapBatteryPatch
     {
+
         #region HarmonyMethods
-        [HarmonyPatch(typeof(RoundManager), "waitForScrapToSpawnToSync")]//SpawnScrapInLevel//waitForScrapToSpawnToSync//SyncScrapValuesClientRpc
-        [HarmonyPostfix]
+        [HarmonyPatch(typeof(RoundManager), "SyncScrapValuesClientRpc")]//SpawnScrapInLevel//waitForScrapToSpawnToSync//SyncScrapValuesClientRpc
+        [HarmonyPrefix]
         static void UpdateSpawnedScrapCharge(object[] __args)
         {
             var mls = Remnants.Instance._mls;
@@ -34,20 +35,15 @@ namespace Remnants.Patches
                 if (grabbableObject == null)
                     continue;
 
-                mls.LogInfo("Found " + grabbableObject.itemProperties.name + " in the world.");
-
                 if (!grabbableObject.itemProperties.requiresBattery)
                     continue;
 
-                mls.LogInfo(grabbableObject.itemProperties.name + " 0");
 
                 if (!(grabbableObject.insertedBattery != null &&
                     grabbableObject.isInFactory == true && !grabbableObject.isInShipRoom))
                     continue;
 
-                mls.LogInfo(grabbableObject.itemProperties.name + " 1");
                 int randomCharge = random.Next(1, 100);
-                mls.LogInfo("Charge " + randomCharge);
                 grabbableObject.SyncBatteryServerRpc(randomCharge);
                 mls.LogInfo("Has updated " + grabbableObject.itemProperties.name + " charge to " + grabbableObject.insertedBattery.charge);
             }
