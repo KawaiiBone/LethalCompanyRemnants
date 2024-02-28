@@ -24,6 +24,8 @@ To ban an item, you first need to start up the game and join a lobby (Both your 
 When you edit the file, be careful that it is not at the same time when you join a lobby.
 Please do note that only the host’s Json file influences the scrap found on the different Moons.
 
+The location of the file is located where all the savefiles are from Lethal Company. Location:C:\Users(username)\AppData\LocalLow\ZeekerssRBLX\Lethal Company
+
 ## Known issues:
 - There is currently an issue with displaying the correct value of certain items, although the items should still have the correct value when you sell them to the company.
 - The battery patch has been temporarily disabled because there was an issue with getting it to apply to all items with a battery.
