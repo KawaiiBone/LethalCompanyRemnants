@@ -20,9 +20,13 @@ You can expect regular updates for bug fixes as well.
 
 ## How to ban certain store scrap items:
 To ban an item, you first need to start up the game and join a lobby (Both your own and other's lobbies work!). This way, a Json file is created.
-Then you edit said Json file, which should be named "RemnantsSpawnableList" and can be found in your Lethal Company appdata folder. In the Json file, you should be able to find the names of the scrap items, with a Boolean that mentions whether the item in question is banned or not. Change this Boolean to ban/unban whatever scrap you wish.
+ Then you edit said Json file, which should be named "RemnantsSpawnableList" and can be found in your Lethal Company appdata folder. In the Json file, you should be able to find the names of the scrap items, with a Boolean that mentions whether the item in question is banned or not. Change this Boolean to ban/unban whatever scrap you wish.
 When you edit the file, be careful that it is not at the same time when you join a lobby.
 Please do note that only the host’s Json file influences the scrap found on the different Moons.
+
+## Known issues:
+- There is currently an issue with displaying the correct value of certain items, although the items should still have the correct value when you sell them to the company.
+- The battery patch has been temporarily disabled because there was an issue with getting it to apply to all items with a battery.
 
 ## Installing
 This mod is also available on the [thunderstore website](https://thunderstore.io/c/lethal-company/p/KawaiiBone/Remnants/).
