@@ -19,8 +19,9 @@ The plan was to add bodies of past employees to the scrap list, but due to a who
 You can expect regular updates for bug fixes as well.
 
 ## Added a part of the config
-Now the config has been added and the appdata save file has become obsolete.
-The config can be found and edited in your BepInEx congif folder or in your mod manager, but first you need to start up your game to let it make the config file. For now it can change, general rarity, battery of remnant items and a banning list of items to not be registered as scrap. There is already a list of all the remnant items in the config loaded when you join a lobby, but it does not work yet. (It does not save correctly)
+The config has been added. As such, the appdata save file has become obsolete.
+The config can be found and edited in your BepInEx config folder or in your mod managed. However, you will first need to start up your game so it can make said config file. Currently, it can change the general rarity and battery levels of remnant items. It also allows you to edit a list of banned items that you don't wish to be registered as scrap. 
+There is already a premade list of all the remnant/scrap items for you to find in the config when you join a lobby, however it is currently not functional yet, since your bans will not be saved correctly.
  
 ## Installing
 This mod is also available on the [thunderstore website](https://thunderstore.io/c/lethal-company/p/KawaiiBone/Remnants/).
