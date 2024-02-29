@@ -25,7 +25,6 @@ When you edit the file, be careful that it is not at the same time when you join
 Please do note that only the host’s Json file influences the scrap found on the different Moons.
 
 ## Known issues:
-- There is currently an issue with displaying the correct value of certain items, although the items should still have the correct value when you sell them to the company.
 - The battery patch has been temporarily disabled because there was an issue with getting it to apply to all items with a battery.
 
 ## Installing
