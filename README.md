@@ -18,7 +18,7 @@ I intend to focus on the config, so that you can edit the settings for the scrap
 The plan was to add bodies of past employees to the scrap list, but due to a whole load of technical issues, I've had to temporarily abandon that idea. 
 You can expect regular updates for bug fixes as well.
 
-## Added config (part of it)
+## Added a part of the config
 Now the config has been added and the appdata save file has become obsolete.
 The config can be found and edited in your BepInEx congif folder or in your mod manager, but first you need to start up your game to let it make the config file. For now it can change, general rarity, battery of remnant items and a banning list of items to not be registered as scrap. There is already a list of all the remnant items in the config loaded when you join a lobby, but it does not work yet. (It does not save correctly)
  
