@@ -24,11 +24,11 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.1.2";
+        private const string modVersion = "1.1.3";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);
-        internal ManualLogSource _mls;
+        internal ManualLogSource Mls;
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
         private RegisterBodyBehaviour _registerBodyBehaviour = new RegisterBodyBehaviour();
@@ -44,14 +44,15 @@ namespace Remnants
 
 
 
-            _mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
-            _mls.LogInfo("modGUID has started");
-            //_harmony.PatchAll(typeof(ScrapBatteryPatch));
+            Mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
+            Mls.LogInfo("modGUID has started");
+            _harmony.PatchAll(typeof(ScrapBatteryPatch));
             _harmony.PatchAll(typeof(SpawnableScrapPatch));
             _harmony.PatchAll(typeof(Remnants));
+            Data.Config.LoadConfig();
             _registerItemsBehaviour.Initialize();
             //_registerBodyBehaviour.Initialize();
-            _mls.LogInfo("modGUID has loaded");
+            Mls.LogInfo("modGUID has loaded");
         }
         #endregion
 

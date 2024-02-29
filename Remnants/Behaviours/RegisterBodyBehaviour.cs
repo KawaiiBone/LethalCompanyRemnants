@@ -46,7 +46,7 @@ namespace Remnants.Behaviours
             if (_isCreatingBody)
                 return;
 
-            var mls = Remnants.Instance._mls;
+            var mls = Remnants.Instance.Mls;
             List<GameObject> allItems = Resources.FindObjectsOfTypeAll<GameObject>().Concat(UnityEngine.Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)).ToList();
             if (allItems == null)
             {
@@ -116,7 +116,7 @@ namespace Remnants.Behaviours
         //I got this info from : https://github.com/MegaPiggy/LethalCompanyBuyableShotgunShells
         private void CreateItem()
         {
-            var mls = Remnants.Instance._mls;
+            var mls = Remnants.Instance.Mls;
             _bodyItem = ScriptableObject.CreateInstance<Item>();
             //Maybe here copy the same from ragdollgrabable 
             _bodyItem.name = _itemName;
@@ -173,7 +173,7 @@ namespace Remnants.Behaviours
         }
         private void DeleteObj(MonoBehaviour comp)
         {
-            var mls = Remnants.Instance._mls;
+            var mls = Remnants.Instance.Mls;
             if (comp != null)
             {
                 mls.LogInfo("Atempting to delete from " + comp.name + " To delete obj: " + comp.gameObject.name);
@@ -187,7 +187,7 @@ namespace Remnants.Behaviours
 
         private void DeleteComp(MonoBehaviour comp)
         {
-            var mls = Remnants.Instance._mls;
+            var mls = Remnants.Instance.Mls;
             if (comp != null)
             {
                 mls.LogInfo("Atempting to delete " + comp.name);

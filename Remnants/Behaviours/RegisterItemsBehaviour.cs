@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using Unity.Netcode;
 using Remnants.utilities;
+using System.Linq.Expressions;
 
 namespace Remnants.Behaviours
 {
@@ -17,35 +18,41 @@ namespace Remnants.Behaviours
         private bool _hasInitialized = false;
         private bool _isAddingItems = false;
         private string[] _bannedItemsNames = new string[4] { "Clipboard", "StickyNote", "Binoculars", "MapDevice" };
-        private const int _minStoreItemRarity = 5, _maxStoreItemRarity = 25;
+        private List<string> _bannedItemsNamesList = new List<string>();
+
         private const int _minSellValue = 1, _maxSellValue = 2;
-        private const float _minCreditCost = 4f, _maxCreditCost = 300f;
-        private ScrapDataListBehaviour _scrapDataListBehaviour = new ScrapDataListBehaviour();
+        private const float _minCreditCost = 4f;
+        private RemnantDataListBehaviour _scrapDataListBehaviour = new RemnantDataListBehaviour();
         #endregion
 
         #region Initialize 
         public void Initialize()
         {
-            if(!_hasInitialized)
+            if (!_hasInitialized)
             {
                 _hasInitialized = true;
                 SceneManager.sceneLoaded += StoreItemsRegisterAsScrap;
+                _bannedItemsNamesList = Data.Config.GetBannedItemNames();
             }
         }
         #endregion
 
         #region Methods
+        private void StoreItemsRegisterAsScrap(Scene scene)
+        {
+            StoreItemsRegisterAsScrap(scene, LoadSceneMode.Single);
+        }
         private void StoreItemsRegisterAsScrap(Scene scene, LoadSceneMode mode)
         {
-            var mls = Remnants.Instance._mls;
-            if(StartOfRound.Instance != null)
+            var mls = Remnants.Instance.Mls;
+            if (StartOfRound.Instance != null)
             {
                 mls.LogInfo("In lobby, loading in no more items");
                 SceneManager.sceneLoaded -= StoreItemsRegisterAsScrap;
+                SceneManager.sceneUnloaded -= StoreItemsRegisterAsScrap;
                 _scrapDataListBehaviour.UpdateScrapDataList();
                 return;
             }
-            
 
             if (_isAddingItems)
             {
@@ -68,7 +75,7 @@ namespace Remnants.Behaviours
 
         private void AddStoreItemsToScrap(List<Item> allItems)
         {
-                var mls = Remnants.Instance._mls;
+            var mls = Remnants.Instance.Mls;
             try
             {
                 System.Random random = new System.Random();
@@ -78,17 +85,12 @@ namespace Remnants.Behaviours
                         continue;
 
                     if (HasBannedName(item.name))
-                    {
                         continue;
-                    }
 
-                    if(Items.scrapItems.FindIndex(scrapItem => scrapItem.item.name == item.name) != -1 || item.isScrap)
-                    {
+                    if (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.name == item.name) != -1 || item.isScrap)
                         continue;
-                    }
 
-                    
-                    if ( item.creditsWorth > _minCreditCost)
+                    if (item.creditsWorth > _minCreditCost)
                     {
                         int rarity = CalculateRarity(item.creditsWorth);
                         item.minValue = _minSellValue;
@@ -108,19 +110,18 @@ namespace Remnants.Behaviours
 
         private bool HasBannedName(string name)
         {
-            return Array.FindIndex(_bannedItemsNames, x => x == name) != -1;
+            return _bannedItemsNamesList.FindIndex(x => x == name) != -1;
         }
 
         private int CalculateRarity(int itemCreditWorth)
         {
-            float creditCapped = Mathf.Clamp(itemCreditWorth, _minCreditCost, _maxCreditCost);
-            float rarityPercentage = Mathf.Abs(((creditCapped / _maxCreditCost) * _maxStoreItemRarity) - _maxStoreItemRarity);
-            return Mathf.Clamp((int)rarityPercentage, _minStoreItemRarity, _maxStoreItemRarity);
+            int maxStoreScrapRarity = Data.Config.MaxRemnantRarity.Value;
+            int minStoreScrapRarity = Data.Config.MinRemnantRarity.Value;
+            float maxCreditValue = Data.Config.MaxRemnantItemCost.Value;
+            float creditCapped = Mathf.Clamp(itemCreditWorth, _minCreditCost, maxCreditValue);
+            float rarityPercentage = Mathf.Abs(((creditCapped / maxCreditValue) * maxStoreScrapRarity) - maxStoreScrapRarity);
+            return Mathf.Clamp((int)rarityPercentage, minStoreScrapRarity, maxStoreScrapRarity);
         }
-        
-
-
-
         #endregion
     }
 }
