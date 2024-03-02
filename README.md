@@ -23,6 +23,7 @@ The config can be found and edited in your BepInEx config folder or in your mod 
 I intend to focus on the config, so that you can edit the settings for the scrap items.
 The plan was to add bodies of past employees to the scrap list, but due to a whole load of technical issues, I've had to temporarily abandon that idea. 
 You can expect regular updates for bug fixes as well.
+Do note that only the remnant item spawns and the battery change can be changed at runtime. The others are updated when you restart the game.
 
  
 ## Installing
