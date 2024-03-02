@@ -28,10 +28,10 @@ namespace Remnants.Patches
         public static void SpawnScrapInLevelPatch(RoundManager __instance)
         {
             var mls = Remnants.Instance.Mls;
-            mls.LogInfo("In SpawnScrapInLevelPatch function!");
-            //Here we will delete all items that are banned, currently replaced by itemsscrap for easy of testing
+            mls.LogInfo("Patching remntant items spawns.");
+            //Here we will delete all items that are banned
             List<SpawnableItemWithRarity> spawnableScrapList = __instance.currentLevel.spawnableScrap;
-            List<RemnantData> scrapItemDataList = RemnantDataListBehaviour.GetRemnantDataList();
+            List<RemnantData> scrapItemDataList = Data.Config.GetRemnantItemList();
             spawnableScrapList.RemoveAll(spawnableItem => scrapItemDataList.FindIndex(itemData => !itemData.ShouldSpawn && itemData.RemnantItemName == spawnableItem.spawnableItem.name) != -1);
             __instance.currentLevel.spawnableScrap = spawnableScrapList;
         }

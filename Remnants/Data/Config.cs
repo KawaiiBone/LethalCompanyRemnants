@@ -28,18 +28,26 @@ namespace Remnants.Data
         private static string _generalSection = "General";
         private static string _otherSection = "Other";
         private static string _remnantsSection = "Remnants";
+        private static List<ConfigRemnantData> _configRemnantDataList = new List<ConfigRemnantData>();
+
+        struct ConfigRemnantData
+        {
+            public string Name;
+            public string Discription;
+            public bool shouldSpawn;
+        }
+
         #endregion
 
         #region Initialize 
         #endregion
 
         #region Methods
-        public static void UpdateConfig()
-        {
 
-        }
+
         public static void LoadConfig()
         {
+            ReadRemnantItems();
             _configFile = new ConfigFile(Paths.ConfigPath + _configFileName, true);
             const int maxPercentage = 100;
             const int minPercentage = 1;
@@ -64,6 +72,9 @@ namespace Remnants.Data
             MaxRemnantItemCost = _configFile.Bind(_otherSection, "Max value to calculate rarity", 400.0f, "This value exists to calculate the spawn rarity of specific remnant items. \nThis rarity is determined by their original store cost. \nThe more expensive an item is, the less chance it has to spawn. \nThe value below caps the max cost of items in service of the calculation of an item's rarity. \nThe default value has already been optimized.");
             MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, minItemCost, maxItemCost);
 
+            ConfigScrapDataList = _configRemnantDataList.ConvertAll(itemData =>
+                     _configFile.Bind(_remnantsSection, itemData.Name, true, itemData.Discription));
+
             _configFile.Save();
         }
 
@@ -76,6 +87,8 @@ namespace Remnants.Data
 
         public static List<RemnantData> GetRemnantItemList()
         {
+            _configFile.Reload();
+
             if (ConfigScrapDataList == null || ConfigScrapDataList.Count == 0)
                 return new List<RemnantData>();
 
@@ -90,9 +103,60 @@ namespace Remnants.Data
         public static void SetRemnantItemList(List<RemnantData> remnantDataList)
         {
             ConfigScrapDataList = remnantDataList.ConvertAll(remnantData =>
-          _configFile.Bind(_remnantsSection, remnantData.RemnantItemName, remnantData.ShouldSpawn, "By changing the value above, you can choose whether the certain item spawns or not."));
+          _configFile.Bind(_remnantsSection, remnantData.RemnantItemName, remnantData.ShouldSpawn, "By changing the value, you can choose whether the certain item spawns or not."));
             _configFile.Save();
         }
+
+        private static void ReadRemnantItems()
+        {
+            if (!File.Exists(Paths.ConfigPath + _configFileName))
+                return;
+                
+            var mls = Remnants.Instance.Mls;
+            StreamReader sr = new StreamReader(Paths.ConfigPath + _configFileName);
+            string line = sr.ReadLine();
+            bool hasFoundSection = false;
+            while (line != null)
+            {
+                if (hasFoundSection)
+                {
+                    AddRemnantItem(sr, line);
+                }
+                else if (line == "[" + _remnantsSection + "]")
+                {
+                    hasFoundSection = true;
+                    line = sr.ReadLine();
+                    AddRemnantItem(sr, line);
+                }
+                line = sr.ReadLine();
+            }
+            sr.Close();
+        }
+
+        private static void AddRemnantItem(StreamReader sr, string line)
+        {
+            string discriptionStart = "## ";
+            string ignoreLine = "#";
+            string itemValueDetect = " = ";
+            ConfigRemnantData data = new ConfigRemnantData();
+
+            if (!line.StartsWith(discriptionStart))
+                return;
+
+            data.Discription = line.Remove(0, discriptionStart.Length);
+            while (line != null)
+            {
+                if (!line.StartsWith(ignoreLine))
+                    break;
+                line = sr.ReadLine();
+            }
+
+            int startIndex = line.LastIndexOf(itemValueDetect);
+            data.Name = line.Remove(startIndex);
+            data.shouldSpawn = Convert.ToBoolean(line.Remove(0, startIndex + itemValueDetect.Length - 1));
+            _configRemnantDataList.Add(data);
+        }
+
         #endregion
     }
 }

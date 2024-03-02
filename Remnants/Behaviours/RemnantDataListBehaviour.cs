@@ -86,11 +86,6 @@ namespace Remnants.Behaviours
             }
         }
 
-        public static List<RemnantData> GetRemnantDataList()
-        {
-           return Data.Config.GetRemnantItemList();
-
-        }
         #endregion
     }
 }
