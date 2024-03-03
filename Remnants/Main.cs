@@ -24,7 +24,7 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.1.4";
+        private const string modVersion = "1.1.5";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);
@@ -74,16 +74,6 @@ namespace Remnants
                 occludeAudio.enabled = false;
             }
         }
-
-        //This is to fix the grab error where you cant grab the body correctly
-        /*[HarmonyPatch(typeof(RagdollGrabbableObject), "Update")]
-        [HarmonyPrefix]
-        static void GrabbableBodyPatch(ref bool ___foundRagdollObject)
-        {
-            ___foundRagdollObject = true;
-
-        }*/
-
         #endregion
     }
 }

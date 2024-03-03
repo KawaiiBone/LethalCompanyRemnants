@@ -9,6 +9,8 @@ using UnityEngine;
 using Unity.Netcode;
 using Remnants.utilities;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Security.Cryptography;
 
 namespace Remnants.Behaviours
 {
@@ -17,7 +19,6 @@ namespace Remnants.Behaviours
         #region Variables
         private bool _hasInitialized = false;
         private bool _isAddingItems = false;
-        private string[] _bannedItemsNames = new string[4] { "Clipboard", "StickyNote", "Binoculars", "MapDevice" };
         private List<string> _bannedItemsNamesList = new List<string>();
 
         private const int _minSellValue = 1, _maxSellValue = 2;
@@ -89,6 +90,12 @@ namespace Remnants.Behaviours
 
                     if (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.name == item.name) != -1 || item.isScrap)
                         continue;
+
+                    if (item.spawnPrefab.GetComponent<NetworkObject>() == null)
+                    {
+                        mls.LogWarning(item.name + ": NetworkObject is null, barring item from registering.");
+                        continue;
+                    }
 
                     if (item.creditsWorth > _minCreditCost)
                     {

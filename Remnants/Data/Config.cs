@@ -24,7 +24,7 @@ namespace Remnants.Data
         public static List<ConfigEntry<bool>> ConfigScrapDataList;
         public static ConfigEntry<float> MaxRemnantItemCost;
         private static ConfigFile _configFile;
-        public static string _configFileName = "\\Remnants.cfg";
+        private static string _configFileName = "\\Remnants.cfg";
         private static string _generalSection = "General";
         private static string _otherSection = "Other";
         private static string _remnantsSection = "Remnants";

@@ -22,3 +22,6 @@
 #1.1.4
 - The remnant items in config work now, which means you can ban remnant items from spawning before loading the next moon.
 - Fixed the battery bug that did not load the correct config data.
+
+#1.1.5
+- Fixed the compatibility problem with the mod LC Office.
