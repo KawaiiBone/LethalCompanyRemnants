@@ -15,7 +15,7 @@
 - Fixed a bug where the item values were not displayed well or not displayed at all.
 
 #1.1.3
-- Added a config to use in the config files or in your mod manager. For now it can change, general rarity, battery of remnant items and a banning list of items to not be registered as scrap. There is already a list of all the remnant items in the config loaded when you join a lobby, but it does not work yet. (It does not save correctly)
+- Added a config to use in the config files or in your mod manager, which means the appdata json save file has become obsolete. For now it can change, general rarity, battery of remnant items and a banning list of items to not be registered as scrap. There is already a list of all the remnant items in the config loaded when you join a lobby, but it does not work yet. (It does not save correctly)
 - Removed the appdata save. If you still have it you can remove it. 
 - Fixed the battery bug that caused some items to not have a random charge due to network issues.
 
