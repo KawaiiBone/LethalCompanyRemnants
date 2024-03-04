@@ -25,3 +25,6 @@
 
 #1.1.5
 - Fixed the compatibility problem with the mod LC Office.
+
+#1.1.6
+- Fixed the occlude error patch, now the patch triggers from when the networkmanager is shutting down rather than the player pressing the exit button which was in the ui.
