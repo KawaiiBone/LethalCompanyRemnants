@@ -1,15 +1,8 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 using Remnants.Patches;
-using System.Reflection;
 using Remnants.Behaviours;
-using UnityEditor;
-using System.IO;
 
 
 
@@ -48,6 +41,7 @@ namespace Remnants
             Mls.LogInfo("modGUID has started");
             _harmony.PatchAll(typeof(ScrapBatteryPatch));
             _harmony.PatchAll(typeof(SpawnableScrapPatch));
+            _harmony.PatchAll(typeof(OccludeAudioPatch));
             _harmony.PatchAll(typeof(Remnants));
             Data.Config.LoadConfig();
             _registerItemsBehaviour.Initialize();
@@ -59,21 +53,6 @@ namespace Remnants
         #region Methods
         #endregion
 
-        #region HarmonyMethods
-        [HarmonyPatch(typeof(QuickMenuManager), "LeaveGameConfirm")]
-        [HarmonyPostfix]
-        //Whenever you landed on a moon (generated a world) and then you quit the game, you would get OccludeAudio errors of something being nullptr reference.
-        //This has probably something to do with the GameNetworkManager and the store items being added to scrap.
-        //So the fix this, i had to disable all the OccludeAudio when you leave the lobby/game session.
-        //During playtesting, i have not noticed any sounds that are absent.
-        static void SoundErrorPatch()
-        {
-            OccludeAudio[] OccludeAudiosArray = Resources.FindObjectsOfTypeAll<OccludeAudio>();
-            foreach (var occludeAudio in OccludeAudiosArray)
-            {
-                occludeAudio.enabled = false;
-            }
-        }
-        #endregion
+       
     }
 }

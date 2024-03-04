@@ -1,12 +1,7 @@
 ﻿using LethalLib.Modules;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,14 +29,14 @@ namespace Remnants.Behaviours
             if (!_hasInitialized)
             {
                 _hasInitialized = true;
-                SceneManager.sceneLoaded += CrteateItemAndRegisterBody;
+                SceneManager.sceneLoaded += CreateItemAndRegisterBody;
             }
         }
         #endregion
 
         #region Methods
 
-        private void CrteateItemAndRegisterBody(Scene scene, LoadSceneMode mode)
+        private void CreateItemAndRegisterBody(Scene scene, LoadSceneMode mode)
         {
             if (_isCreatingBody)
                 return;
@@ -81,7 +76,7 @@ namespace Remnants.Behaviours
 
             Items.RegisterScrap(_bodyItem, 99, Levels.LevelTypes.All);
             mls.LogInfo("Registered scrap: " + _bodyItem.name);
-            SceneManager.sceneLoaded -= CrteateItemAndRegisterBody;
+            SceneManager.sceneLoaded -= CreateItemAndRegisterBody;
         }
 
         private void CleanItemPrefab()

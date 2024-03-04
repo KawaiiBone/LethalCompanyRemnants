@@ -1,16 +1,5 @@
-﻿using LethalLib.Modules;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unity.Netcode.Components;
-using UnityEngine.SceneManagement;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using Remnants.utilities;
-using System.IO;
-using Newtonsoft.Json;
-using System.Xml.Linq;
 
 namespace Remnants.Behaviours
 {
@@ -18,8 +7,6 @@ namespace Remnants.Behaviours
     {
         #region Variables
         private List<RemnantData> _RemnantItemsListData = new List<RemnantData>();
-        private static string _fileName = "RemnantsSpawnableList.json";
-        private static string _path = Application.persistentDataPath + "/" + "RemnantsSpawnableList.json";
         #endregion
 
         #region Initialize 
@@ -29,7 +16,6 @@ namespace Remnants.Behaviours
         #region Methods
         public void AddItemToDataList(string itemName)
         {
-
             if (_RemnantItemsListData.FindIndex(scrapData => scrapData.RemnantItemName == itemName) != -1)
                 return;
 

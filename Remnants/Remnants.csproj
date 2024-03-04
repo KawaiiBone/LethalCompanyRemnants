@@ -105,6 +105,7 @@
     <Compile Include="Behaviours\RemnantDataListBehaviour.cs" />
     <Compile Include="Data\Config.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Patches\OccludeAudioPatch.cs" />
     <Compile Include="Patches\ScrapBatteryPatch.cs" />
     <Compile Include="Patches\SpawnableScrapPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
