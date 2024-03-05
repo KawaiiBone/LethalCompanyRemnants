@@ -28,3 +28,6 @@
 
 #1.1.6
 - Fixed the occlude error patch, now the patch triggers from when the networkmanager is shutting down rather than the player pressing the exit button which was in the ui.
+
+#1.1.7
+- Fixed the save item bug where registered items (remnants) were not present in the ship on loading the lobby again.

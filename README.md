@@ -21,8 +21,8 @@ Do note that only the remnant item spawns and the battery change can be changed 
 
 
 ## Future Work: 
-I intend to focus on the config, so that you can edit the settings for the scrap items.
-The plan was to add bodies of past employees to the scrap list, but due to a whole load of technical issues, I've had to temporarily abandon that idea. 
+The config is completed for now, any feedback or add-ons are always welcome for the config.
+Now I Intend on focusing on adding bodies of past employees to the scrap list, the plan is that they will be found alongside an item.
 You can expect regular updates for bug fixes as well.
 
  

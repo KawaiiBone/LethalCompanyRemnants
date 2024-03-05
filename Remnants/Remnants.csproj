@@ -37,6 +37,9 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
@@ -106,6 +109,7 @@
     <Compile Include="Data\Config.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Patches\OccludeAudioPatch.cs" />
+    <Compile Include="Patches\SaveGamePatch.cs" />
     <Compile Include="Patches\ScrapBatteryPatch.cs" />
     <Compile Include="Patches\SpawnableScrapPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

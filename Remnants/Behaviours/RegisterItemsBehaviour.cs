@@ -18,6 +18,7 @@ namespace Remnants.Behaviours
         private const int _minSellValue = 1, _maxSellValue = 2;
         private const float _minCreditCost = 4f;
         private RemnantDataListBehaviour _scrapDataListBehaviour = new RemnantDataListBehaviour();
+        private string _scrapName = "Remnant";
         #endregion
 
         #region Initialize 
@@ -81,8 +82,8 @@ namespace Remnants.Behaviours
 
                     if (HasBannedName(item.name))
                         continue;
-
-                    if (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.name == item.name) != -1 || item.isScrap)
+                    // scrapItem.item.name == item.name
+                    if (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == item.itemName) != -1 || item.isScrap)
                         continue;
 
                     if (item.spawnPrefab.GetComponent<NetworkObject>() == null)
@@ -92,14 +93,7 @@ namespace Remnants.Behaviours
                     }
 
                     if (item.creditsWorth > _minCreditCost)
-                    {
-                        int rarity = CalculateRarity(item.creditsWorth);
-                        item.minValue = _minSellValue;
-                        item.maxValue = _maxSellValue;
-                        Items.RegisterScrap(item, rarity, Levels.LevelTypes.All);
-                        mls.LogInfo("Added " + item.name + " as a scrap item.");
-                        _scrapDataListBehaviour.AddItemToDataList(item.name);
-                    }
+                        RegisterItemAsScrap(item);
                 }
             }
             catch (Exception e)
@@ -122,6 +116,18 @@ namespace Remnants.Behaviours
             float creditCapped = Mathf.Clamp(itemCreditWorth, _minCreditCost, maxCreditValue);
             float rarityPercentage = Mathf.Abs(((creditCapped / maxCreditValue) * maxStoreScrapRarity) - maxStoreScrapRarity);
             return Mathf.Clamp((int)rarityPercentage, minStoreScrapRarity, maxStoreScrapRarity);
+        }
+
+        private void RegisterItemAsScrap(Item item)
+        {
+            var mls = Remnants.Instance.Mls;
+            int rarity = CalculateRarity(item.creditsWorth);
+            item.minValue = _minSellValue;
+            item.maxValue = _maxSellValue;
+            item.itemSpawnsOnGround = true;
+            Items.RegisterScrap(item, rarity, Levels.LevelTypes.All);
+            mls.LogInfo("Added " + item.name + " as a scrap item.");
+            _scrapDataListBehaviour.AddItemToDataList(item.name);
         }
         #endregion
     }

@@ -3,6 +3,9 @@ using BepInEx.Logging;
 using HarmonyLib;
 using Remnants.Patches;
 using Remnants.Behaviours;
+using UnityEngine;
+using LethalLib.Modules;
+using System.Collections.Generic;
 
 
 
@@ -17,7 +20,7 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.1.6";
+        private const string modVersion = "1.1.7";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);
@@ -42,6 +45,7 @@ namespace Remnants
             _harmony.PatchAll(typeof(ScrapBatteryPatch));
             _harmony.PatchAll(typeof(SpawnableScrapPatch));
             _harmony.PatchAll(typeof(OccludeAudioPatch));
+            _harmony.PatchAll(typeof(SaveGamePatch));
             _harmony.PatchAll(typeof(Remnants));
             Data.Config.LoadConfig();
             _registerItemsBehaviour.Initialize();
@@ -50,9 +54,8 @@ namespace Remnants
         }
         #endregion
 
-        #region Methods
-        #endregion
+  
 
-       
+
     }
 }
