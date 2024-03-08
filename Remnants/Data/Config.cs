@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
+using LethalLib.Modules;
 using Remnants.utilities;
 using UnityEngine;
 
@@ -16,15 +17,20 @@ namespace Remnants.Data
         public static ConfigEntry<int> MaxRemnantRarity;
         public static ConfigEntry<int> MinRemnantBatteryCharge;
         public static ConfigEntry<int> MaxRemnantBatteryCharge;
-        private static ConfigEntry<string> _bannedNamesFromRegistering;
         public static List<ConfigEntry<bool>> ConfigScrapDataList;
+        public static ConfigEntry<bool> UseSpecificLevelRarities;
+        public static List<ConfigEntry<int>> MinRemnantLevelRarities = new List<ConfigEntry<int>>();
+        public static List<ConfigEntry<int>> MaxRemnantLevelRarities = new List<ConfigEntry<int>>();
+        private static ConfigEntry<string> _bannedNamesFromRegistering;
         public static ConfigEntry<float> MaxRemnantItemCost;
         private static ConfigFile _configFile;
         private static string _configFileName = "\\Remnants.cfg";
         private static string _generalSection = "General";
         private static string _otherSection = "Other";
         private static string _remnantsSection = "Remnants";
+        private static string _levelsSection = "Levels";
         private static List<ConfigRemnantData> _configRemnantDataList = new List<ConfigRemnantData>();
+        public static Dictionary<Levels.LevelTypes, Tuple<int, int>> LevelRarities = new Dictionary<Levels.LevelTypes, Tuple<int, int>>();
 
         struct ConfigRemnantData
         {
@@ -67,6 +73,24 @@ namespace Remnants.Data
 
             MaxRemnantItemCost = _configFile.Bind(_otherSection, "Max value to calculate rarity", 400.0f, "This value exists to calculate the spawn rarity of specific remnant items. \nThis rarity is determined by their original store cost. \nThe more expensive an item is, the less chance it has to spawn. \nThe value below caps the max cost of items in service of the calculation of an item's rarity. \nThe default value has already been optimized.");
             MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, minItemCost, maxItemCost);
+
+            MinRemnantLevelRarities = new List<ConfigEntry<int>>();
+            MaxRemnantLevelRarities = new List<ConfigEntry<int>>();
+            LevelRarities = new Dictionary<Levels.LevelTypes, Tuple<int, int>>();
+            UseSpecificLevelRarities = _configFile.Bind(_levelsSection, "Use level specific rarities", false);
+            foreach (var moonName in Enum.GetNames(typeof(Levels.LevelTypes)))
+            {
+                if (moonName == Levels.LevelTypes.All.ToString() || moonName == Levels.LevelTypes.None.ToString()
+                    || moonName == Levels.LevelTypes.Vanilla.ToString() || moonName == Levels.LevelTypes.Modded.ToString())
+                    continue;
+
+                MinRemnantLevelRarities.Add(_configFile.Bind(_levelsSection, moonName + " min remnant rarity", 5, "Minimum chance of a remnant item spawning on moon: " + moonName + " ."));
+                MinRemnantLevelRarities.Last().Value = Mathf.Clamp(MinRemnantLevelRarities.Last().Value, minPercentage, maxPercentage);
+                MaxRemnantLevelRarities.Add(_configFile.Bind(_levelsSection, moonName + " max remnant rarity", 25, "Maximum chance of a remnant item spawning on moon: " + moonName + " ."));
+                MaxRemnantLevelRarities.Last().Value = Mathf.Clamp(MaxRemnantLevelRarities.Last().Value, MinRemnantLevelRarities.Last().Value, maxPercentage);
+                LevelRarities.Add((Levels.LevelTypes)Enum.Parse(typeof(Levels.LevelTypes), moonName),
+                    new Tuple<int, int>(MinRemnantLevelRarities.Last().Value, MaxRemnantLevelRarities.Last().Value));
+            }
 
             ConfigScrapDataList = _configRemnantDataList.ConvertAll(itemData =>
                      _configFile.Bind(_remnantsSection, itemData.Name, true, itemData.Discription));

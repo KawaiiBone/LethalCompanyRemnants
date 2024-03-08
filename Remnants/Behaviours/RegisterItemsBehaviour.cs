@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Unity.Netcode;
+using System.IO.Ports;
 
 namespace Remnants.Behaviours
 {
@@ -108,24 +109,33 @@ namespace Remnants.Behaviours
             return _bannedItemsNamesList.FindIndex(x => x == name) != -1;
         }
 
-        private int CalculateRarity(int itemCreditWorth)
+        private int CalculateRarity(int itemCreditWorth, int minStoreScrapRarity, int maxStoreScrapRarity)
         {
-            int maxStoreScrapRarity = Data.Config.MaxRemnantRarity.Value;
-            int minStoreScrapRarity = Data.Config.MinRemnantRarity.Value;
             float maxCreditValue = Data.Config.MaxRemnantItemCost.Value;
             float creditCapped = Mathf.Clamp(itemCreditWorth, _minCreditCost, maxCreditValue);
             float rarityPercentage = Mathf.Abs(((creditCapped / maxCreditValue) * maxStoreScrapRarity) - maxStoreScrapRarity);
             return Mathf.Clamp((int)rarityPercentage, minStoreScrapRarity, maxStoreScrapRarity);
         }
-
         private void RegisterItemAsScrap(Item item)
         {
             var mls = Remnants.Instance.Mls;
-            int rarity = CalculateRarity(item.creditsWorth);
             item.minValue = _minSellValue;
             item.maxValue = _maxSellValue;
             item.itemSpawnsOnGround = true;
-            Items.RegisterScrap(item, rarity, Levels.LevelTypes.All);
+            if (Data.Config.UseSpecificLevelRarities.Value == false)
+            {
+                int rarity = CalculateRarity(item.creditsWorth, Data.Config.MinRemnantRarity.Value, Data.Config.MaxRemnantRarity.Value);
+                Items.RegisterScrap(item, rarity, Levels.LevelTypes.All);
+            }
+            else
+            {
+                Dictionary<Levels.LevelTypes, int> levelRarities = new Dictionary<Levels.LevelTypes, int>();
+                foreach (var levelRarity in Data.Config.LevelRarities)
+                {
+                    levelRarities.Add(levelRarity.Key, CalculateRarity(item.creditsWorth, levelRarity.Value.Item1, levelRarity.Value.Item2));
+                }
+                Items.RegisterScrap(item, levelRarities);
+            }
             mls.LogInfo("Added " + item.name + " as a scrap item.");
             _scrapDataListBehaviour.AddItemToDataList(item.name);
         }
