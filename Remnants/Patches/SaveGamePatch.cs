@@ -20,7 +20,7 @@ namespace Remnants.Patches
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Patching save game");
             var hangarShip = GameObject.Find("HangarShip");
-            GrabbableObject[] array = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject)).ToArray();
+            GrabbableObject[] array = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject) && grabObj.isInShipRoom).ToArray(); 
            
 
             if (array == null || array.Length == 0)

@@ -103,15 +103,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviours\RegisterBodyBehaviour.cs" />
     <Compile Include="Behaviours\RegisterItemsBehaviour.cs" />
     <Compile Include="Behaviours\RemnantDataListBehaviour.cs" />
     <Compile Include="Data\Config.cs" />
+    <Compile Include="Data\LoadAssetsBodies.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Patches\DespawnRemnantsPatch.cs" />
     <Compile Include="Patches\OccludeAudioPatch.cs" />
     <Compile Include="Patches\SaveGamePatch.cs" />
     <Compile Include="Patches\ScrapBatteryPatch.cs" />
     <Compile Include="Patches\SpawnableScrapPatch.cs" />
+    <Compile Include="Patches\SpawnBodiesPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\CoroutineHelper.cs" />
     <Compile Include="Data\RemnantData.cs" />

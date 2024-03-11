@@ -23,6 +23,7 @@ namespace Remnants.Data
         public static List<ConfigEntry<int>> MaxRemnantLevelRarities = new List<ConfigEntry<int>>();
         private static ConfigEntry<string> _bannedNamesFromRegistering;
         public static ConfigEntry<float> MaxRemnantItemCost;
+        public static ConfigEntry<int> SpawnRarityOfBody;
         private static ConfigFile _configFile;
         private static string _configFileName = "\\Remnants.cfg";
         private static string _generalSection = "General";
@@ -73,6 +74,9 @@ namespace Remnants.Data
 
             MaxRemnantItemCost = _configFile.Bind(_otherSection, "Max value to calculate rarity", 400.0f, "This value exists to calculate the spawn rarity of specific remnant items. \nThis rarity is determined by their original store cost. \nThe more expensive an item is, the less chance it has to spawn. \nThe value below caps the max cost of items in service of the calculation of an item's rarity. \nThe default value has already been optimized.");
             MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, minItemCost, maxItemCost);
+
+            SpawnRarityOfBody = _configFile.Bind(_otherSection, "Body spawn rarity", 5, "This number is the chance that a body spawns next to an remnant item.");
+            SpawnRarityOfBody.Value = Mathf.Clamp(SpawnRarityOfBody.Value, minPercentage, maxPercentage);
 
             MinRemnantLevelRarities = new List<ConfigEntry<int>>();
             MaxRemnantLevelRarities = new List<ConfigEntry<int>>();
