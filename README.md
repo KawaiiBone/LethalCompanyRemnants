@@ -21,7 +21,7 @@ Do note that only the remnant item spawns and the battery change can be changed 
 
 
 ## Future Work: 
-The config and the bodies is completed for now, any feedback or add-ons are always welcome for the config.
+The config and the bodies is completed for now, any feedback or add-ons are always welcome.
 For now I will focus on adding small features on the config for giving you more control over the moon rarities and spawning of bodies.
 My first focus will be adding a rarity scaling with spawning bodies in regard of the tier of the moon, the higher tier moon the higher a body will be spawned.
 
