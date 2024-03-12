@@ -23,7 +23,7 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.2.0";
+        private const string modVersion = "1.2.1";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);

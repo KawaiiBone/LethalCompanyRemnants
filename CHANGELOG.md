@@ -38,3 +38,6 @@
 - An asset bundle (remnants) that contains 4 bodies prefabs with dependencies from Lethal Company: default body, head burst body, coil head body and en-webbed body.
 - Fixed the bug on party wipe, remnant items are still loaded in.
 - Fixed the bug that items near the ship will be seen as items in the ship and be saved.
+
+#1.2.1
+- Fixed directory bug where it could not find the remnants asset bundle via the Thunderstore app.

@@ -16,9 +16,9 @@ namespace Remnants.Data
     {
         #region Variables
         private bool _hasInitialized = false;
-        private string _pathPlugin = Paths.PluginPath;
         private string _assetBundleName = "remnants";
         private string _prefabTypeName = ".prefab";
+        private string _thunderStoreFolderName = "KawaiiBone-Remnants";
         private AssetBundle _assetBundleBodies = null;
         public static string[] BodiesFileNamesArray = { "DefaultBody", "HeadBurstBody", "CoilHeadBody", "WebbedBody" };
         #endregion
@@ -38,17 +38,21 @@ namespace Remnants.Data
         private void LoadAssetBundle()
         {
             var mls = Remnants.Instance.Mls;
-            string filePath = Path.Combine(_pathPlugin, _assetBundleName);
-            if(!File.Exists(filePath))
+            string filePath = Path.Combine(Paths.PluginPath, _assetBundleName);
+            if (!File.Exists(filePath))
             {
-                mls.LogError("Assetbundle " + _assetBundleName + " not found.");
-                return;
+                filePath = Path.Combine(Paths.PluginPath, _thunderStoreFolderName, _assetBundleName);
+                if(!File.Exists(filePath))
+                {
+                    mls.LogError("Assetbundle " + _assetBundleName + " not found.");
+                    return;
+                }
             }
 
             _assetBundleBodies = AssetBundle.LoadFromFile(filePath);
             if(_assetBundleBodies == null)
             {
-                mls.LogError("Failed to load Bodies.");
+                mls.LogError("Failed to load: " + _assetBundleName);
                 return;
             }
 
