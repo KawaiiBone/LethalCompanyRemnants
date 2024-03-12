@@ -17,10 +17,10 @@ namespace Remnants.Data
         #region Variables
         private bool _hasInitialized = false;
         private string _pathPlugin = Paths.PluginPath;
-        private string _assetBundleName = "bodies";
-        private string _defaultBodyFileName = "DefaultBody";
+        private string _assetBundleName = "remnants";
         private string _prefabTypeName = ".prefab";
         private AssetBundle _assetBundleBodies = null;
+        public static string[] BodiesFileNamesArray = { "DefaultBody", "HeadBurstBody", "CoilHeadBody", "WebbedBody" };
         #endregion
 
         #region Initialize 
@@ -52,15 +52,28 @@ namespace Remnants.Data
                 return;
             }
 
-            GameObject defaultBodyPrefab = _assetBundleBodies.LoadAsset<GameObject>(_defaultBodyFileName + _prefabTypeName);
+            foreach (var bodyFileName in BodiesFileNamesArray)
+            {
+                LoadAndRegisterAsset(bodyFileName, _prefabTypeName);
+            }
             //Later on:
             //var prefabs = _assetBundleBodies.LoadAllAssets<GameObject>();
+        }
+
+        private void LoadAndRegisterAsset(string assetName, string assetType)
+        {
+            var mls = Remnants.Instance.Mls;
+            GameObject defaultBodyPrefab = _assetBundleBodies.LoadAsset<GameObject>(assetName + assetType);
             if (defaultBodyPrefab == null)
             {
-                mls.LogError("Failed to load: " + _defaultBodyFileName);
+                mls.LogError("Failed to load: " + assetName);
                 return;
             }
-           
+            else
+            {
+                mls.LogInfo("Loaded asset: " + defaultBodyPrefab.name);
+            }
+
             NetworkPrefabs.RegisterNetworkPrefab(defaultBodyPrefab);
         }
         #endregion

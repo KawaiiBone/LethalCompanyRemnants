@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Remnants.Data;
 using Remnants.utilities;
 using System;
 using System.Collections.Generic;
@@ -26,8 +27,12 @@ namespace Remnants.Patches
                 mls.LogInfo("spawnedScrap IS NULL");
                 return;
             }
+
+            if (LoadAssetsBodies.BodiesFileNamesArray == null || LoadAssetsBodies.BodiesFileNamesArray.Length == 0)
+                return;
+
             IReadOnlyList<NetworkPrefab> prefabs = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
-            GameObject bodyPrefab = prefabs.ToList().Find(netPrefab => netPrefab.Prefab.name == "DefaultBody").Prefab;
+            NetworkPrefab[] bodyPrefabs = prefabs.ToList().Where(netObj => Array.FindIndex(LoadAssetsBodies.BodiesFileNamesArray , nameFile => nameFile == netObj.Prefab.name) != -1 ).ToArray();
             List<RemnantData> scrapItemDataList = Data.Config.GetRemnantItemList();
             System.Random random = new System.Random();
             int maxPercentage = 101;
@@ -54,7 +59,7 @@ namespace Remnants.Patches
 
                 Vector3 spawnPosition = grabbableObject.transform.position;
                 spawnPosition.y = spawnPosition.y + 1.0f;
-                GameObject defaultBody = UnityEngine.Object.Instantiate(bodyPrefab, spawnPosition, Quaternion.identity, RoundManager.Instance.mapPropsContainer.transform);
+                GameObject defaultBody = UnityEngine.Object.Instantiate(bodyPrefabs[random.Next(bodyPrefabs.Length)].Prefab, spawnPosition, UnityEngine.Random.rotation , RoundManager.Instance.mapPropsContainer.transform);
                 defaultBody.GetComponent<NetworkObject>().Spawn(true);
                 willSpawnBody = false;
             }

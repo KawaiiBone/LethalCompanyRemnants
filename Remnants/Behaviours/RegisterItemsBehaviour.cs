@@ -19,7 +19,6 @@ namespace Remnants.Behaviours
         private const int _minSellValue = 1, _maxSellValue = 2;
         private const float _minCreditCost = 4f;
         private RemnantDataListBehaviour _scrapDataListBehaviour = new RemnantDataListBehaviour();
-        private string _scrapName = "Remnant";
         #endregion
 
         #region Initialize 
@@ -83,7 +82,7 @@ namespace Remnants.Behaviours
 
                     if (HasBannedName(item.name))
                         continue;
-                    // scrapItem.item.name == item.name
+                    
                     if (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == item.itemName) != -1 || item.isScrap)
                         continue;
 

@@ -1,6 +1,6 @@
 {
   "name": "Remnants",
-  "version_number": "1.1.7",
+  "version_number": "1.2.0",
   "website_url": "https://github.com/KawaiiBone/LethalCompanyRemnants",
   "description": "Adds store items as scrap, to be found in moons as scrap in Lethal Company.",
   "dependencies": [

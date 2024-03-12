@@ -23,7 +23,7 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.1.7";
+        private const string modVersion = "1.2.0";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);
@@ -40,8 +40,6 @@ namespace Remnants
             {
                 Instance = this;
             }
-
-
 
             Mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
             Mls.LogInfo("modGUID has started");
