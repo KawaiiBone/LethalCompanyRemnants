@@ -31,3 +31,10 @@
 
 #1.1.7
 - Fixed the save item bug where registered items (remnants) were not present in the ship on loading the lobby again.
+
+#1.2.0
+- Added a config feature that gives option for separate rarity for each moon
+- Added the bodies feature which now one of the four dead bodies can be spawned on top of a remnant item. The chance of the body spawning can be changed in the config.
+- An asset bundle (remnants) that contains 4 bodies prefabs with dependencies from Lethal Company: default body, head burst body, coil head body and en-webbed body.
+- Fixed the bug on party wipe, remnant items are still loaded in.
+- Fixed the bug that items near the ship will be seen as items in the ship and be saved.
