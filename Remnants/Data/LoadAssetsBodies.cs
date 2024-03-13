@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Remnants.Data
         #region Variables
         private bool _hasInitialized = false;
         private string _assetBundleName = "remnants";
+        private string _folderPluginName = "Remnants";
         private string _prefabTypeName = ".prefab";
         private string _thunderStoreFolderName = "KawaiiBone-Remnants";
         private AssetBundle _assetBundleBodies = null;
@@ -40,15 +42,12 @@ namespace Remnants.Data
         private void LoadAssetBundle()
         {
             var mls = Remnants.Instance.Mls;
-            string filePath = Path.Combine(Paths.PluginPath, _assetBundleName);
+            string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string filePath = Path.Combine(assemblyFolder, _assetBundleName);
             if (!File.Exists(filePath))
             {
-                filePath = Path.Combine(Paths.PluginPath, _thunderStoreFolderName, _assetBundleName);
-                if(!File.Exists(filePath))
-                {
-                    mls.LogError("Assetbundle " + _assetBundleName + " not found.");
-                    return;
-                }
+               mls.LogError("Assetbundle " + _assetBundleName + " not found.");
+               return;
             }
 
             _assetBundleBodies = AssetBundle.LoadFromFile(filePath);
@@ -82,6 +81,13 @@ namespace Remnants.Data
 
             NetworkPrefabs.RegisterNetworkPrefab(defaultBodyPrefab);
             HasLoadedAnyAssets = true;
+        }
+
+        private string FindAssetBundleFile()
+        {
+
+       
+            return string.Empty;
         }
         #endregion
     }
