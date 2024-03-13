@@ -28,7 +28,7 @@ namespace Remnants.Patches
                 return;
             }
 
-            if (LoadAssetsBodies.BodiesFileNamesArray == null || LoadAssetsBodies.BodiesFileNamesArray.Length == 0)
+            if (!LoadAssetsBodies.HasLoadedAnyAssets)
                 return;
 
             IReadOnlyList<NetworkPrefab> prefabs = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;

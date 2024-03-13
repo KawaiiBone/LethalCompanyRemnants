@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace Remnants.Data
         private string _thunderStoreFolderName = "KawaiiBone-Remnants";
         private AssetBundle _assetBundleBodies = null;
         public static string[] BodiesFileNamesArray = { "DefaultBody", "HeadBurstBody", "CoilHeadBody", "WebbedBody" };
+        public static bool HasLoadedAnyAssets = false;
         #endregion
 
         #region Initialize 
@@ -79,6 +81,7 @@ namespace Remnants.Data
             }
 
             NetworkPrefabs.RegisterNetworkPrefab(defaultBodyPrefab);
+            HasLoadedAnyAssets = true;
         }
         #endregion
     }
