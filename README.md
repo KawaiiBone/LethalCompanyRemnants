@@ -8,6 +8,7 @@ This mod spreads items from the store around on the moons for you to find along 
 Battery levels may vary. For full battery levels, consult the Lethal Company store.
 
 Adds store items as scrap, to be found on moons as scrap in Lethal Company.
+Along this, there is a small chance that you will find a corpse along the scrap you find.
 
 
 ## Feedback and issues
