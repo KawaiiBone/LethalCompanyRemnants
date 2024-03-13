@@ -47,3 +47,4 @@
 - On the remnants github page, you can find the plugins folder to install the game manually. In that folder the dll file and the asset bundle can be found.
 - Fixed the bug that crashes the game when unable to load the asset bundle remnants. Now it will signal that it could not load or find the asset bundle and it will cause no more crashes.
 - Fixed the bug that too much things disappears on team wipe, now only the remnant items will be removed along with the normal items that would be removed.
+- Updated the icon, so the feature bodies can be seen.
