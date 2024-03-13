@@ -24,12 +24,15 @@ namespace Remnants.Data
         private static ConfigEntry<string> _bannedNamesFromRegistering;
         public static ConfigEntry<float> MaxRemnantItemCost;
         public static ConfigEntry<int> SpawnRarityOfBody;
+        public static ConfigEntry<bool> ShouldSaveRemnantItems;
+        public static ConfigEntry<bool> ShouldDespawnRemnantItems;
         private static ConfigFile _configFile;
         private static string _configFileName = "\\Remnants.cfg";
         private static string _generalSection = "General";
         private static string _otherSection = "Other";
         private static string _remnantsSection = "Remnants";
         private static string _levelsSection = "Levels";
+        private static string _saveLoadSection = "Save/load";
         private static List<ConfigRemnantData> _configRemnantDataList = new List<ConfigRemnantData>();
         public static Dictionary<Levels.LevelTypes, Tuple<int, int>> LevelRarities = new Dictionary<Levels.LevelTypes, Tuple<int, int>>();
 
@@ -95,6 +98,9 @@ namespace Remnants.Data
                 LevelRarities.Add((Levels.LevelTypes)Enum.Parse(typeof(Levels.LevelTypes), moonName),
                     new Tuple<int, int>(MinRemnantLevelRarities.Last().Value, MaxRemnantLevelRarities.Last().Value));
             }
+
+            ShouldSaveRemnantItems = _configFile.Bind(_saveLoadSection, "Save remnant items", true, "This ensures that the remnant items are saved in the ship when you reload the lobby.");
+            ShouldDespawnRemnantItems = _configFile.Bind(_saveLoadSection, "Despawn remnant items on party wipe", true, "On party wipe all items are despawned from the ship, this ensures that remnant items also are despawned. \nIf you use a mod that prevents items from being despawned, here you can edit it too for remnant items.");
 
             ConfigScrapDataList = _configRemnantDataList.ConvertAll(itemData =>
                      _configFile.Bind(_remnantsSection, itemData.Name, true, itemData.Discription));

@@ -41,3 +41,9 @@
 
 #1.2.1
 - Fixed directory bug where it could not find the remnants asset bundle via the Thunderstore app.
+
+#1.2.2
+- Added a config feature to disable/enable this mod version of saving and despawning, so it can be more compatible with other mods.
+- On the remnants github page, you can find the plugins folder to install the game manually. In that folder the dll file and the asset bundle can be found.
+- Fixed the bug that crashes the game when unable to load the asset bundle remnants. Now it will signal that it could not load or find the asset bundle and it will cause no more crashes.
+- Fixed the bug that too much things disappears on team wipe, now only the remnant items will be removed along with the normal items that would be removed.

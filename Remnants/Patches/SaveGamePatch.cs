@@ -17,11 +17,16 @@ namespace Remnants.Patches
         //In time I will learn CodeInstruction so I can replace this in a more clean way.
         private static bool PatchSaveItems(GameNetworkManager __instance)
         {
+
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Patching save game");
+            if (Data.Config.ShouldSaveRemnantItems.Value == false)
+            {
+                mls.LogInfo("Skipping this mod version of saving and using default version.");
+                return true;
+            }
             var hangarShip = GameObject.Find("HangarShip");
-            GrabbableObject[] array = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject) && grabObj.isInShipRoom).ToArray(); 
-           
+            GrabbableObject[] array = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject) && grabObj.isInShipRoom).ToArray();
 
             if (array == null || array.Length == 0)
             {
