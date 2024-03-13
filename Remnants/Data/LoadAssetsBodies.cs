@@ -82,13 +82,6 @@ namespace Remnants.Data
             NetworkPrefabs.RegisterNetworkPrefab(defaultBodyPrefab);
             HasLoadedAnyAssets = true;
         }
-
-        private string FindAssetBundleFile()
-        {
-
-       
-            return string.Empty;
-        }
         #endregion
     }
 }
