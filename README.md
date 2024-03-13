@@ -30,3 +30,5 @@ My first focus will be adding a rarity scaling with spawning bodies in regard of
 This mod is also available on the [thunderstore website](https://thunderstore.io/c/lethal-company/p/KawaiiBone/Remnants/).
 
 If you want to download this mod manually, you should know that it is dependent on [BepInEx](https://github.com/BepInEx) and [Lethal Lib](https://github.com/EvaisaDev/LethalLib).
+When the dependencies are added, you can just copy the files in the plugins folder and add them in the BepInEx plugins folder.
+
