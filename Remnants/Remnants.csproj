@@ -103,6 +103,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\RegisterBodiesSpawnRarities.cs" />
     <Compile Include="Behaviours\RegisterItemsBehaviour.cs" />
     <Compile Include="Behaviours\RemnantDataListBehaviour.cs" />
     <Compile Include="Data\Config.cs" />

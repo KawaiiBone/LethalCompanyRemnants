@@ -5,7 +5,6 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Unity.Netcode;
-using System.IO.Ports;
 
 namespace Remnants.Behaviours
 {

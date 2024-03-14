@@ -3,11 +3,6 @@ using BepInEx.Logging;
 using HarmonyLib;
 using Remnants.Patches;
 using Remnants.Behaviours;
-using UnityEngine;
-using LethalLib.Modules;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine.SceneManagement;
 using Remnants.Data;
 
 
@@ -23,13 +18,14 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.2.2";
+        private const string modVersion = "1.2.3";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);
         internal ManualLogSource Mls;
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
+        private RegisterBodiesSpawnRarities _registerBodiesSpawnRarities = new RegisterBodiesSpawnRarities();
         private LoadAssetsBodies _loadAssetsBodies = new LoadAssetsBodies();
         #endregion
 
@@ -52,6 +48,7 @@ namespace Remnants
             _harmony.PatchAll(typeof(Remnants));
             Data.Config.LoadConfig();
             _registerItemsBehaviour.Initialize();
+            _registerBodiesSpawnRarities.Initialize();
             _loadAssetsBodies.Initialize();
             Mls.LogInfo("modGUID has loaded");
         }

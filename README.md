@@ -17,14 +17,13 @@ If you find any bugs, issues, or have any feedback on how to improve the mod, yo
 
 ## Config
 The config has been added. As such, the appdata save file has become obsolete.
-The config can be found and edited in your BepInEx config folder or in your mod managed. However, you will first need to start up your game so it can make said config file. Currently, it can change the general rarity, battery levels and spawns of remnant items. It also allows you to edit a list of banned items that you don't wish to be registered as scrap. Now also more features for the moons rarity and spawning bodies, for more updates you can check the changelog.
+The config can be found and edited in your BepInEx config folder or in your mod managed. However, you will first need to start up your game so it can make said config file. Currently, it can change the general rarity, battery levels and spawns of remnant items and bodies. It also allows you to edit a list of banned items that you don't wish to be registered as scrap. Now also more features for the moons rarity and spawning bodies, for more updates you can check the changelog.
 Do note that only the remnant item spawns and the battery change can be changed at runtime. The others are updated when you restart the game.
 
 
 ## Future Work: 
 The config and the bodies is completed for now, any feedback or add-ons are always welcome.
 For now I will focus on adding small features on the config for giving you more control over the moon rarities and spawning of bodies.
-My first focus will be adding a rarity scaling with spawning bodies in regard of the tier of the moon, the higher tier moon the higher a body will be spawned.
 
  
 ## Installing

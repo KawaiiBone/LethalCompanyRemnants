@@ -1,15 +1,7 @@
-﻿using BepInEx;
-using BepInEx.Configuration;
-using LethalLib.Modules;
-using System;
+﻿using LethalLib.Modules;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Remnants.Data
@@ -24,13 +16,14 @@ namespace Remnants.Data
         private string _thunderStoreFolderName = "KawaiiBone-Remnants";
         private AssetBundle _assetBundleBodies = null;
         public static string[] BodiesFileNamesArray = { "DefaultBody", "HeadBurstBody", "CoilHeadBody", "WebbedBody" };
+        public static KeyValuePair<string, string>[] EnemiesAndBodiesNames = new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Any", "DefaultBody"), new KeyValuePair<string, string>("Spring", "CoilHeadBody"), new KeyValuePair<string, string>("Bunker Spider", "WebbedBody"), new KeyValuePair<string, string>("Girl", "HeadBurstBody") };
         public static bool HasLoadedAnyAssets = false;
         #endregion
 
         #region Initialize 
         public void Initialize()
         {
-            if(!_hasInitialized)
+            if (!_hasInitialized)
             {
                 _hasInitialized = true;
                 LoadAssetBundle();
@@ -46,12 +39,12 @@ namespace Remnants.Data
             string filePath = Path.Combine(assemblyFolder, _assetBundleName);
             if (!File.Exists(filePath))
             {
-               mls.LogError("Assetbundle " + _assetBundleName + " not found.");
-               return;
+                mls.LogError("Assetbundle " + _assetBundleName + " not found.");
+                return;
             }
 
             _assetBundleBodies = AssetBundle.LoadFromFile(filePath);
-            if(_assetBundleBodies == null)
+            if (_assetBundleBodies == null)
             {
                 mls.LogError("Failed to load: " + _assetBundleName);
                 return;

@@ -24,6 +24,7 @@ namespace Remnants.Data
         private static ConfigEntry<string> _bannedNamesFromRegistering;
         public static ConfigEntry<float> MaxRemnantItemCost;
         public static ConfigEntry<int> SpawnRarityOfBody;
+        public static ConfigEntry<float> SpawnModifierRiskLevel;
         public static ConfigEntry<bool> ShouldSaveRemnantItems;
         public static ConfigEntry<bool> ShouldDespawnRemnantItems;
         private static ConfigFile _configFile;
@@ -79,7 +80,10 @@ namespace Remnants.Data
             MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, minItemCost, maxItemCost);
 
             SpawnRarityOfBody = _configFile.Bind(_otherSection, "Body spawn rarity", 5, "This number is the chance that a body spawns next to an remnant item.");
-            SpawnRarityOfBody.Value = Mathf.Clamp(SpawnRarityOfBody.Value, minPercentage, maxPercentage);
+            SpawnRarityOfBody.Value = Mathf.Clamp(SpawnRarityOfBody.Value, 0, maxPercentage);
+
+            SpawnModifierRiskLevel = _configFile.Bind(_otherSection, "Body spawn modifier per moon risk level", 1.2f, "By increasing this modifier you will increase the spawnchance of the body per risk level moon.");
+            SpawnModifierRiskLevel.Value = Mathf.Clamp(SpawnModifierRiskLevel.Value, 0.0f, 10.0f);
 
             MinRemnantLevelRarities = new List<ConfigEntry<int>>();
             MaxRemnantLevelRarities = new List<ConfigEntry<int>>();
