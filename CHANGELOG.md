@@ -50,7 +50,7 @@
 - Updated the icon, so the feature bodies can be seen.
 
 #1.2.3
--Added a feature that spawns varying types of bodies, based on which enemies usually spawn on that specific moon. As such, if there is a high chance for a spider to spawn, there will also be a high chance for a cocooned body to spawn. Curious what lurks in the dark this time? Your predecessors will answer that question for you.
--Added a feature that increases the body spawn rate relative to the difficulty of the moon. For example, Titan, a high risk moon, will have a higher chance for bodies to spawn compared to Vow. If you want to modify this value, you can do so in the config.
--Updated the manifest json description as follows: "Adds store items as scrap, to be found on moons as scrap in Lethal Company. You can now also find the bodies of previous crews accompanying their former gear."
--Fixed directory issues with finding the asset bundle named remnants.
+- Added a feature that spawns varying types of bodies, based on which enemies usually spawn on that specific moon. As such, if there is a high chance for a spider to spawn, there will also be a high chance for a cocooned body to spawn. Curious what lurks in the dark this time? Your predecessors will answer that question for you.
+- Added a feature that increases the body spawn rate relative to the difficulty of the moon. For example, Titan, a high risk moon, will have a higher chance for bodies to spawn compared to Vow. If you want to modify this value, you can do so in the config.
+- Updated the manifest json description as follows: "Adds store items as scrap, to be found on moons as scrap in Lethal Company. You can now also find the bodies of previous crews accompanying their former gear."
+- Fixed directory issues with finding the asset bundle named remnants.
