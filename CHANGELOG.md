@@ -56,5 +56,5 @@
 - Fixed directory issues with finding the asset bundle named remnants.
 
 #1.2.4
-- Fixed a bug that would cause a crash when a costum moon was added.
+- Fixed a bug that would cause a crash when a custom moon was added.
 - Fixed a bug that when using a lot of mods at once, something could break during registering items.
