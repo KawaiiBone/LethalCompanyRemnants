@@ -56,7 +56,7 @@ namespace Remnants.Behaviours
             }
 
             List<Item> allItems = Resources.FindObjectsOfTypeAll<Item>().Concat(UnityEngine.Object.FindObjectsByType<Item>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)).ToList();
-            if (allItems.Count == 0)
+            if (allItems.Count == 0 || allItems == null)
             {
                 mls.LogInfo("Did not load items because there are no items to load.");
                 return;
@@ -73,7 +73,6 @@ namespace Remnants.Behaviours
             var mls = Remnants.Instance.Mls;
             try
             {
-                System.Random random = new System.Random();
                 foreach (Item item in allItems)
                 {
                     if (item == null)

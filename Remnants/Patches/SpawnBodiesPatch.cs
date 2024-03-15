@@ -29,7 +29,11 @@ namespace Remnants.Patches
             if (!LoadAssetsBodies.HasLoadedAnyAssets || Data.Config.SpawnRarityOfBody.Value == 0)
                 return;
 
-            var bodiesArray = RegisterBodiesSpawnRarities.PlanetsBodiesRarities[StartOfRound.Instance.currentLevel.PlanetName];
+            Dictionary<string, int> bodiesArray = null;
+            if (!RegisterBodiesSpawnRarities.PlanetsBodiesRarities.ContainsKey(StartOfRound.Instance.currentLevel.PlanetName))        
+                RegisterBodiesSpawnRarities.RegisterBodiesToNewMoon(StartOfRound.Instance.currentLevel);
+
+            bodiesArray = RegisterBodiesSpawnRarities.PlanetsBodiesRarities[StartOfRound.Instance.currentLevel.PlanetName];
             IReadOnlyList<NetworkPrefab> prefabs = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
             var bodyPrefabs = prefabs.Where(netObj => bodiesArray.ContainsKey(netObj.Prefab.name)).ToList();
             List<KeyValuePair<GameObject, int>> prefabAndRarityList = bodyPrefabs.ConvertAll(netPrefab =>

@@ -54,3 +54,7 @@
 - Added a feature that increases the body spawn rate relative to the difficulty of the moon. For example, Titan, a high risk moon, will have a higher chance for bodies to spawn compared to Vow. If you want to modify this value, you can do so in the config.
 - Updated the manifest json description as follows: "Adds store items as scrap, to be found on moons as scrap in Lethal Company. You can now also find the bodies of previous crews accompanying their former gear."
 - Fixed directory issues with finding the asset bundle named remnants.
+
+#1.2.4
+- Fixed a bug that would cause a crash when a costum moon was added.
+- Fixed a bug that when using a lot of mods at once, something could break during registering items.
