@@ -27,7 +27,7 @@ Here's what you can edit and change via the config.
 Remnant items:
 - The minimum and maximum spawn chance (rarity) on all moons.
 - The individual minimum and maximum spawn chance (rarity) for vanilla and modded moons.
-You can choose if you want a general rarity for all moons or a unique value for each moon.
+- You can choose if you want a general rarity for all moons or a unique value for each moon.
 - The battery charge of remnant items with a minimum and maximum charge.
 - A list of banned items, preventing these items from being registered as scrap and becoming remnant items.
 - Banning remnant items from spawning on certain moons.
