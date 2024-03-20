@@ -25,7 +25,7 @@ namespace Remnants
         internal ManualLogSource Mls;
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
-        private RegisterBodiesSpawnRarities _registerBodiesSpawnRarities = new RegisterBodiesSpawnRarities();
+        private RegisterBodiesSpawnBehaviour _registerBodiesSpawnRarities = new RegisterBodiesSpawnBehaviour();
         private RegisterCostumMoonsData _registerCostumMoonsData = new RegisterCostumMoonsData();
         private LoadAssetsBodies _loadAssetsBodies = new LoadAssetsBodies();
         #endregion

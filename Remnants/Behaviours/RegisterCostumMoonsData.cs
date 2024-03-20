@@ -59,9 +59,9 @@ namespace Remnants.Behaviours
             mls.LogInfo("Registering costum moons data.");
             foreach (var selectableLevel in selectableLevels)
             {
-                if (!RegisterBodiesSpawnRarities.PlanetsBodiesRarities.ContainsKey(selectableLevel.PlanetName))
+                if (!RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.ContainsKey(selectableLevel.PlanetName))
                 {
-                    RegisterBodiesSpawnRarities.RegisterBodiesToNewMoon(selectableLevel);
+                    RegisterBodiesSpawnBehaviour.RegisterBodiesToNewMoon(selectableLevel);
                     _costumMoonsNames.Add(selectableLevel.PlanetName);
                 }
             }
@@ -75,13 +75,6 @@ namespace Remnants.Behaviours
             {
                 Data.Config.SetCostumLevelRarities(costumMoonName);
             }
-      
-            //List<RemnantData> remnantDataList = Data.Config.GetRemnantItemList();
-            //if (remnantDataList.Count != 0)
-            //    UpdateDataList(remnantDataList);
-            //WriteScrapDataList();
-
-
         }
         #endregion
     }
