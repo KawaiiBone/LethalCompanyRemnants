@@ -27,8 +27,6 @@ namespace Remnants.Patches
                 return;
             }
 
-   
-
             var hangarShip = GameObject.Find("HangarShip");
             GrabbableObject[] remnantItemsArray = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(
                 grabObj => (!(grabObj is RagdollGrabbableObject) && grabObj.isInShipRoom) && 

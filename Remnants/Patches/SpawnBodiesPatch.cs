@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Remnants.Patches
 {
@@ -30,7 +31,7 @@ namespace Remnants.Patches
                 return;
 
             Dictionary<string, int> bodiesArray = null;
-            if (!RegisterBodiesSpawnRarities.PlanetsBodiesRarities.ContainsKey(StartOfRound.Instance.currentLevel.PlanetName))        
+            if (!RegisterBodiesSpawnRarities.PlanetsBodiesRarities.ContainsKey(StartOfRound.Instance.currentLevel.PlanetName))
                 RegisterBodiesSpawnRarities.RegisterBodiesToNewMoon(StartOfRound.Instance.currentLevel);
 
             bodiesArray = RegisterBodiesSpawnRarities.PlanetsBodiesRarities[StartOfRound.Instance.currentLevel.PlanetName];
@@ -65,18 +66,68 @@ namespace Remnants.Patches
                 if (scrapItemDataList.FindIndex(itemData => itemData.RemnantItemName == grabbableObject.itemProperties.name) == -1)
                     continue;
 
+                Vector3 spawnPosition = CalculateNavSpawnPosition(grabbableObject.transform.position);
+                if (spawnPosition == Vector3.zero)
+                {
+                    mls.LogWarning("Did not found place to spawn body, skipping it.");
+                    continue;
+                }
+
                 int bodyIndex = GetRandomBodyIndex(prefabAndRarityList, totalRarityValue, random);
-                SpawnBody(prefabAndRarityList[bodyIndex].Key, grabbableObject.transform.position);
+                SpawnBody(prefabAndRarityList[bodyIndex].Key, spawnPosition);
                 willSpawnBody = false;
             }
         }
-
-
+        #endregion
+        #region Methods
         private static void SpawnBody(GameObject prefab, Vector3 spawnPosition)
         {
             spawnPosition.y = spawnPosition.y + 1.0f;
             GameObject defaultBody = UnityEngine.Object.Instantiate(prefab, spawnPosition, UnityEngine.Random.rotation, RoundManager.Instance.mapPropsContainer.transform);
             defaultBody.GetComponent<NetworkObject>().Spawn(true);
+        }
+
+        private static Vector3 CalculateNavSpawnPosition(Vector3 grabObjPos)
+        {
+            var mls = Remnants.Instance.Mls;
+            float minDistance = 0.1f;
+            float mediumDistance = 5.0f;
+            float maxDistance = 6.0f;
+            float moveDistance = 1.0f;
+            int areaMask = -1;
+            if (NavMesh.SamplePosition(grabObjPos, out NavMeshHit navOldHit, minDistance, areaMask))
+            {
+                if (Vector3.Distance(navOldHit.position, grabObjPos) < minDistance)
+                {
+                    mls.LogInfo("Already is on navmesh, spawning body on remnant item.");
+                    return grabObjPos;
+                }
+            }
+
+            if (NavMesh.SamplePosition(grabObjPos, out NavMeshHit navHit, maxDistance, areaMask))
+            {
+                Vector3 navHitYFlat = navHit.position;
+                navHitYFlat.y = grabObjPos.y;
+                Vector3 heading = navHitYFlat - grabObjPos;
+                float distance = heading.magnitude;
+                Vector3 direction = heading / distance;
+                Vector3 position = navHit.position + (direction * moveDistance);
+                if (NavMesh.SamplePosition(position, out NavMeshHit navNewHit, mediumDistance, areaMask))
+                {
+                    mls.LogInfo("Calculated and found position on navmesh, spawning body.");
+                    return navNewHit.position;
+                }
+                else
+                {
+                    mls.LogInfo("Not found calculated position on navmesh using previous position, spawning body.");
+                    return navHit.position;
+                }
+            }
+            else
+            {
+                mls.LogWarning("No location found on navmesh, not spawning body.");
+                return Vector3.zero;
+            }
         }
 
         private static float CalculateSpawnChance()
@@ -99,7 +150,7 @@ namespace Remnants.Patches
             {
                 totalValue += prefabAndRarityList[i].Value;
                 if (totalValue > randomNumber)
-                    return i;    
+                    return i;
             }
             return 0;
         }

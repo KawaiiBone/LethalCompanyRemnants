@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Unity.Netcode;
+using System.Linq.Expressions;
 
 namespace Remnants.Behaviours
 {
@@ -80,7 +81,7 @@ namespace Remnants.Behaviours
 
                     if (HasBannedName(item.name))
                         continue;
-                    
+
                     if (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == item.itemName) != -1 || item.isScrap)
                         continue;
 
@@ -119,6 +120,11 @@ namespace Remnants.Behaviours
             item.minValue = _minSellValue;
             item.maxValue = _maxSellValue;
             item.itemSpawnsOnGround = true;
+            GrabbableObject grabbable = item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
+            if (grabbable != null)
+                grabbable.isInFactory = true;
+            var configCostumLevelRarities = Data.Config.GetCostumLevelRarities();
+
             if (Data.Config.UseSpecificLevelRarities.Value == false)
             {
                 int rarity = CalculateRarity(item.creditsWorth, Data.Config.MinRemnantRarity.Value, Data.Config.MaxRemnantRarity.Value);
@@ -131,7 +137,13 @@ namespace Remnants.Behaviours
                 {
                     levelRarities.Add(levelRarity.Key, CalculateRarity(item.creditsWorth, levelRarity.Value.Item1, levelRarity.Value.Item2));
                 }
-                Items.RegisterScrap(item, levelRarities);
+
+                Dictionary<string, int> costumLevelRarities = new Dictionary<string, int>(); ;
+                foreach (var costumLevelRarity in configCostumLevelRarities)
+                {              
+                    costumLevelRarities.Add(costumLevelRarity.Key, CalculateRarity(item.creditsWorth, costumLevelRarity.Value.Item1, costumLevelRarity.Value.Item2));
+                }
+                Items.RegisterScrap(item, levelRarities, costumLevelRarities);
             }
             mls.LogInfo("Added " + item.name + " as a scrap item.");
             _scrapDataListBehaviour.AddItemToDataList(item.name);

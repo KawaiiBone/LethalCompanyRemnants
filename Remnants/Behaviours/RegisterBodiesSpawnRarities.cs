@@ -50,24 +50,26 @@ namespace Remnants.Behaviours
                 if (PlanetsBodiesRarities.ContainsKey(level.PlanetName))
                     continue;
 
-                PlanetsBodiesRarities.Add(level.PlanetName, new Dictionary<string, int>());
-                foreach (var enemyWithRarity in level.Enemies)
-                {
-                    if (enemyWithRarity.enemyType.isOutsideEnemy)
-                        continue;
+                RegisterBodiesToNewMoon(level);
 
-                    int index = Mathf.Clamp(Array.FindIndex(enemiesAndBodiesNames, enemyBodyName => enemyBodyName.Key == enemyWithRarity.enemyType.enemyName), 0, Data.LoadAssetsBodies.EnemiesAndBodiesNames.Length - 1);
-                    if (PlanetsBodiesRarities[level.PlanetName].TryGetValue(enemiesAndBodiesNames[index].Value, out int value))
-                    {
-                        if (value < enemyWithRarity.rarity)
-                            PlanetsBodiesRarities[level.PlanetName][enemiesAndBodiesNames[index].Value] = enemyWithRarity.rarity;
-                    }
-                    else
-                    {
-                        PlanetsBodiesRarities[level.PlanetName][enemiesAndBodiesNames[index].Value] = enemyWithRarity.rarity;
-                    }
-                }
-                mls.LogInfo("Registered bodies to moon: " + level.PlanetName);
+            //    PlanetsBodiesRarities.Add(level.PlanetName, new Dictionary<string, int>());
+            //    foreach (var enemyWithRarity in level.Enemies)
+            //    {
+            //        if (enemyWithRarity.enemyType.isOutsideEnemy)
+            //            continue;
+
+            //        int index = Mathf.Clamp(Array.FindIndex(enemiesAndBodiesNames, enemyBodyName => enemyBodyName.Key == enemyWithRarity.enemyType.enemyName), 0, Data.LoadAssetsBodies.EnemiesAndBodiesNames.Length - 1);
+            //        if (PlanetsBodiesRarities[level.PlanetName].TryGetValue(enemiesAndBodiesNames[index].Value, out int value))
+            //        {
+            //            if (value < enemyWithRarity.rarity)
+            //                PlanetsBodiesRarities[level.PlanetName][enemiesAndBodiesNames[index].Value] = enemyWithRarity.rarity;
+            //        }
+            //        else
+            //        {
+            //            PlanetsBodiesRarities[level.PlanetName][enemiesAndBodiesNames[index].Value] = enemyWithRarity.rarity;
+            //        }
+            //    }
+            //    mls.LogInfo("Registered bodies to moon: " + level.PlanetName);
             }
             SceneManager.sceneLoaded -= RegisterBodiesToMoons;
             _isRegistering = false;
@@ -75,8 +77,8 @@ namespace Remnants.Behaviours
 
         public static void RegisterBodiesToNewMoon(SelectableLevel newLevel)
         {
-            if (PlanetsBodiesRarities.ContainsKey(newLevel.PlanetName))
-                return;
+            //if (PlanetsBodiesRarities.ContainsKey(newLevel.PlanetName))
+            //    return;
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("New moon found attempting to register bodies to moon: " + newLevel.PlanetName);
             PlanetsBodiesRarities.Add(newLevel.PlanetName, new Dictionary<string, int>());

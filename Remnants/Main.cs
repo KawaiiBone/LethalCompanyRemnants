@@ -26,6 +26,7 @@ namespace Remnants
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
         private RegisterBodiesSpawnRarities _registerBodiesSpawnRarities = new RegisterBodiesSpawnRarities();
+        private RegisterCostumMoonsData _registerCostumMoonsData = new RegisterCostumMoonsData();
         private LoadAssetsBodies _loadAssetsBodies = new LoadAssetsBodies();
         #endregion
 
@@ -49,6 +50,7 @@ namespace Remnants
             Data.Config.LoadConfig();
             _registerItemsBehaviour.Initialize();
             _registerBodiesSpawnRarities.Initialize();
+            _registerCostumMoonsData.Initialize();
             _loadAssetsBodies.Initialize();
             Mls.LogInfo("modGUID has loaded");
         }

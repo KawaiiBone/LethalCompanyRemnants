@@ -21,6 +21,8 @@ namespace Remnants.Data
         public static ConfigEntry<bool> UseSpecificLevelRarities;
         public static List<ConfigEntry<int>> MinRemnantLevelRarities = new List<ConfigEntry<int>>();
         public static List<ConfigEntry<int>> MaxRemnantLevelRarities = new List<ConfigEntry<int>>();
+        public static List<ConfigEntry<int>> MinRemnantCostumLevelRarities = new List<ConfigEntry<int>>();
+        public static List<ConfigEntry<int>> MaxRemnantCostumLevelRarities = new List<ConfigEntry<int>>();
         private static ConfigEntry<string> _bannedNamesFromRegistering;
         public static ConfigEntry<float> MaxRemnantItemCost;
         public static ConfigEntry<int> SpawnRarityOfBody;
@@ -33,15 +35,26 @@ namespace Remnants.Data
         private static string _otherSection = "Other";
         private static string _remnantsSection = "Remnants";
         private static string _levelsSection = "Levels";
+        private static string _costumLevelsSection = "ModdedLevels";
         private static string _saveLoadSection = "Save/load";
-        private static List<ConfigRemnantData> _configRemnantDataList = new List<ConfigRemnantData>();
+        private static List<ConfigDataValue<bool>> _configRemnantDataPairList = new List<ConfigDataValue<bool>>();
+        private static List<ConfigDataValue<int>> _configCostumLevelsRarities = new List<ConfigDataValue<int>>();
         public static Dictionary<Levels.LevelTypes, Tuple<int, int>> LevelRarities = new Dictionary<Levels.LevelTypes, Tuple<int, int>>();
+        public static Dictionary<string, Tuple<int, int>> CostumLevelRarities = new Dictionary<string, Tuple<int, int>>();
 
-        struct ConfigRemnantData
+
+        struct ConfigData
         {
             public string Name;
             public string Discription;
-            public bool shouldSpawn;
+            public string StringValue;
+        }
+
+        struct ConfigDataValue<T> where T : struct
+        {
+            public string Name;
+            public string Discription;
+            public T Value;
         }
 
         #endregion
@@ -54,7 +67,9 @@ namespace Remnants.Data
 
         public static void LoadConfig()
         {
-            ReadRemnantItems();
+            LoadConfigData();
+
+
             _configFile = new ConfigFile(Paths.ConfigPath + _configFileName, true);
             const int maxPercentage = 100;
             const int minPercentage = 1;
@@ -106,11 +121,54 @@ namespace Remnants.Data
             ShouldSaveRemnantItems = _configFile.Bind(_saveLoadSection, "Save remnant items", true, "This ensures that the remnant items are saved in the ship when you reload the lobby.");
             ShouldDespawnRemnantItems = _configFile.Bind(_saveLoadSection, "Despawn remnant items on party wipe", true, "On party wipe all items are despawned from the ship, this ensures that remnant items also are despawned. \nIf you use a mod that prevents items from being despawned, here you can edit it too for remnant items.");
 
-            ConfigScrapDataList = _configRemnantDataList.ConvertAll(itemData =>
+            ConfigScrapDataList = _configRemnantDataPairList.ConvertAll(itemData =>
                      _configFile.Bind(_remnantsSection, itemData.Name, true, itemData.Discription));
+
+
+            MinRemnantCostumLevelRarities = new List<ConfigEntry<int>>();
+            MaxRemnantCostumLevelRarities = new List<ConfigEntry<int>>();
+
+
+            for (int i = 0; i < _configCostumLevelsRarities.Count; i += 2)
+            {
+                MinRemnantCostumLevelRarities.Add(_configFile.Bind(_costumLevelsSection, _configCostumLevelsRarities[i].Name, 5, _configCostumLevelsRarities[i].Discription));
+                MinRemnantCostumLevelRarities.Last().Value = Mathf.Clamp(MinRemnantCostumLevelRarities.Last().Value, minPercentage, maxPercentage);
+                MaxRemnantCostumLevelRarities.Add(_configFile.Bind(_costumLevelsSection, _configCostumLevelsRarities[i + 1].Name, 25, _configCostumLevelsRarities[i + 1].Discription));
+                MaxRemnantCostumLevelRarities.Last().Value = Mathf.Clamp(MaxRemnantCostumLevelRarities.Last().Value, MinRemnantCostumLevelRarities.Last().Value, maxPercentage);
+                CostumLevelRarities.Add(_configCostumLevelsRarities[i].Name,
+                    new Tuple<int, int>(MinRemnantCostumLevelRarities.Last().Value, MaxRemnantCostumLevelRarities.Last().Value));
+            }
 
             _configFile.Save();
         }
+
+        private static void LoadConfigData()
+        {
+            var configRemnantSection = GetConfigSectionData(_remnantsSection);
+            if (configRemnantSection != null || configRemnantSection.Count > 0)
+            {
+                _configRemnantDataPairList = configRemnantSection.ConvertAll(configData =>
+                 new ConfigDataValue<bool>
+                 {
+                     Name = configData.Name,
+                     Discription = configData.Discription,
+                     Value = Convert.ToBoolean(configData.StringValue)
+                 });
+            }
+
+            var configCostumMoonSection = GetConfigSectionData(_costumLevelsSection);
+            if (configCostumMoonSection != null || configCostumMoonSection.Count > 0)
+            {
+                _configCostumLevelsRarities = configCostumMoonSection.ConvertAll(configDataInt =>
+                    new ConfigDataValue<int>
+                    {
+                        Name = configDataInt.Name,
+                        Discription = configDataInt.Discription,
+                        Value = Convert.ToInt32(configDataInt.StringValue)
+                    });
+            }
+        }
+
 
         public static List<string> GetBannedItemNames()
         {
@@ -141,43 +199,82 @@ namespace Remnants.Data
             _configFile.Save();
         }
 
-        private static void ReadRemnantItems()
+        public static void SetCostumLevelRarities(string costumMoonName, int minPercentage = 1, int maxPercentage = 100)
         {
-            if (!File.Exists(Paths.ConfigPath + _configFileName))
+            if (CostumLevelRarities.ContainsKey(costumMoonName))
                 return;
-                
+
+            MinRemnantCostumLevelRarities.Add(_configFile.Bind(_costumLevelsSection, costumMoonName + " min remnant rarity", 5, "Minimum chance of a remnant item spawning on moon: " + costumMoonName + " ."));
+            MinRemnantCostumLevelRarities.Last().Value = Mathf.Clamp(MinRemnantCostumLevelRarities.Last().Value, minPercentage, maxPercentage);
+            MaxRemnantCostumLevelRarities.Add(_configFile.Bind(_costumLevelsSection, costumMoonName + " max remnant rarity", 25, "Maximum chance of a remnant item spawning on moon: " + costumMoonName + " ."));
+            MaxRemnantCostumLevelRarities.Last().Value = Mathf.Clamp(MaxRemnantCostumLevelRarities.Last().Value, MinRemnantCostumLevelRarities.Last().Value, maxPercentage);
+            CostumLevelRarities.Add(costumMoonName,
+                new Tuple<int, int>(MinRemnantCostumLevelRarities.Last().Value, MaxRemnantCostumLevelRarities.Last().Value));
+        }
+
+
+        public static Dictionary<string, Tuple<int, int>> GetCostumLevelRarities()
+        {
+            _configFile.Reload();
+
+            if (CostumLevelRarities == null || CostumLevelRarities.Count == 0)
+                return new Dictionary<string, Tuple<int, int>>();
+
+
+            for (int i = 0; i < MinRemnantCostumLevelRarities.Count; i++)
+            {
+                CostumLevelRarities[MinRemnantCostumLevelRarities[i].Definition.Key] = new Tuple<int, int>(MinRemnantCostumLevelRarities[i].Value, MaxRemnantCostumLevelRarities[i].Value);
+            }
+
+            return CostumLevelRarities;
+        }
+
+
+        private static List<ConfigData> GetConfigSectionData(string section)
+        {
+            List<ConfigData> list = new List<ConfigData>();
+            if (!File.Exists(Paths.ConfigPath + _configFileName))
+                return list;
+
             var mls = Remnants.Instance.Mls;
             StreamReader sr = new StreamReader(Paths.ConfigPath + _configFileName);
             string line = sr.ReadLine();
             bool hasFoundSection = false;
+
             while (line != null)
             {
-                if (hasFoundSection)
+                if(hasFoundSection && line.StartsWith("["))
                 {
-                    AddRemnantItem(sr, line);
+                    break;
                 }
-                else if (line == "[" + _remnantsSection + "]")
+                else if (hasFoundSection)
+                {
+                    AddDataToList(sr, line, list);
+                }
+                else if (line == "[" + section + "]")
                 {
                     hasFoundSection = true;
                     line = sr.ReadLine();
-                    AddRemnantItem(sr, line);
+                    AddDataToList(sr, line, list);
                 }
                 line = sr.ReadLine();
             }
             sr.Close();
+            return list;
         }
 
-        private static void AddRemnantItem(StreamReader sr, string line)
+        private static void AddDataToList(StreamReader sr, string line, List<ConfigData> list)
         {
             string discriptionStart = "## ";
             string ignoreLine = "#";
             string itemValueDetect = " = ";
-            ConfigRemnantData data = new ConfigRemnantData();
+            ConfigData configData = new ConfigData();
+
 
             if (!line.StartsWith(discriptionStart))
                 return;
 
-            data.Discription = line.Remove(0, discriptionStart.Length);
+            configData.Discription = line.Remove(0, discriptionStart.Length);
             while (line != null)
             {
                 if (!line.StartsWith(ignoreLine))
@@ -185,11 +282,13 @@ namespace Remnants.Data
                 line = sr.ReadLine();
             }
 
+            var mls = Remnants.Instance.Mls;
             int startIndex = line.LastIndexOf(itemValueDetect);
-            data.Name = line.Remove(startIndex);
-            data.shouldSpawn = Convert.ToBoolean(line.Remove(0, startIndex + itemValueDetect.Length - 1));
-            _configRemnantDataList.Add(data);
+            configData.Name = line.Remove(startIndex);
+            configData.StringValue = line.Remove(0, startIndex + itemValueDetect.Length - 1);
+            list.Add(configData);
         }
+
 
         #endregion
     }
