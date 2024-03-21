@@ -123,7 +123,6 @@ namespace Remnants.Behaviours
             GrabbableObject grabbable = item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
             if (grabbable != null)
                 grabbable.isInFactory = true;
-            var configCostumLevelRarities = Data.Config.GetCostumLevelRarities();
 
             if (Data.Config.UseSpecificLevelRarities.Value == false)
             {
@@ -138,9 +137,11 @@ namespace Remnants.Behaviours
                     levelRarities.Add(levelRarity.Key, CalculateRarity(item.creditsWorth, levelRarity.Value.Item1, levelRarity.Value.Item2));
                 }
 
-                Dictionary<string, int> costumLevelRarities = new Dictionary<string, int>(); ;
-                foreach (var costumLevelRarity in configCostumLevelRarities)
-                {              
+                Dictionary<string, int> costumLevelRarities = new Dictionary<string, int>();
+                mls.LogInfo("CostumLevelRarities size: " + Data.Config.CostumLevelRarities.Count);
+                foreach (var costumLevelRarity in Data.Config.CostumLevelRarities)
+                {
+                    mls.LogInfo("costum moon name: " + costumLevelRarity.Key + " " + costumLevelRarity.Value.Item1 + " " + costumLevelRarity.Value.Item2);
                     costumLevelRarities.Add(costumLevelRarity.Key, CalculateRarity(item.creditsWorth, costumLevelRarity.Value.Item1, costumLevelRarity.Value.Item2));
                 }
                 Items.RegisterScrap(item, levelRarities, costumLevelRarities);

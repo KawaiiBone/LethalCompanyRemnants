@@ -135,7 +135,8 @@ namespace Remnants.Data
                 MinRemnantCostumLevelRarities.Last().Value = Mathf.Clamp(MinRemnantCostumLevelRarities.Last().Value, minPercentage, maxPercentage);
                 MaxRemnantCostumLevelRarities.Add(_configFile.Bind(_costumLevelsSection, _configCostumLevelsRarities[i + 1].Name, 25, _configCostumLevelsRarities[i + 1].Discription));
                 MaxRemnantCostumLevelRarities.Last().Value = Mathf.Clamp(MaxRemnantCostumLevelRarities.Last().Value, MinRemnantCostumLevelRarities.Last().Value, maxPercentage);
-                CostumLevelRarities.Add(_configCostumLevelsRarities[i].Name,
+
+                CostumLevelRarities.Add(RemoveEndSentence( _configCostumLevelsRarities[i].Name, " min remnant rarity")  ,
                     new Tuple<int, int>(MinRemnantCostumLevelRarities.Last().Value, MaxRemnantCostumLevelRarities.Last().Value));
             }
 
@@ -230,13 +231,28 @@ namespace Remnants.Data
         }
 
 
+        private static string RemoveEndSentence(string fullSentence, string toRemoveAtEnd)
+        {
+            if (fullSentence.EndsWith(toRemoveAtEnd))
+            {
+                for (int i = 0; i < fullSentence.Length; i++)
+                {
+                    if (fullSentence[i] != toRemoveAtEnd[0])
+                        continue;
+
+                    if (i + toRemoveAtEnd.Length == fullSentence.Length)
+                        return fullSentence.Substring(0,i);
+                }
+            }
+            return fullSentence;
+        }
+
         private static List<ConfigData> GetConfigSectionData(string section)
         {
             List<ConfigData> list = new List<ConfigData>();
             if (!File.Exists(Paths.ConfigPath + _configFileName))
                 return list;
 
-            var mls = Remnants.Instance.Mls;
             StreamReader sr = new StreamReader(Paths.ConfigPath + _configFileName);
             string line = sr.ReadLine();
             bool hasFoundSection = false;
