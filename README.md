@@ -32,6 +32,7 @@ Remnant items:
 - The battery charge of remnant items with a minimum and maximum charge.
 - A list of banned items, preventing these items from being registered as scrap and becoming remnant items.
 - Banning remnant items from spawning on certain moons.
+- Makes you able to edit the scrap cost of remnant items via the config.
 
 Body spawning:
 - The spawn chance of bodies.
