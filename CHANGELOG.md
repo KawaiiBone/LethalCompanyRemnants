@@ -61,6 +61,7 @@
 
 #1.2.5
 - Added a feature gives bodies better spawning locations.
-- Added a feature that reads costum/modded moons and makes them availbe to edit the remnant items rarity in the config.
+- Added a feature that reads custom/modded moons and makes them availbe to edit the remnant items rarity in the config.
+     Do note that this feature does not work for custom/modded moons that are dependent/use LethalLevelLoader.
 - Added a feature that makes you able to edit the scrap cost of remnant items via the config.
 - Update Readme for explaining features better.
