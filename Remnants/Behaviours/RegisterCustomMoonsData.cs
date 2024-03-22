@@ -1,4 +1,5 @@
 ﻿using LethalLib.Modules;
+using Remnants.Data;
 using Remnants.utilities;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,12 @@ using UnityEngine.SceneManagement;
 
 namespace Remnants.Behaviours
 {
-    internal class RegisterCostumMoonsData
+    internal class RegisterCustomMoonsData
     {
         #region Variables
         private bool _hasInitialized = false;
         private bool _isRegistering = false;
-        private List<string> _costumMoonsNames = new List<string>();
+        private List<string> _customMoonsNames = new List<string>();
         #endregion
 
         #region Initialize 
@@ -37,7 +38,7 @@ namespace Remnants.Behaviours
             {
                 mls.LogInfo("StartOfRound found, registering no more moons data.");
                 SceneManager.sceneLoaded -= RegisterMoonsData;
-                UpdateConfigCostumMoonList();
+                UpdateConfigCustomMoonList();
                 return;
             }
 
@@ -56,25 +57,22 @@ namespace Remnants.Behaviours
             }
 
             _isRegistering = true;
-            mls.LogInfo("Registering costum moons data.");
+            mls.LogInfo("Registering custom moons data.");
             foreach (var selectableLevel in selectableLevels)
             {
                 if (!RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.ContainsKey(selectableLevel.PlanetName))
                 {
                     RegisterBodiesSpawnBehaviour.RegisterBodiesToNewMoon(selectableLevel);
-                    _costumMoonsNames.Add(selectableLevel.PlanetName);
+                    _customMoonsNames.Add(selectableLevel.PlanetName);
                 }
             }
-            mls.LogInfo("Costum moons data registered.");
+            mls.LogInfo("Custom moons data registered.");
             _isRegistering = false;
         }
 
-        private void UpdateConfigCostumMoonList()
+        private void UpdateConfigCustomMoonList()
         {
-            foreach (var costumMoonName in _costumMoonsNames)
-            {
-                Data.Config.SetCostumLevelRarities(costumMoonName);
-            }
+            Data.Config.SetCustomLevelsRarities(_customMoonsNames);
         }
         #endregion
     }

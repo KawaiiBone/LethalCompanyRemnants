@@ -104,7 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviours\RegisterBodiesSpawnBehaviour.cs" />
-    <Compile Include="Behaviours\RegisterCostumMoonsData.cs" />
+    <Compile Include="Behaviours\RegisterCustomMoonsData.cs" />
     <Compile Include="Behaviours\RegisterItemsBehaviour.cs" />
     <Compile Include="Behaviours\RemnantDataListBehaviour.cs" />
     <Compile Include="Data\Config.cs" />

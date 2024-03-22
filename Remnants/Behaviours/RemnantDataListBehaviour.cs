@@ -37,8 +37,6 @@ namespace Remnants.Behaviours
         private void WriteScrapDataList()
         {
             Data.Config.SetRemnantItemList(_RemnantItemsListData);
-            //string json = JsonConvert.SerializeObject(_RemnantItemsListData);
-            //File.WriteAllText(_path, json);
         }
 
         private void UpdateDataList(List<RemnantData> remnantDataList)

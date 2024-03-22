@@ -17,7 +17,7 @@ namespace Remnants.Behaviours
         private List<string> _bannedItemsNamesList = new List<string>();
 
         private const int _minSellValue = 1, _maxSellValue = 2;
-        private const float _minCreditCost = 4f;
+        private const float _minCreditCost = 4f, _toFullCostMod = 2.5f;
         private RemnantDataListBehaviour _scrapDataListBehaviour = new RemnantDataListBehaviour();
         #endregion
 
@@ -117,8 +117,9 @@ namespace Remnants.Behaviours
         private void RegisterItemAsScrap(Item item)
         {
             var mls = Remnants.Instance.Mls;
-            item.minValue = _minSellValue;
-            item.maxValue = _maxSellValue;
+            float creditWorthPercentage = Data.Config.RemnantScrapCostPercentage.Value;
+            item.minValue = Mathf.Clamp( (int)(item.creditsWorth * _toFullCostMod * creditWorthPercentage), _minSellValue, int.MaxValue);
+            item.maxValue = Mathf.Clamp((int)(item.creditsWorth * _toFullCostMod * creditWorthPercentage), _maxSellValue, int.MaxValue);
             item.itemSpawnsOnGround = true;
             GrabbableObject grabbable = item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
             if (grabbable != null)
@@ -137,14 +138,12 @@ namespace Remnants.Behaviours
                     levelRarities.Add(levelRarity.Key, CalculateRarity(item.creditsWorth, levelRarity.Value.Item1, levelRarity.Value.Item2));
                 }
 
-                Dictionary<string, int> costumLevelRarities = new Dictionary<string, int>();
-                mls.LogInfo("CostumLevelRarities size: " + Data.Config.CostumLevelRarities.Count);
-                foreach (var costumLevelRarity in Data.Config.CostumLevelRarities)
+                Dictionary<string, int> customLevelRarities = new Dictionary<string, int>();
+                foreach (var customLevelRarity in Data.Config.CustomLevelRarities)
                 {
-                    mls.LogInfo("costum moon name: " + costumLevelRarity.Key + " " + costumLevelRarity.Value.Item1 + " " + costumLevelRarity.Value.Item2);
-                    costumLevelRarities.Add(costumLevelRarity.Key, CalculateRarity(item.creditsWorth, costumLevelRarity.Value.Item1, costumLevelRarity.Value.Item2));
+                    customLevelRarities.Add(customLevelRarity.Key, CalculateRarity(item.creditsWorth, customLevelRarity.Value.Item1, customLevelRarity.Value.Item2));
                 }
-                Items.RegisterScrap(item, levelRarities, costumLevelRarities);
+                Items.RegisterScrap(item, levelRarities, customLevelRarities);
             }
             mls.LogInfo("Added " + item.name + " as a scrap item.");
             _scrapDataListBehaviour.AddItemToDataList(item.name);

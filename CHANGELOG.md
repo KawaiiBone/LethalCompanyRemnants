@@ -58,3 +58,9 @@
 #1.2.4
 - Fixed a bug that would cause a crash when a custom moon was added.
 - Fixed a bug that when using a lot of mods at once, something could break during registering items.
+
+#1.2.5
+- Added a feature gives bodies better spawning locations.
+- Added a feature that reads costum/modded moons and makes them availbe to edit the remnant items rarity in the config.
+- Added a feature that makes you able to edit the scrap cost of remnant items via the config.
+- Update Readme for explaining features better.

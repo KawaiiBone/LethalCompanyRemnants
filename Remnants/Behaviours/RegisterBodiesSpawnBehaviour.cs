@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using LethalLib.Modules;
 
 namespace Remnants.Behaviours
 {
@@ -44,13 +45,17 @@ namespace Remnants.Behaviours
 
             mls.LogInfo("Registering bodies to moons");
             _isRegistering = true;
+            List<string> planetNames = new List<string>();
             foreach (var level in startOfRound.levels)
             {
                 if (PlanetsBodiesRarities.ContainsKey(level.PlanetName))
                     continue;
 
                 RegisterBodiesToNewMoon(level);
+                if(!Enum.TryParse(level.name, out Levels.LevelTypes a))
+                    planetNames.Add(level.PlanetName);
             }
+            Data.Config.SetCustomLevelsRarities(planetNames);
             SceneManager.sceneLoaded -= RegisterBodiesToMoons;
             _isRegistering = false;
         }
