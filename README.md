@@ -35,6 +35,8 @@ Remnant items:
 - Makes you able to edit the scrap cost of remnant items via the config.
 
 Body spawning:
+- To make them grabbbable with a scrap value or have them just as a prop and non interactable.
+- The scrap value of a body.
 - The spawn chance of bodies.
 - The body spawn modifier in relation to the moon risk level.
 

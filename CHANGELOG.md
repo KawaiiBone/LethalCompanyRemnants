@@ -61,7 +61,14 @@
 
 #1.2.5
 - Added a feature gives bodies better spawning locations.
-- Added a feature that reads custom/modded moons and makes them availbe to edit the remnant items rarity in the config.
-     Do note that this feature does not work for custom/modded moons that are dependent/use LethalLevelLoader.
+- Added a feature that reads costum/modded moons and makes them available to edit the remnant items rarity in the config.
 - Added a feature that makes you able to edit the scrap cost of remnant items via the config.
-- Update Readme for explaining features better.
+- Update Readme for explaining the features better.
+
+#1.2.6
+-Added a feature that makes bodies grabbable and makes it so that you can sell them as scrap. You have the option to make bodies a prop instead, and you change the scrap value in the config.
+  Do note that whenever you reload a lobby, the bodies created by this mod will move for a couple of seconds. This is a part of the process for preventing it from just T-posing.
+-Added the "body" section in the config, and the config has been rearranged. You're advised to delete the current config and let it be remade.
+-Fixed compatibility issues for registering store items as remnant items.
+-Fixed bug percentage scrap cost.
+-Fixed compatibility issue with custom moons which had illegal characters in its name. Now it skips the name and uses another moon's data in its place for spawning bodies.

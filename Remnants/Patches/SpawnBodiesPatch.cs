@@ -5,6 +5,7 @@ using Remnants.utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
@@ -16,7 +17,7 @@ namespace Remnants.Patches
         #region HarmonyMethods
         [HarmonyPatch(typeof(RoundManager), "waitForScrapToSpawnToSync")]
         [HarmonyPostfix]
-        static void SpawnBodiesOnRemnantItemsPatch(object[] __args)
+        static void SpawnBodiesOnRemnantItemsPatch(object[] __args, RoundManager __instance)
         {
             var mls = Remnants.Instance.Mls;
             NetworkObjectReference[] spawnedScrap = (NetworkObjectReference[])__args[0];
@@ -30,24 +31,15 @@ namespace Remnants.Patches
             if (!LoadAssetsBodies.HasLoadedAnyAssets || Data.Config.SpawnRarityOfBody.Value == 0)
                 return;
 
-            Dictionary<string, int> bodiesArray = null;
-            if (!RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.ContainsKey(StartOfRound.Instance.currentLevel.PlanetName))
-                RegisterBodiesSpawnBehaviour.RegisterBodiesToNewMoon(StartOfRound.Instance.currentLevel);
-
-            bodiesArray = RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities[StartOfRound.Instance.currentLevel.PlanetName];
-            IReadOnlyList<NetworkPrefab> prefabs = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
-            var bodyPrefabs = prefabs.Where(netObj => bodiesArray.ContainsKey(netObj.Prefab.name)).ToList();
-            List<KeyValuePair<GameObject, int>> prefabAndRarityList = bodyPrefabs.ConvertAll(netPrefab =>
-            new KeyValuePair<GameObject, int>(
-                netPrefab.Prefab,
-                bodiesArray[netPrefab.Prefab.name]
-                ));
+            var prefabAndRarityList = CreatePrefabAndRarityList();
             int totalRarityValue = CalculateTotalRarityValue(prefabAndRarityList);
             List<RemnantData> scrapItemDataList = Data.Config.GetRemnantItemList();
             float spawnChance = CalculateSpawnChance();
             System.Random random = new System.Random();
             int maxPercentage = 101;
             bool willSpawnBody = false;
+            List<NetworkObjectReference> NetworkObjectReferenceList = new List<NetworkObjectReference>();
+            List<int> scrapValueList = new List<int>();
             for (int i = 0; i < spawnedScrap.Length; i++)
             {
                 if (!willSpawnBody)
@@ -74,9 +66,33 @@ namespace Remnants.Patches
                 }
 
                 int bodyIndex = GetRandomBodyIndex(prefabAndRarityList, totalRarityValue, random);
-                SpawnBody(prefabAndRarityList[bodyIndex].Key, spawnPosition);
+                if (Data.Config.ShouldBodiesBeScrap.Value == false)
+                {
+                    SpawnBody(prefabAndRarityList[bodyIndex].Key, spawnPosition);
+                }
+                else
+                {
+                    NetworkObjectReferenceList.Add(SpawnScrapBody(prefabAndRarityList[bodyIndex].Key, spawnPosition, __instance.spawnedScrapContainer));
+                    scrapValueList.Add(Config.BodyScrapValue.Value);
+                }
                 willSpawnBody = false;
             }
+
+            if (NetworkObjectReferenceList.Count == 0)
+                return;
+
+            //Here do courotine for sync scrap
+            var couroutine = CoroutineHelper.Instance;
+            if (couroutine == null)
+            {
+                couroutine = new GameObject().AddComponent<CoroutineHelper>();
+            }
+
+            couroutine.ExecuteAfterDelay(() =>
+            {
+                __instance.SyncScrapValuesClientRpc(NetworkObjectReferenceList.ToArray(), scrapValueList.ToArray());
+            }
+            , 11.0f);
         }
         #endregion
         #region Methods
@@ -85,6 +101,14 @@ namespace Remnants.Patches
             spawnPosition.y = spawnPosition.y + 1.0f;
             GameObject defaultBody = UnityEngine.Object.Instantiate(prefab, spawnPosition, UnityEngine.Random.rotation, RoundManager.Instance.mapPropsContainer.transform);
             defaultBody.GetComponent<NetworkObject>().Spawn(true);
+        }
+
+        private static NetworkObject SpawnScrapBody(GameObject prefab, Vector3 spawnPosition, Transform parent)
+        {
+            spawnPosition.y = spawnPosition.y + 1.0f;
+            GameObject defaultBody = UnityEngine.Object.Instantiate(prefab, spawnPosition, UnityEngine.Random.rotation, parent);
+            defaultBody.GetComponent<NetworkObject>().Spawn();
+            return defaultBody.GetComponent<NetworkObject>();
         }
 
         private static Vector3 CalculateNavSpawnPosition(Vector3 grabObjPos)
@@ -164,7 +188,43 @@ namespace Remnants.Patches
             }
             return totalRarityValue;
         }
-        #endregion
 
+        private static List<KeyValuePair<GameObject, int>> CreatePrefabAndRarityList()
+        {
+            SelectableLevel currentLevel = StartOfRound.Instance.currentLevel;
+            string planetName = currentLevel.PlanetName;
+            if (RegisterBodiesSpawnBehaviour.HasIllegalCharacters(currentLevel.PlanetName))
+                planetName = RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.First().Key;
+
+            if (!RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.ContainsKey(planetName))
+                RegisterBodiesSpawnBehaviour.RegisterBodiesToNewMoon(currentLevel);
+
+            Dictionary<string, int> bodiesArray = RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities[planetName];
+            IReadOnlyList<NetworkPrefab> prefabs = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
+
+            List<NetworkPrefab> bodyPrefabs = null;
+            if (Data.Config.ShouldBodiesBeScrap.Value == false)
+            {
+                string propName = "Prop";
+                bodyPrefabs = prefabs.Where(netObj => bodiesArray.ToList().FindIndex(name => (name.Key + propName) == netObj.Prefab.name) != -1).ToList();
+                return bodyPrefabs.ConvertAll(netPrefab =>
+                new KeyValuePair<GameObject, int>(
+                netPrefab.Prefab,
+                bodiesArray[netPrefab.Prefab.name.Substring(0,netPrefab.Prefab.name.Length - propName.Length)]
+                ));
+            }
+            else
+            {
+                bodyPrefabs = prefabs.Where(netObj => bodiesArray.ContainsKey(netObj.Prefab.name)).ToList();
+                return bodyPrefabs.ConvertAll(netPrefab =>
+                new KeyValuePair<GameObject, int>(
+                netPrefab.Prefab,
+                bodiesArray[netPrefab.Prefab.name]
+                ));
+            }
+
+
+        }
+        #endregion
     }
 }

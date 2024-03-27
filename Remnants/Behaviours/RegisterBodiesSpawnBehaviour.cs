@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using LethalLib.Modules;
+using Unity.Netcode;
+using BepInEx;
 
 namespace Remnants.Behaviours
 {
@@ -48,7 +50,7 @@ namespace Remnants.Behaviours
             List<string> planetNames = new List<string>();
             foreach (var level in startOfRound.levels)
             {
-                if (PlanetsBodiesRarities.ContainsKey(level.PlanetName))
+                if (HasIllegalCharacters(level.PlanetName) || PlanetsBodiesRarities.ContainsKey(level.PlanetName))
                     continue;
 
                 RegisterBodiesToNewMoon(level);
@@ -84,6 +86,16 @@ namespace Remnants.Behaviours
             }
             mls.LogInfo("Registered bodies to moon: " + newLevel.PlanetName);
         }
+
+        public static bool HasIllegalCharacters(string name)
+        {
+            char[] chars = new char[] { '=', '\n', '\t', '\\', '\"', '\'', '[', ']'};
+            if (name.IsNullOrWhiteSpace()) 
+                return true;
+
+            return name.IndexOfAny(chars) != -1;
+        }
+
         #endregion
     }
 }

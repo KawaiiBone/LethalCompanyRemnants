@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Remnants.Behaviours;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace Remnants.Patches
                 int num = 0;
                 for (int i = 0; i < array.Length && i <= StartOfRound.Instance.maxShipItemCapacity; i++)
                 {
-                    if (!StartOfRound.Instance.allItemsList.itemsList.Contains(array[i].itemProperties) || array[i].deactivated)
+                    if ((!StartOfRound.Instance.allItemsList.itemsList.Contains(array[i].itemProperties) /*&& array[i].GetComponent<BodyMovementBehaviour>() == null*/) || array[i].deactivated)
                     {
                         continue;
                     }
@@ -65,7 +66,7 @@ namespace Remnants.Patches
 
                         for (int j = 0; j < StartOfRound.Instance.allItemsList.itemsList.Count; j++)
                         {
-                            if (StartOfRound.Instance.allItemsList.itemsList[j] == array[i].itemProperties)
+                            if (StartOfRound.Instance.allItemsList.itemsList[j] == array[i].itemProperties /*|| array[i].GetComponent<BodyMovementBehaviour>() != null*/)
                             {
                                 mls.LogInfo("Adding item to save: " + array[i].itemProperties.itemName);
                                 list.Add(j);

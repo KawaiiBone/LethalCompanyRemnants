@@ -27,16 +27,19 @@ namespace Remnants.Data
         public static ConfigEntry<float> MaxRemnantItemCost;
         public static ConfigEntry<int> SpawnRarityOfBody;
         public static ConfigEntry<float> SpawnModifierRiskLevel;
-        public static ConfigEntry<float> RemnantScrapCostPercentage;
+        public static ConfigEntry<int> RemnantScrapCostPercentage;
         public static ConfigEntry<bool> ShouldSaveRemnantItems;
         public static ConfigEntry<bool> ShouldDespawnRemnantItems;
+        public static ConfigEntry<bool> ShouldBodiesBeScrap;
+        public static ConfigEntry<int> BodyScrapValue;
         private static ConfigFile _configFile;
         private static string _configFileName = "\\Remnants.cfg";
         private static string _generalSection = "General";
-        private static string _otherSection = "Other";
-        private static string _remnantsSection = "Remnants";
+        private static string _generalBodySection = "GeneralBody";
         private static string _levelsSection = "Levels";
         private static string _customLevelsSection = "ModdedLevels";
+        private static string _otherSection = "Other";
+        private static string _remnantsSection = "Remnants";
         private static string _saveLoadSection = "Save/load";
         private static string _bannedPlanetName = "71 Gordion";
         private static List<ConfigDataValue<bool>> _configRemnantDataPairList = new List<ConfigDataValue<bool>>();
@@ -91,19 +94,24 @@ namespace Remnants.Data
             MaxRemnantBatteryCharge = _configFile.Bind(_generalSection, "Max remnant battery charge", 90, "Maximum remnant item battery charge on first finding it.");
             MaxRemnantBatteryCharge.Value = Mathf.Clamp(MaxRemnantBatteryCharge.Value, MinRemnantBatteryCharge.Value, maxPercentage);
 
-            _bannedNamesFromRegistering = _configFile.Bind(_generalSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
+            RemnantScrapCostPercentage = _configFile.Bind(_generalSection, "Remnant item scrap cost percentage", 0, "The percentage of how much worth of scrap a remnant item is compared to its normal credit cost. \nFrom 0 percentage scrap cost to 1000 percentage.");
+            RemnantScrapCostPercentage.Value = Mathf.Clamp(RemnantScrapCostPercentage.Value, 0, (int)maxItemCost);
+
+            ShouldBodiesBeScrap = _configFile.Bind(_generalBodySection, "Should bodies be scrap", true, "When the bodies are a scrap they can be grabbed, have a scrap value and can be sold. \nIf not then it becomes a prop and cannot be interacted with.");
+
+            SpawnRarityOfBody = _configFile.Bind(_generalBodySection, "Body spawn rarity", 2, "This number is the chance that a body spawns next to an remnant item.");
+            SpawnRarityOfBody.Value = Mathf.Clamp(SpawnRarityOfBody.Value, 0, maxPercentage);
+
+                        SpawnModifierRiskLevel = _configFile.Bind(_generalBodySection, "Body spawn modifier per moon risk level", 1.2f, "By increasing this modifier you will increase the spawnchance of the body per risk level moon.");
+            SpawnModifierRiskLevel.Value = Mathf.Clamp(SpawnModifierRiskLevel.Value, 0.0f, 10.0f);
+
+            BodyScrapValue = _configFile.Bind(_generalBodySection, "Scrap value of the bodies", 5, "The scrap value of the bodies that this mod spawns. \nThis only works if the bodies are set to scrap.");
+            BodyScrapValue.Value = Mathf.Clamp(BodyScrapValue.Value, 0, (int)maxItemCost);
 
             MaxRemnantItemCost = _configFile.Bind(_otherSection, "Max value to calculate rarity", 400.0f, "This value exists to calculate the spawn rarity of specific remnant items. \nThis rarity is determined by their original store cost. \nThe more expensive an item is, the less chance it has to spawn. \nThe value below caps the max cost of items in service of the calculation of an item's rarity. \nThe default value has already been optimized.");
             MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, minItemCost, maxItemCost);
 
-            SpawnRarityOfBody = _configFile.Bind(_otherSection, "Body spawn rarity", 5, "This number is the chance that a body spawns next to an remnant item.");
-            SpawnRarityOfBody.Value = Mathf.Clamp(SpawnRarityOfBody.Value, 0, maxPercentage);
-
-            SpawnModifierRiskLevel = _configFile.Bind(_otherSection, "Body spawn modifier per moon risk level", 1.2f, "By increasing this modifier you will increase the spawnchance of the body per risk level moon.");
-            SpawnModifierRiskLevel.Value = Mathf.Clamp(SpawnModifierRiskLevel.Value, 0.0f, 10.0f);
-
-            RemnantScrapCostPercentage = _configFile.Bind(_otherSection, "Remnant item scrap cost percentage", 0.0f, "The percentage of how much worth of scrap a remnant item is compared to its normal credit cost. \nFrom 0 percentage scrap cost to 1000 percentage.");
-            RemnantScrapCostPercentage.Value = Mathf.Clamp(RemnantScrapCostPercentage.Value / maxPercentage, 0.0f, maxItemCost);
+            _bannedNamesFromRegistering = _configFile.Bind(_otherSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice,Key", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
 
             MinRemnantLevelRarities = new List<ConfigEntry<int>>();
             MaxRemnantLevelRarities = new List<ConfigEntry<int>>();

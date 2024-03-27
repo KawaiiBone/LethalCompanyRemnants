@@ -17,7 +17,7 @@ namespace Remnants.Behaviours
         private List<string> _bannedItemsNamesList = new List<string>();
 
         private const int _minSellValue = 1, _maxSellValue = 2;
-        private const float _minCreditCost = 4f, _toFullCostMod = 2.5f;
+        private const float _minCreditCost = 1f, _toFullCostMod = 2.5f;
         private RemnantDataListBehaviour _scrapDataListBehaviour = new RemnantDataListBehaviour();
         #endregion
 
@@ -85,14 +85,16 @@ namespace Remnants.Behaviours
                     if (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == item.itemName) != -1 || item.isScrap)
                         continue;
 
-                    if (item.spawnPrefab.GetComponent<NetworkObject>() == null)
+                    if (item.spawnPrefab == null || item.spawnPrefab.GetComponent<NetworkObject>() == null)
                     {
                         mls.LogWarning(item.name + ": NetworkObject is null, barring item from registering.");
                         continue;
                     }
 
-                    if (item.creditsWorth > _minCreditCost)
+                    if (item.creditsWorth >= _minCreditCost)
+                    {
                         RegisterItemAsScrap(item);
+                    }
                 }
             }
             catch (Exception e)
@@ -117,7 +119,7 @@ namespace Remnants.Behaviours
         private void RegisterItemAsScrap(Item item)
         {
             var mls = Remnants.Instance.Mls;
-            float creditWorthPercentage = Data.Config.RemnantScrapCostPercentage.Value;
+            float creditWorthPercentage = (float)Data.Config.RemnantScrapCostPercentage.Value/100.0f;
             item.minValue = Mathf.Clamp( (int)(item.creditsWorth * _toFullCostMod * creditWorthPercentage), _minSellValue, int.MaxValue);
             item.maxValue = Mathf.Clamp((int)(item.creditsWorth * _toFullCostMod * creditWorthPercentage), _maxSellValue, int.MaxValue);
             item.itemSpawnsOnGround = true;
