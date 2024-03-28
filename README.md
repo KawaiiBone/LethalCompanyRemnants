@@ -19,7 +19,6 @@ This mod is also compatible with other mods that add more items to the game, whi
 
 #### Spawn bodies near remnant items.
 Now there is a chance that a body will spawn near a remnant item. There are four different types of bodies (default body, cocooned body, spring body, and head burst body). Each of these body types have unique enemies ascribed to them to determine which body is spawned in. As such, depending on the moon and the enemies that spawn there, a different body will spawn. Based on the enemy's spawn rate, their linked body types will also spawn more or less. For example: on your current moon, there is a high chance for a spider to spawn, so, when a body spawns, it is far more likely to be a cocooned body.
-For now, the body is still a prop. This means you cannot grab it or interact with it.
 The bodies used were part of the original version of Lethal Company, but they are loaded in via an asset bundle for easier access to the bodies.
 
 #### Config.

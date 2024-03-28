@@ -123,6 +123,7 @@ namespace Remnants.Behaviours
             item.minValue = Mathf.Clamp( (int)(item.creditsWorth * _toFullCostMod * creditWorthPercentage), _minSellValue, int.MaxValue);
             item.maxValue = Mathf.Clamp((int)(item.creditsWorth * _toFullCostMod * creditWorthPercentage), _maxSellValue, int.MaxValue);
             item.itemSpawnsOnGround = true;
+            LethalLib.Modules.Utilities.FixMixerGroups(item.spawnPrefab);
             GrabbableObject grabbable = item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
             if (grabbable != null)
                 grabbable.isInFactory = true;

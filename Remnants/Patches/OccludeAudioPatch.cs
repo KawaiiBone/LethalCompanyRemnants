@@ -1,4 +1,6 @@
 ﻿using HarmonyLib;
+using LethalLib.Modules;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,16 +15,31 @@ namespace Remnants.Patches
         //This has probably something to do with the GameNetworkManager and the store items being added to scrap.
         //So the fix this, i had to disable all the OccludeAudio when you leave the lobby/game session.
         //During playtesting, i have not noticed any sounds that are absent.
-        static void SoundErrorPatch()
+        static void SoundErrorEndPatch()
         {
             var mls = Remnants.Instance.Mls;
-            mls.LogInfo("Patching SoundErrorPatch");
+            mls.LogInfo("Patching SoundErrorEndPatch");
             OccludeAudio[] OccludeAudiosArray = Resources.FindObjectsOfTypeAll<OccludeAudio>();
             foreach (var occludeAudio in OccludeAudiosArray)
             {
                 occludeAudio.enabled = false;
             }
         }
+
+        [HarmonyPatch(typeof(NetworkManager), "Initialize")]
+        [HarmonyPrefix]
+        static void SoundErrorStartPatch()
+        {
+            var mls = Remnants.Instance.Mls;
+            mls.LogInfo("Patching SoundErrorStartPatch");
+            OccludeAudio[] OccludeAudiosArray = Resources.FindObjectsOfTypeAll<OccludeAudio>();
+            foreach (var occludeAudio in OccludeAudiosArray)
+            {
+                occludeAudio.enabled = true;
+            }
+        }
+
+
         #endregion
     }
 }
