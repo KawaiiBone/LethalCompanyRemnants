@@ -1,11 +1,5 @@
-﻿using LethalLib.Modules;
-using Remnants.Data;
-using Remnants.utilities;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -60,7 +54,7 @@ namespace Remnants.Behaviours
             mls.LogInfo("Registering custom moons data.");
             foreach (var selectableLevel in selectableLevels)
             {
-                if (!RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.ContainsKey(selectableLevel.PlanetName))
+                if (!RegisterBodiesSpawnBehaviour.HasIllegalCharacters(selectableLevel.PlanetName) || !RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.ContainsKey(selectableLevel.PlanetName))
                 {
                     RegisterBodiesSpawnBehaviour.RegisterBodiesToNewMoon(selectableLevel);
                     _customMoonsNames.Add(selectableLevel.PlanetName);

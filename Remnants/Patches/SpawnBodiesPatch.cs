@@ -5,7 +5,6 @@ using Remnants.utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
@@ -14,6 +13,10 @@ namespace Remnants.Patches
 {
     internal class SpawnBodiesPatch
     {
+        #region Variables 
+        private static float _courotineDelayTAmount = 11.0f;//same length as in the game
+        #endregion
+
         #region HarmonyMethods
         [HarmonyPatch(typeof(RoundManager), "waitForScrapToSpawnToSync")]
         [HarmonyPostfix]
@@ -92,7 +95,7 @@ namespace Remnants.Patches
             {
                 __instance.SyncScrapValuesClientRpc(NetworkObjectReferenceList.ToArray(), scrapValueList.ToArray());
             }
-            , 11.0f);
+            , _courotineDelayTAmount);
         }
         #endregion
         #region Methods
@@ -222,8 +225,6 @@ namespace Remnants.Patches
                 bodiesArray[netPrefab.Prefab.name]
                 ));
             }
-
-
         }
         #endregion
     }

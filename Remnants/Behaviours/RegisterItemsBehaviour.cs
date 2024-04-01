@@ -34,10 +34,6 @@ namespace Remnants.Behaviours
         #endregion
 
         #region Methods
-        private void StoreItemsRegisterAsScrap(Scene scene)
-        {
-            StoreItemsRegisterAsScrap(scene, LoadSceneMode.Single);
-        }
         private void StoreItemsRegisterAsScrap(Scene scene, LoadSceneMode mode)
         {
             var mls = Remnants.Instance.Mls;
@@ -45,7 +41,6 @@ namespace Remnants.Behaviours
             {
                 mls.LogInfo("In lobby, loading in no more items");
                 SceneManager.sceneLoaded -= StoreItemsRegisterAsScrap;
-                SceneManager.sceneUnloaded -= StoreItemsRegisterAsScrap;
                 _scrapDataListBehaviour.UpdateScrapDataList();
                 return;
             }
@@ -82,7 +77,7 @@ namespace Remnants.Behaviours
                     if (HasBannedName(item.name))
                         continue;
 
-                    if (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == item.itemName) != -1 || item.isScrap)
+                    if (IsAlreadyScrap(item))
                         continue;
 
                     if (item.spawnPrefab == null || item.spawnPrefab.GetComponent<NetworkObject>() == null)
@@ -91,10 +86,9 @@ namespace Remnants.Behaviours
                         continue;
                     }
 
-                    if (item.creditsWorth >= _minCreditCost)
-                    {
-                        RegisterItemAsScrap(item);
-                    }
+                    int creditsworth = GetItemCreditsWorth(item);
+                    if (creditsworth >= _minCreditCost)
+                        RegisterItemAsScrap(item, creditsworth);
                 }
             }
             catch (Exception e)
@@ -109,6 +103,19 @@ namespace Remnants.Behaviours
             return _bannedItemsNamesList.FindIndex(x => x == name) != -1;
         }
 
+        private bool IsAlreadyScrap(Item item)
+        {
+            return (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == item.itemName) != -1 || item.isScrap);
+        }
+
+        private int GetItemCreditsWorth(Item item)
+        {
+            int shopItemsIndex = Items.shopItems.FindIndex(shopItem => shopItem.origItem.itemName == item.itemName);
+            if (shopItemsIndex != -1)
+              return Items.shopItems[shopItemsIndex].price;
+            else
+                return item.creditsWorth;
+        }
         private int CalculateRarity(int itemCreditWorth, int minStoreScrapRarity, int maxStoreScrapRarity)
         {
             float maxCreditValue = Data.Config.MaxRemnantItemCost.Value;
@@ -116,12 +123,12 @@ namespace Remnants.Behaviours
             float rarityPercentage = Mathf.Abs(((creditCapped / maxCreditValue) * maxStoreScrapRarity) - maxStoreScrapRarity);
             return Mathf.Clamp((int)rarityPercentage, minStoreScrapRarity, maxStoreScrapRarity);
         }
-        private void RegisterItemAsScrap(Item item)
+        private void RegisterItemAsScrap(Item item, int creditsWorth)
         {
             var mls = Remnants.Instance.Mls;
-            float creditWorthPercentage = (float)Data.Config.RemnantScrapCostPercentage.Value/100.0f;
-            item.minValue = Mathf.Clamp( (int)(item.creditsWorth * _toFullCostMod * creditWorthPercentage), _minSellValue, int.MaxValue);
-            item.maxValue = Mathf.Clamp((int)(item.creditsWorth * _toFullCostMod * creditWorthPercentage), _maxSellValue, int.MaxValue);
+            float creditWorthPercentage = (float)Data.Config.RemnantScrapCostPercentage.Value / 100.0f;
+            item.minValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthPercentage), _minSellValue, int.MaxValue);
+            item.maxValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthPercentage), _maxSellValue, int.MaxValue);
             item.itemSpawnsOnGround = true;
             LethalLib.Modules.Utilities.FixMixerGroups(item.spawnPrefab);
             GrabbableObject grabbable = item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
@@ -130,7 +137,7 @@ namespace Remnants.Behaviours
 
             if (Data.Config.UseSpecificLevelRarities.Value == false)
             {
-                int rarity = CalculateRarity(item.creditsWorth, Data.Config.MinRemnantRarity.Value, Data.Config.MaxRemnantRarity.Value);
+                int rarity = CalculateRarity(creditsWorth, Data.Config.MinRemnantRarity.Value, Data.Config.MaxRemnantRarity.Value);
                 Items.RegisterScrap(item, rarity, Levels.LevelTypes.All);
             }
             else
@@ -138,13 +145,13 @@ namespace Remnants.Behaviours
                 Dictionary<Levels.LevelTypes, int> levelRarities = new Dictionary<Levels.LevelTypes, int>();
                 foreach (var levelRarity in Data.Config.LevelRarities)
                 {
-                    levelRarities.Add(levelRarity.Key, CalculateRarity(item.creditsWorth, levelRarity.Value.Item1, levelRarity.Value.Item2));
+                    levelRarities.Add(levelRarity.Key, CalculateRarity(creditsWorth, levelRarity.Value.Item1, levelRarity.Value.Item2));
                 }
 
                 Dictionary<string, int> customLevelRarities = new Dictionary<string, int>();
                 foreach (var customLevelRarity in Data.Config.CustomLevelRarities)
                 {
-                    customLevelRarities.Add(customLevelRarity.Key, CalculateRarity(item.creditsWorth, customLevelRarity.Value.Item1, customLevelRarity.Value.Item2));
+                    customLevelRarities.Add(customLevelRarity.Key, CalculateRarity(creditsWorth, customLevelRarity.Value.Item1, customLevelRarity.Value.Item2));
                 }
                 Items.RegisterScrap(item, levelRarities, customLevelRarities);
             }

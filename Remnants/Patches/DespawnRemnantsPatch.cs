@@ -29,17 +29,18 @@ namespace Remnants.Patches
 
             var hangarShip = GameObject.Find("HangarShip");
             GrabbableObject[] remnantItemsArray = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(
-                grabObj => (!(grabObj is RagdollGrabbableObject) && grabObj.isInShipRoom) && 
-                Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == grabObj.itemProperties.name) != -1).ToArray();
+                grabObj => (!(grabObj is RagdollGrabbableObject) && grabObj.isInShipRoom) &&
+                Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == grabObj.itemProperties.itemName) != -1).ToArray();
             foreach (var remnantItem in remnantItemsArray)
             {
                 if (!remnantItem.GetComponent<NetworkObject>().IsSpawned)
-                    return;
+                    continue;
 
                 if (remnantItem.isHeld && remnantItem.playerHeldBy != null)
                     remnantItem.playerHeldBy.DropAllHeldItemsAndSync();
 
                 remnantItem.GetComponent<NetworkObject>().Despawn();
+                mls.LogWarning("Dispawning " + remnantItem.itemProperties.itemName);
             }
         }
         #endregion

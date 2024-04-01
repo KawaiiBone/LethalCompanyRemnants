@@ -76,3 +76,7 @@
 #1.2.7
 - Fixed bug where there was an audio echo if you re-entered a lobby without quitting the application.
 - Fixed missing textures on webbed bodies.
+
+#1.2.8
+- Fixed a bug where despawning remnant items did not work as intended.
+- Increased compatibility with LethalLib made store items.
