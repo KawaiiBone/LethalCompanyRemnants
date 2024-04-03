@@ -15,6 +15,7 @@ namespace Remnants.Patches
         //During playtesting, i have not noticed any sounds that are absent.
         static void SoundErrorEndPatch()
         {
+
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Patching SoundErrorEndPatch");
             OccludeAudio[] OccludeAudiosArray = Resources.FindObjectsOfTypeAll<OccludeAudio>();

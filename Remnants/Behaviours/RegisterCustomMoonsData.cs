@@ -54,7 +54,7 @@ namespace Remnants.Behaviours
             mls.LogInfo("Registering custom moons data.");
             foreach (var selectableLevel in selectableLevels)
             {
-                if (!RegisterBodiesSpawnBehaviour.HasIllegalCharacters(selectableLevel.PlanetName) || !RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.ContainsKey(selectableLevel.PlanetName))
+                if (!RegisterBodiesSpawnBehaviour.HasIllegalCharacters(selectableLevel.PlanetName) && !RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.ContainsKey(selectableLevel.PlanetName))
                 {
                     RegisterBodiesSpawnBehaviour.RegisterBodiesToNewMoon(selectableLevel);
                     _customMoonsNames.Add(selectableLevel.PlanetName);

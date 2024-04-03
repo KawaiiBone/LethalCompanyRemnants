@@ -26,7 +26,7 @@ Here's what you can edit and change via the config.
 Remnant items:
 - The minimum and maximum spawn chance (rarity) on all moons.
 - The individual minimum and maximum spawn chance (rarity) for vanilla moons.
-- The individual minimum and maximum spawn chance (rarity) for modded moons, does not work for now with [LethalLevelLoader](https://thunderstore.io/c/lethal-company/p/IAmBatby/LethalLevelLoader/).
+- The individual minimum and maximum spawn chance (rarity) for modded moons.
 - You can choose if you want a general rarity for all moons or a unique value for each moon.
 - The battery charge of remnant items with a minimum and maximum charge.
 - A list of banned items, preventing these items from being registered as scrap and becoming remnant items.
@@ -46,14 +46,11 @@ Save/Load:
 
 ## Known Issues:
 
-Currently, it seems that this mod becomes unstable when you rejoin a lobby. This issue can cause the following:
+The known issues should be fixed now, but do report if any of these issues down below appear again and of course any other bugs.
+
 - Some remnant items spawn outside of the map.
 - Picking up a remnant item can bug your game, making it so that you're unable to pick up this item.
 - When picking up a remnant item, you can sometimes get locked into an animation loop.
-
-To prevent these issues from happening, it is advised to restart the whole application/game rather than rejoining the lobby. (This especially applies when you are the host.)
-I'm sorry for the inconvenience.
-
 
 
 ## Feedback and issues

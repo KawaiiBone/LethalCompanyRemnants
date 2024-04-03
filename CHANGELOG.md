@@ -80,3 +80,9 @@
 #1.2.8
 - Fixed a bug where despawning remnant items did not work as intended.
 - Increased compatibility with LethalLib made store items.
+
+#1.2.9
+- Fixed bugs around despawn items, now it despawns remnant items accordingly making the occlude error patch obsolete.
+  This also should mean that the mod has become stable.
+- Updated version so it works with the latest Lethal lib version, making you able to see remnant items in custom levels in mods made with LethalLevelLoader.
+  This means you can also edit the rarities seperately via the config now too.

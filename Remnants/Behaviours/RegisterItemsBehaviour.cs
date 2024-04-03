@@ -80,7 +80,7 @@ namespace Remnants.Behaviours
                     if (IsAlreadyScrap(item))
                         continue;
 
-                    if (item.spawnPrefab == null || item.spawnPrefab.GetComponent<NetworkObject>() == null)
+                    if (IsPrefabIncorrect(item.spawnPrefab))
                     {
                         mls.LogWarning(item.name + ": NetworkObject is null, barring item from registering.");
                         continue;
@@ -108,6 +108,11 @@ namespace Remnants.Behaviours
             return (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == item.itemName) != -1 || item.isScrap);
         }
 
+        private bool IsPrefabIncorrect(GameObject gameObject)
+        {
+            return gameObject == null || gameObject.GetComponent<NetworkObject>() == null;
+        }
+
         private int GetItemCreditsWorth(Item item)
         {
             int shopItemsIndex = Items.shopItems.FindIndex(shopItem => shopItem.origItem.itemName == item.itemName);
@@ -123,6 +128,7 @@ namespace Remnants.Behaviours
             float rarityPercentage = Mathf.Abs(((creditCapped / maxCreditValue) * maxStoreScrapRarity) - maxStoreScrapRarity);
             return Mathf.Clamp((int)rarityPercentage, minStoreScrapRarity, maxStoreScrapRarity);
         }
+
         private void RegisterItemAsScrap(Item item, int creditsWorth)
         {
             var mls = Remnants.Instance.Mls;
