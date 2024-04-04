@@ -27,8 +27,8 @@ namespace Remnants.Behaviours
             if (!_hasInitialized)
             {
                 _hasInitialized = true;
-                SceneManager.sceneLoaded += StoreItemsRegisterAsScrap;
                 _bannedItemsNamesList = Data.Config.GetBannedItemNames();
+                SceneManager.sceneLoaded += StoreItemsRegisterAsScrap;
             }
         }
         #endregion
@@ -82,7 +82,7 @@ namespace Remnants.Behaviours
 
                     if (IsPrefabIncorrect(item.spawnPrefab))
                     {
-                        mls.LogWarning(item.name + ": NetworkObject is null, barring item from registering.");
+                        mls.LogWarning(item.name + ": prefab is incorrect to be registered as scrap.");
                         continue;
                     }
 
@@ -132,6 +132,7 @@ namespace Remnants.Behaviours
         private void RegisterItemAsScrap(Item item, int creditsWorth)
         {
             var mls = Remnants.Instance.Mls;
+            mls.LogInfo("Registering " + item.name + " as scrap.");
             float creditWorthPercentage = (float)Data.Config.RemnantScrapCostPercentage.Value / 100.0f;
             item.minValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthPercentage), _minSellValue, int.MaxValue);
             item.maxValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthPercentage), _maxSellValue, int.MaxValue);

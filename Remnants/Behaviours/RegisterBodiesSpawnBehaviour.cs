@@ -7,13 +7,13 @@ using BepInEx;
 
 namespace Remnants.Behaviours
 {
-    internal class RegisterBodiesSpawnBehaviour
+    public class RegisterBodiesSpawnBehaviour
     {
-
         #region Variables
         private bool _hasInitialized = false;
         private bool _isRegistering = false;
-        public static Dictionary<string, Dictionary<string, int>> PlanetsBodiesRarities = new Dictionary<string, Dictionary<string, int>>();
+        public Dictionary<string, Dictionary<string, int>> PlanetsBodiesRarities = new Dictionary<string, Dictionary<string, int>>();
+        private char[] _illegalChars = new char[] { '=', '\n', '\t', '\\', '\"', '\'', '[', ']' };
         #endregion
 
         #region Initialize 
@@ -43,7 +43,6 @@ namespace Remnants.Behaviours
                 return;
             }
 
-
             mls.LogInfo("Registering bodies to moons");
             _isRegistering = true;
             RegisterData(startOfRound.levels);
@@ -51,7 +50,7 @@ namespace Remnants.Behaviours
             _isRegistering = false;
         }
 
-        public static void RegisterBodiesToNewMoon(SelectableLevel newLevel)
+        public void RegisterBodiesToNewMoon(SelectableLevel newLevel)
         {
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("New moon found attempting to register bodies to moon: " + newLevel.PlanetName);
@@ -62,7 +61,7 @@ namespace Remnants.Behaviours
                 if (enemyWithRarity.enemyType.isOutsideEnemy)
                     continue;
 
-                int index = Mathf.Clamp(Array.FindIndex(enemiesAndBodiesNames, enemyBodyName => enemyBodyName.Key == enemyWithRarity.enemyType.enemyName), 0, Data.LoadAssetsBodies.EnemiesAndBodiesNames.Length - 1);
+                int index = Mathf.Clamp(Array.FindIndex(enemiesAndBodiesNames, enemyBodyName => enemyBodyName.Key == enemyWithRarity.enemyType.enemyName), 0, enemiesAndBodiesNames.Length - 1);
                 if (PlanetsBodiesRarities[newLevel.PlanetName].TryGetValue(enemiesAndBodiesNames[index].Value, out int value))
                 {
                     if (value < enemyWithRarity.rarity)
@@ -76,13 +75,12 @@ namespace Remnants.Behaviours
             mls.LogInfo("Registered bodies to moon: " + newLevel.PlanetName);
         }
 
-        public static bool HasIllegalCharacters(string name)
+        public bool HasIllegalCharacters(string name)
         {
-            char[] chars = new char[] { '=', '\n', '\t', '\\', '\"', '\'', '[', ']'};
             if (name.IsNullOrWhiteSpace()) 
                 return true;
 
-            return name.IndexOfAny(chars) != -1;
+            return name.IndexOfAny(_illegalChars) != -1;
         }
 
         private void RegisterData(SelectableLevel[] levels)

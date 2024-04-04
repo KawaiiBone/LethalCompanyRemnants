@@ -15,6 +15,8 @@ namespace Remnants.Patches
     {
         #region Variables 
         private static float _courotineDelayTAmount = 11.0f;//same length as in the game
+        private static string _propName = "Prop";
+        private static string[] _riskLevelArray = { "Safe", "D", "C", "B", "A", "S", "S+" };
         #endregion
 
         #region HarmonyMethods
@@ -101,14 +103,14 @@ namespace Remnants.Patches
         #region Methods
         private static void SpawnBody(GameObject prefab, Vector3 spawnPosition)
         {
-            spawnPosition.y = spawnPosition.y + 1.0f;
+            spawnPosition.y = spawnPosition.y + 1.0f;//Let player control this?
             GameObject defaultBody = UnityEngine.Object.Instantiate(prefab, spawnPosition, UnityEngine.Random.rotation, RoundManager.Instance.mapPropsContainer.transform);
             defaultBody.GetComponent<NetworkObject>().Spawn(true);
         }
 
         private static NetworkObject SpawnScrapBody(GameObject prefab, Vector3 spawnPosition, Transform parent)
         {
-            spawnPosition.y = spawnPosition.y + 1.0f;
+            spawnPosition.y = spawnPosition.y + 1.0f;//Let player control this?
             GameObject defaultBody = UnityEngine.Object.Instantiate(prefab, spawnPosition, UnityEngine.Random.rotation, parent);
             defaultBody.GetComponent<NetworkObject>().Spawn();
             return defaultBody.GetComponent<NetworkObject>();
@@ -117,7 +119,7 @@ namespace Remnants.Patches
         private static Vector3 CalculateNavSpawnPosition(Vector3 grabObjPos)
         {
             var mls = Remnants.Instance.Mls;
-            float minDistance = 0.1f;
+            float minDistance = 0.1f;//Let player control this?
             float mediumDistance = 5.0f;
             float maxDistance = 6.0f;
             float moveDistance = 1.0f;
@@ -161,8 +163,7 @@ namespace Remnants.Patches
         {
             float spawnChance = Data.Config.SpawnRarityOfBody.Value;
             float spawnBodyModifier = Data.Config.SpawnModifierRiskLevel.Value;
-            string[] riskLevelArray = { "Safe", "D", "C", "B", "A", "S", "S+" };
-            int riskLevel = Array.IndexOf(riskLevelArray, StartOfRound.Instance.currentLevel.riskLevel);
+            int riskLevel = Array.IndexOf(_riskLevelArray, StartOfRound.Instance.currentLevel.riskLevel);
             if (!Mathf.Approximately(spawnBodyModifier, 0.0f) && riskLevel != -1)
                 spawnChance *= (riskLevel * spawnBodyModifier);
 
@@ -194,26 +195,26 @@ namespace Remnants.Patches
 
         private static List<KeyValuePair<GameObject, int>> CreatePrefabAndRarityList()
         {
+            RegisterBodiesSpawnBehaviour registerBodiesSpawn = Remnants.Instance.RegisterBodiesSpawn;
             SelectableLevel currentLevel = StartOfRound.Instance.currentLevel;
             string planetName = currentLevel.PlanetName;
-            if (RegisterBodiesSpawnBehaviour.HasIllegalCharacters(currentLevel.PlanetName))
-                planetName = RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.First().Key;
+            if (registerBodiesSpawn.HasIllegalCharacters(currentLevel.PlanetName))
+                planetName = registerBodiesSpawn.PlanetsBodiesRarities.First().Key;
 
-            if (!RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.ContainsKey(planetName))
-                RegisterBodiesSpawnBehaviour.RegisterBodiesToNewMoon(currentLevel);
+            if (!registerBodiesSpawn.PlanetsBodiesRarities.ContainsKey(planetName))
+                registerBodiesSpawn.RegisterBodiesToNewMoon(currentLevel);
 
-            Dictionary<string, int> bodiesArray = RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities[planetName];
+            Dictionary<string, int> bodiesArray = registerBodiesSpawn.PlanetsBodiesRarities[planetName];
             IReadOnlyList<NetworkPrefab> prefabs = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
 
             List<NetworkPrefab> bodyPrefabs = null;
             if (Data.Config.ShouldBodiesBeScrap.Value == false)
             {
-                string propName = "Prop";
-                bodyPrefabs = prefabs.Where(netObj => bodiesArray.ToList().FindIndex(name => (name.Key + propName) == netObj.Prefab.name) != -1).ToList();
+                bodyPrefabs = prefabs.Where(netObj => bodiesArray.ToList().FindIndex(name => (name.Key + _propName) == netObj.Prefab.name) != -1).ToList();
                 return bodyPrefabs.ConvertAll(netPrefab =>
                 new KeyValuePair<GameObject, int>(
                 netPrefab.Prefab,
-                bodiesArray[netPrefab.Prefab.name.Substring(0,netPrefab.Prefab.name.Length - propName.Length)]
+                bodiesArray[netPrefab.Prefab.name.Substring(0, netPrefab.Prefab.name.Length - _propName.Length)]
                 ));
             }
             else

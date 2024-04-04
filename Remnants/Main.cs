@@ -4,6 +4,7 @@ using HarmonyLib;
 using Remnants.Patches;
 using Remnants.Behaviours;
 using Remnants.Data;
+using System.Linq;
 
 
 
@@ -24,8 +25,10 @@ namespace Remnants
         private readonly Harmony _harmony = new Harmony(modGUID);
         internal ManualLogSource Mls;
 
+        public RegisterBodiesSpawnBehaviour  RegisterBodiesSpawn = new RegisterBodiesSpawnBehaviour();
+        //public Data.Config RemnantsConfig = new Data.Config();
+
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
-        private RegisterBodiesSpawnBehaviour _registerBodiesSpawnRarities = new RegisterBodiesSpawnBehaviour();
         private RegisterCustomMoonsData _registerCustomMoonsData = new RegisterCustomMoonsData();
         private LoadAssetsBodies _loadAssetsBodies = new LoadAssetsBodies();
         #endregion
@@ -49,7 +52,7 @@ namespace Remnants
             _harmony.PatchAll(typeof(Remnants));
             Data.Config.LoadConfig();
             _registerItemsBehaviour.Initialize();
-            _registerBodiesSpawnRarities.Initialize();
+             RegisterBodiesSpawn.Initialize();
             _registerCustomMoonsData.Initialize();
             _loadAssetsBodies.Initialize();
             Mls.LogInfo("modGUID has loaded");

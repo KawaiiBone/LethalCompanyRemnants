@@ -42,7 +42,6 @@ namespace Remnants.Behaviours
                 return;
             }
 
-
             List<SelectableLevel> selectableLevels = Resources.FindObjectsOfTypeAll<SelectableLevel>().Concat(UnityEngine.Object.FindObjectsByType<SelectableLevel>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)).ToList();
             if (selectableLevels == null || selectableLevels.Count == 0)
             {
@@ -52,11 +51,12 @@ namespace Remnants.Behaviours
 
             _isRegistering = true;
             mls.LogInfo("Registering custom moons data.");
+            RegisterBodiesSpawnBehaviour registerBodiesSpawn = Remnants.Instance.RegisterBodiesSpawn;
             foreach (var selectableLevel in selectableLevels)
             {
-                if (!RegisterBodiesSpawnBehaviour.HasIllegalCharacters(selectableLevel.PlanetName) && !RegisterBodiesSpawnBehaviour.PlanetsBodiesRarities.ContainsKey(selectableLevel.PlanetName))
+                if (!registerBodiesSpawn.HasIllegalCharacters(selectableLevel.PlanetName) && !registerBodiesSpawn.PlanetsBodiesRarities.ContainsKey(selectableLevel.PlanetName))
                 {
-                    RegisterBodiesSpawnBehaviour.RegisterBodiesToNewMoon(selectableLevel);
+                    registerBodiesSpawn.RegisterBodiesToNewMoon(selectableLevel);
                     _customMoonsNames.Add(selectableLevel.PlanetName);
                 }
             }

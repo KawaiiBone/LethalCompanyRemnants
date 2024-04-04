@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Remnants.Data
 {
-    internal class Config
+    class Config
     {
         #region Variables
         public static ConfigEntry<int> MinRemnantRarity;

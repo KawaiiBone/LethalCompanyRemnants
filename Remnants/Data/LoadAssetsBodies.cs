@@ -79,8 +79,6 @@ namespace Remnants.Data
             {
                 LoadAndRegisterBodyPropAsset(bodyFileName, _prefabTypeName);
             }
-            //Later on:
-            //var prefabs = _assetBundleBodies.LoadAllAssets<GameObject>();
             SceneManager.sceneLoaded -= LoadAssetBundle;
         }
 
