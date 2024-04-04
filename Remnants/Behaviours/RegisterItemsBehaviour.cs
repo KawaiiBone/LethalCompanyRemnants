@@ -18,6 +18,7 @@ namespace Remnants.Behaviours
 
         private const int _minSellValue = 1, _maxSellValue = 2;
         private const float _minCreditCost = 1f, _toFullCostMod = 2.5f;
+        private const float _maxPercentage = 100.0f;
         private RemnantDataListBehaviour _scrapDataListBehaviour = new RemnantDataListBehaviour();
         #endregion
 
@@ -133,7 +134,7 @@ namespace Remnants.Behaviours
         {
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Registering " + item.name + " as scrap.");
-            float creditWorthPercentage = (float)Remnants.Instance.RemnantsConfig.RemnantScrapCostPercentage.Value / 100.0f;
+            float creditWorthPercentage = (float)Remnants.Instance.RemnantsConfig.RemnantScrapCostPercentage.Value / _maxPercentage;
             item.minValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthPercentage), _minSellValue, int.MaxValue);
             item.maxValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthPercentage), _maxSellValue, int.MaxValue);
             item.itemSpawnsOnGround = true;
