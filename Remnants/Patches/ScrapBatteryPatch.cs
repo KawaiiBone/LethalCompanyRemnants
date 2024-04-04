@@ -40,8 +40,8 @@ namespace Remnants.Patches
                     grabbableObject.isInFactory == true && !grabbableObject.isInShipRoom))
                     continue;
                  
-                int minCharge = Data.Config.MinRemnantBatteryCharge.Value;
-                int maxCharge = Data.Config.MaxRemnantBatteryCharge.Value;
+                int minCharge = Remnants.Instance.RemnantsConfig.MinRemnantBatteryCharge.Value;
+                int maxCharge = Remnants.Instance.RemnantsConfig.MaxRemnantBatteryCharge.Value;
                 int randomCharge = random.Next(minCharge, maxCharge);
                 grabbableObject.SyncBatteryServerRpc(randomCharge);
                 mls.LogInfo("Has updated " + grabbableObject.itemProperties.name + " charge to " + grabbableObject.insertedBattery.charge);

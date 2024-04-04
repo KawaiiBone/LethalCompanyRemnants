@@ -2,7 +2,7 @@
 
 namespace Remnants.utilities
 {
-    internal class RemnantData
+    public class RemnantData
     {
         [JsonProperty("RemnantItemName")]
         public string RemnantItemName { get; set; }

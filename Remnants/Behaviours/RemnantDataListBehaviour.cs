@@ -28,7 +28,7 @@ namespace Remnants.Behaviours
         public void UpdateScrapDataList()
         {
             //Get data and check if it needs to be changed
-            List<RemnantData> remnantDataList = Data.Config.GetRemnantItemList();
+            List<RemnantData> remnantDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList();
             if (remnantDataList.Count != 0)
                 UpdateDataList(remnantDataList);
             WriteScrapDataList();
@@ -36,7 +36,7 @@ namespace Remnants.Behaviours
 
         private void WriteScrapDataList()
         {
-            Data.Config.SetRemnantItemList(_RemnantItemsListData);
+           Remnants.Instance.RemnantsConfig.SetRemnantItemList(_RemnantItemsListData);
         }
 
         private void UpdateDataList(List<RemnantData> remnantDataList)

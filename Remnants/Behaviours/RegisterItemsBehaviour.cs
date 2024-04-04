@@ -27,7 +27,7 @@ namespace Remnants.Behaviours
             if (!_hasInitialized)
             {
                 _hasInitialized = true;
-                _bannedItemsNamesList = Data.Config.GetBannedItemNames();
+                _bannedItemsNamesList = Remnants.Instance.RemnantsConfig.GetBannedItemNames();
                 SceneManager.sceneLoaded += StoreItemsRegisterAsScrap;
             }
         }
@@ -123,7 +123,7 @@ namespace Remnants.Behaviours
         }
         private int CalculateRarity(int itemCreditWorth, int minStoreScrapRarity, int maxStoreScrapRarity)
         {
-            float maxCreditValue = Data.Config.MaxRemnantItemCost.Value;
+            float maxCreditValue = Remnants.Instance.RemnantsConfig.MaxRemnantItemCost.Value;
             float creditCapped = Mathf.Clamp(itemCreditWorth, _minCreditCost, maxCreditValue);
             float rarityPercentage = Mathf.Abs(((creditCapped / maxCreditValue) * maxStoreScrapRarity) - maxStoreScrapRarity);
             return Mathf.Clamp((int)rarityPercentage, minStoreScrapRarity, maxStoreScrapRarity);
@@ -133,7 +133,7 @@ namespace Remnants.Behaviours
         {
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Registering " + item.name + " as scrap.");
-            float creditWorthPercentage = (float)Data.Config.RemnantScrapCostPercentage.Value / 100.0f;
+            float creditWorthPercentage = (float)Remnants.Instance.RemnantsConfig.RemnantScrapCostPercentage.Value / 100.0f;
             item.minValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthPercentage), _minSellValue, int.MaxValue);
             item.maxValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthPercentage), _maxSellValue, int.MaxValue);
             item.itemSpawnsOnGround = true;
@@ -142,21 +142,21 @@ namespace Remnants.Behaviours
             if (grabbable != null)
                 grabbable.isInFactory = true;
 
-            if (Data.Config.UseSpecificLevelRarities.Value == false)
+            if (Remnants.Instance.RemnantsConfig.UseSpecificLevelRarities.Value == false)
             {
-                int rarity = CalculateRarity(creditsWorth, Data.Config.MinRemnantRarity.Value, Data.Config.MaxRemnantRarity.Value);
+                int rarity = CalculateRarity(creditsWorth, Remnants.Instance.RemnantsConfig.MinRemnantRarity.Value, Remnants.Instance.RemnantsConfig.MaxRemnantRarity.Value);
                 Items.RegisterScrap(item, rarity, Levels.LevelTypes.All);
             }
             else
             {
                 Dictionary<Levels.LevelTypes, int> levelRarities = new Dictionary<Levels.LevelTypes, int>();
-                foreach (var levelRarity in Data.Config.LevelRarities)
+                foreach (var levelRarity in Remnants.Instance.RemnantsConfig.LevelRarities)
                 {
                     levelRarities.Add(levelRarity.Key, CalculateRarity(creditsWorth, levelRarity.Value.Item1, levelRarity.Value.Item2));
                 }
 
                 Dictionary<string, int> customLevelRarities = new Dictionary<string, int>();
-                foreach (var customLevelRarity in Data.Config.CustomLevelRarities)
+                foreach (var customLevelRarity in Remnants.Instance.RemnantsConfig.CustomLevelRarities)
                 {
                     customLevelRarities.Add(customLevelRarity.Key, CalculateRarity(creditsWorth, customLevelRarity.Value.Item1, customLevelRarity.Value.Item2));
                 }

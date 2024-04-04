@@ -33,12 +33,12 @@ namespace Remnants.Patches
                 return;
             }
 
-            if (!LoadAssetsBodies.HasLoadedAnyAssets || Data.Config.SpawnRarityOfBody.Value == 0)
+            if (!LoadAssetsBodies.HasLoadedAnyAssets || Remnants.Instance.RemnantsConfig.SpawnRarityOfBody.Value == 0)
                 return;
 
             var prefabAndRarityList = CreatePrefabAndRarityList();
             int totalRarityValue = CalculateTotalRarityValue(prefabAndRarityList);
-            List<RemnantData> scrapItemDataList = Data.Config.GetRemnantItemList();
+            List<RemnantData> scrapItemDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList();
             float spawnChance = CalculateSpawnChance();
             System.Random random = new System.Random();
             int maxPercentage = 101;
@@ -71,14 +71,14 @@ namespace Remnants.Patches
                 }
 
                 int bodyIndex = GetRandomBodyIndex(prefabAndRarityList, totalRarityValue, random);
-                if (Data.Config.ShouldBodiesBeScrap.Value == false)
+                if (Remnants.Instance.RemnantsConfig.ShouldBodiesBeScrap.Value == false)
                 {
                     SpawnBody(prefabAndRarityList[bodyIndex].Key, spawnPosition);
                 }
                 else
                 {
                     NetworkObjectReferenceList.Add(SpawnScrapBody(prefabAndRarityList[bodyIndex].Key, spawnPosition, __instance.spawnedScrapContainer));
-                    scrapValueList.Add(Config.BodyScrapValue.Value);
+                    scrapValueList.Add(Remnants.Instance.RemnantsConfig.BodyScrapValue.Value);
                 }
                 willSpawnBody = false;
             }
@@ -161,8 +161,8 @@ namespace Remnants.Patches
 
         private static float CalculateSpawnChance()
         {
-            float spawnChance = Data.Config.SpawnRarityOfBody.Value;
-            float spawnBodyModifier = Data.Config.SpawnModifierRiskLevel.Value;
+            float spawnChance = Remnants.Instance.RemnantsConfig.SpawnRarityOfBody.Value;
+            float spawnBodyModifier = Remnants.Instance.RemnantsConfig.SpawnModifierRiskLevel.Value;
             int riskLevel = Array.IndexOf(_riskLevelArray, StartOfRound.Instance.currentLevel.riskLevel);
             if (!Mathf.Approximately(spawnBodyModifier, 0.0f) && riskLevel != -1)
                 spawnChance *= (riskLevel * spawnBodyModifier);
@@ -208,7 +208,7 @@ namespace Remnants.Patches
             IReadOnlyList<NetworkPrefab> prefabs = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
 
             List<NetworkPrefab> bodyPrefabs = null;
-            if (Data.Config.ShouldBodiesBeScrap.Value == false)
+            if (Remnants.Instance.RemnantsConfig.ShouldBodiesBeScrap.Value == false)
             {
                 bodyPrefabs = prefabs.Where(netObj => bodiesArray.ToList().FindIndex(name => (name.Key + _propName) == netObj.Prefab.name) != -1).ToList();
                 return bodyPrefabs.ConvertAll(netPrefab =>

@@ -95,7 +95,7 @@ namespace Remnants.Behaviours
                 if (!Enum.TryParse(level.name, out Levels.LevelTypes a))
                     planetNames.Add(level.PlanetName);
             }
-            Data.Config.SetCustomLevelsRarities(planetNames);
+            Remnants.Instance.RemnantsConfig.SetCustomLevelsRarities(planetNames);
         }
         #endregion
     }

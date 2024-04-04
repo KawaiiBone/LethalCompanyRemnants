@@ -18,7 +18,7 @@ namespace Remnants.Patches
 
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Patching save game");
-            if (Data.Config.ShouldSaveRemnantItems.Value == false)
+            if (Remnants.Instance.RemnantsConfig.ShouldSaveRemnantItems.Value == false)
             {
                 mls.LogInfo("Skipping this mod version of saving and using default version.");
                 return true;

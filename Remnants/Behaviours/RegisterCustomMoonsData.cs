@@ -66,7 +66,7 @@ namespace Remnants.Behaviours
 
         private void UpdateConfigCustomMoonList()
         {
-            Data.Config.SetCustomLevelsRarities(_customMoonsNames);
+          Remnants.Instance.RemnantsConfig.SetCustomLevelsRarities(_customMoonsNames);
         }
         #endregion
     }

@@ -59,7 +59,7 @@ namespace Remnants.Patches
                 return;
 
             //Despawn remnant items in ship
-            if ((StartOfRound.Instance.allPlayersDead || despawnAllItems) && Data.Config.ShouldDespawnRemnantItems.Value == true)
+            if ((StartOfRound.Instance.allPlayersDead || despawnAllItems) && Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItems.Value == true)
             {
                 var hangarShip = GameObject.Find(_shipObjName);
                 GrabbableObject[] remnantShipItemsArray = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(

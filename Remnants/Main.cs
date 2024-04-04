@@ -26,7 +26,7 @@ namespace Remnants
         internal ManualLogSource Mls;
 
         public RegisterBodiesSpawnBehaviour  RegisterBodiesSpawn = new RegisterBodiesSpawnBehaviour();
-        //public Data.Config RemnantsConfig = new Data.Config();
+        public Data.Config RemnantsConfig = new Data.Config();
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
         private RegisterCustomMoonsData _registerCustomMoonsData = new RegisterCustomMoonsData();
@@ -50,7 +50,8 @@ namespace Remnants
             _harmony.PatchAll(typeof(SaveGamePatch));
             _harmony.PatchAll(typeof(DespawnRemnantsPatch));
             _harmony.PatchAll(typeof(Remnants));
-            Data.Config.LoadConfig();
+            //Data.Config.LoadConfig();
+            RemnantsConfig.Initialize();
             _registerItemsBehaviour.Initialize();
              RegisterBodiesSpawn.Initialize();
             _registerCustomMoonsData.Initialize();
