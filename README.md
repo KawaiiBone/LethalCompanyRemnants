@@ -43,16 +43,6 @@ Save/Load:
 - Save remnant items.
 - Despawn remnant items on party wipe.
 
-
-## Known Issues:
-
-The known issues should be fixed now, but do report if any of these issues down below appear again and of course any other bugs.
-
-- Some remnant items spawn outside of the map.
-- Picking up a remnant item can bug your game, making it so that you're unable to pick up this item.
-- When picking up a remnant item, you can sometimes get locked into an animation loop.
-
-
 ## Feedback and issues
 If you find any bugs, issues, or have any feedback on how to improve the mod, you are always welcome to share it here on [Github](https://github.com/KawaiiBone/LethalCompanyRemnants/issues) or on the [Unofficial Lethal Company discord](https://discord.com/invite/nYcQFEpXfU). When you report an issue, please be sure to add the error in question and what other mods you were using at the time of the error. This way I can easily find the bug and patch it.
  

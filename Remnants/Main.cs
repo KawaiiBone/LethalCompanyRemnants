@@ -4,10 +4,6 @@ using HarmonyLib;
 using Remnants.Patches;
 using Remnants.Behaviours;
 using Remnants.Data;
-using System.Linq;
-
-
-
 
 namespace Remnants
 {

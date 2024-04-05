@@ -15,7 +15,8 @@ namespace Remnants.Patches
         //In time I will learn CodeInstruction so I can replace this in a more clean way.
         private static bool PatchSaveItems(GameNetworkManager __instance)
         {
-
+            //To stop executing prefixes and skip the original, let the prefix return a bool that returns false.
+            //To let the original run after all prefixes, return a bool that returns true.
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Patching save game");
             if (Remnants.Instance.RemnantsConfig.ShouldSaveRemnantItems.Value == false)
@@ -95,12 +96,6 @@ namespace Remnants.Patches
                             mls.LogInfo($"Saved data for item type: {array[i].itemProperties.itemName} - {num}");
                         }
                     }
-                }
-
-                if (list.Count <= 0)
-                {
-                    mls.LogInfo("Got no ship grabbable items to save.");
-                    return true;
                 }
 
                 try

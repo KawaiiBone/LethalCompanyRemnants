@@ -7,7 +7,6 @@ using BepInEx.Configuration;
 using LethalLib.Modules;
 using Remnants.utilities;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Remnants.Data
 {
@@ -81,7 +80,6 @@ namespace Remnants.Data
         private void LoadConfig()
         {
             LoadConfigData();
-
 
             _configFile = new ConfigFile(Paths.ConfigPath + _configFileName, true);
             const int maxPercentage = 100;
