@@ -103,7 +103,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\BodyGrabbableObject.cs" />
     <Compile Include="Behaviours\BodyMovementBehaviour.cs" />
+    <Compile Include="Behaviours\RegisterBodySuitsBehaviour.cs" />
     <Compile Include="Behaviours\RegisterBodiesSpawnBehaviour.cs" />
     <Compile Include="Behaviours\RegisterCustomMoonsData.cs" />
     <Compile Include="Behaviours\RegisterItemsBehaviour.cs" />

@@ -86,3 +86,7 @@
   This also should mean that the mod has become stable.
 - Updated version so it works with the latest Lethal lib version, making you able to see remnant items in custom levels in mods made with LethalLevelLoader.
   This means you can also edit the rarities seperately via the config now too.
+
+#1.2.10
+- Fixed a bug where items in your hand would disappear when lifting off from a moon.
+- Fixed a bug where items in your hand would not save when lifting off from a moon or disconnecting.

@@ -15,7 +15,7 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.2.9";
+        private const string modVersion = "1.2.10";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);
@@ -23,6 +23,7 @@ namespace Remnants
 
         public RegisterBodiesSpawnBehaviour  RegisterBodiesSpawn = new RegisterBodiesSpawnBehaviour();
         public Data.Config RemnantsConfig = new Data.Config();
+        public RegisterBodySuitsBehaviour RegisterBodySuits = new RegisterBodySuitsBehaviour();
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
         private RegisterCustomMoonsData _registerCustomMoonsData = new RegisterCustomMoonsData();
@@ -52,6 +53,7 @@ namespace Remnants
              RegisterBodiesSpawn.Initialize();
             _registerCustomMoonsData.Initialize();
             _loadAssetsBodies.Initialize();
+            RegisterBodySuits.Initialize();
             Mls.LogInfo("modGUID has loaded");
         }
         #endregion

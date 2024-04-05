@@ -105,6 +105,9 @@ namespace Remnants.Patches
         {
             spawnPosition.y = spawnPosition.y + 1.0f;//Let player control this?
             GameObject defaultBody = UnityEngine.Object.Instantiate(prefab, spawnPosition, UnityEngine.Random.rotation, RoundManager.Instance.mapPropsContainer.transform);
+            //TEST
+            //ChangeSuit(defaultBody, prefab.name);
+            //TEST
             defaultBody.GetComponent<NetworkObject>().Spawn(true);
         }
 
@@ -112,8 +115,29 @@ namespace Remnants.Patches
         {
             spawnPosition.y = spawnPosition.y + 1.0f;//Let player control this?
             GameObject defaultBody = UnityEngine.Object.Instantiate(prefab, spawnPosition, UnityEngine.Random.rotation, parent);
+            //TEST
+            //ChangeSuit(defaultBody, prefab.name);
+            //TEST
             defaultBody.GetComponent<NetworkObject>().Spawn();
             return defaultBody.GetComponent<NetworkObject>();
+        }
+
+        private static void ChangeSuit(GameObject gameObject, string originalObjName)
+        {
+            gameObject.GetComponent<BodyGrabbableObject>().UpdateSuit(3);
+            return;
+            Remnants.Instance.Mls.LogError(originalObjName);
+            if (!LoadAssetsBodies.BannedPrefabTexturesChange.Contains(originalObjName))
+            {
+                SkinnedMeshRenderer skinnedMeshedRenderer = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+                Material suitMaterial = StartOfRound.Instance.unlockablesList.unlockables[Remnants.Instance.RegisterBodySuits.SuitsIndexList[3]].suitMaterial;
+                skinnedMeshedRenderer.material = suitMaterial;
+                for (int i = 0; i < skinnedMeshedRenderer.materials.Length; i++)
+                {
+                    skinnedMeshedRenderer.materials[i] = suitMaterial;
+                }
+                Remnants.Instance.Mls.LogError("Changed texture of: " + originalObjName);
+            }
         }
 
         private static Vector3 CalculateNavSpawnPosition(Vector3 grabObjPos)
@@ -227,6 +251,8 @@ namespace Remnants.Patches
                 ));
             }
         }
+
+   
         #endregion
     }
 }

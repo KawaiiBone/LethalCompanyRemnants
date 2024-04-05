@@ -48,6 +48,8 @@ namespace Remnants.Behaviours
             RegisterData(startOfRound.levels);
             SceneManager.sceneLoaded -= RegisterBodiesToMoons;
             _isRegistering = false;
+
+
         }
 
         public void RegisterBodiesToNewMoon(SelectableLevel newLevel)

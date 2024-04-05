@@ -22,9 +22,11 @@ namespace Remnants.Data
         private string _grabSoundName = "StartJump";
         private string _playerRagdollLayer = "PlayerRagdoll";
         private AssetBundle _assetBundleBodies = null;
-        public static string[] BodiesFileNamesArray = { "DefaultBodyProp", "HeadBurstBodyProp", "CoilHeadBodyProp", "WebbedBodyProp" };
-        public static string[] BodiesItemsFileNamesArray = { "DefaultBodyItem", "HeadBurstBodyItem", "CoilBodyItem", "WebbedBodyItem" };
+        private string[] _bodiesFileNamesArray = { "DefaultBodyProp", "HeadBurstBodyProp", "CoilHeadBodyProp", "WebbedBodyProp" };
+        private string[] _bodiesItemsFileNamesArray = { "DefaultBodyItem", "HeadBurstBodyItem", "CoilBodyItem", "WebbedBodyItem" };
         public static KeyValuePair<string, string>[] EnemiesAndBodiesNames = new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Any", "DefaultBody"), new KeyValuePair<string, string>("Spring", "CoilHeadBody"), new KeyValuePair<string, string>("Bunker Spider", "WebbedBody"), new KeyValuePair<string, string>("Girl", "HeadBurstBody") };
+        public static string[] BannedPrefabTexturesChange = { "WebbedBody", "WebbedBodyProp" };
+
         public static bool HasLoadedAnyAssets = false;
         #endregion
 
@@ -70,12 +72,12 @@ namespace Remnants.Data
             var audioClips = Resources.FindObjectsOfTypeAll<AudioClip>().Concat(UnityEngine.Object.FindObjectsByType<AudioClip>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)).ToList();
             AudioClip dropSFX = audioClips.Find(audioClip => audioClip.name == _dropSoundName);
             AudioClip grabSFX = audioClips.Find(audioClip1 => audioClip1.name == _grabSoundName);
-            foreach (var itemFileName in BodiesItemsFileNamesArray)
+            foreach (var itemFileName in _bodiesItemsFileNamesArray)
             {
                 LoadAndRegisterBodyItemAsset(itemFileName, _assetTypeName, iconSprite, dropSFX, grabSFX);
             }
 
-            foreach (var bodyFileName in BodiesFileNamesArray)
+            foreach (var bodyFileName in _bodiesFileNamesArray)
             {
                 LoadAndRegisterBodyPropAsset(bodyFileName, _prefabTypeName);
             }
@@ -116,6 +118,15 @@ namespace Remnants.Data
             bodyItem.dropSFX = dropSFX;
             bodyItem.grabSFX = grabSFX;
             bodyItem.spawnPrefab.AddComponent<BodyMovementBehaviour>();
+            //TEST
+            //Destroy(bodyItem.spawnPrefab.GetComponent<PhysicsProp>());
+            //UnityEngine.GameObject.Destroy(bodyItem.spawnPrefab.GetComponent<PhysicsProp>());
+            //BodyGrabbableObject bodyGOBJ = bodyItem.spawnPrefab.AddComponent<BodyGrabbableObject>();
+            //bodyGOBJ.itemProperties = bodyItem;
+            //bodyGOBJ.grabbable = true;
+            //bodyGOBJ.grabbableToEnemies = true;
+            //bodyGOBJ.isInFactory = true;
+            //TEST
             Items.RegisterItem(bodyItem);
             LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(bodyItem.spawnPrefab);
             HasLoadedAnyAssets = true;

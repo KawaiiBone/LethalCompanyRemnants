@@ -3,11 +3,19 @@ using Remnants.Behaviours;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Remnants.Patches
 {
     internal class SaveGamePatch
     {
+
+        #region Variables
+        private static string _shipObjName = "HangarShip";
+        private static string _environmentObjName = "Environment";
+        private static string _propObjName = "Props";
+        #endregion
+
         #region HarmonyMethods
         [HarmonyPatch(typeof(GameNetworkManager), "SaveItemsInShip")]
         [HarmonyPrefix]
@@ -15,8 +23,6 @@ namespace Remnants.Patches
         //In time I will learn CodeInstruction so I can replace this in a more clean way.
         private static bool PatchSaveItems(GameNetworkManager __instance)
         {
-            //To stop executing prefixes and skip the original, let the prefix return a bool that returns false.
-            //To let the original run after all prefixes, return a bool that returns true.
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Patching save game");
             if (Remnants.Instance.RemnantsConfig.ShouldSaveRemnantItems.Value == false)
@@ -24,8 +30,22 @@ namespace Remnants.Patches
                 mls.LogInfo("Skipping this mod version of saving and using default version.");
                 return true;
             }
-            var hangarShip = GameObject.Find("HangarShip");
-            GrabbableObject[] array = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject) && grabObj.isInShipRoom).ToArray();
+            //The game cannot detect remnant items with simplemeans as GameObject.Find<GrabbableObject>() 
+            //So this is the best way to find it by this mod self
+            var hangarShip = GameObject.Find(_shipObjName);
+            var grabbableObjectsList = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom || grabObj.isInElevator)).ToList();
+            //Get all remnant items that should be in ship from root
+            var rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+            GameObject[] grabbableObjects = rootGameObjects.Where(gmObject => gmObject.GetComponent<GrabbableObject>() != null).ToArray(); ;
+            GrabbableObject[] remnantRootItemsArray = grabbableObjects.Select(gameObj => gameObj.GetComponent<GrabbableObject>()).ToArray();
+            remnantRootItemsArray = remnantRootItemsArray.Where(grabObj => !(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom || grabObj.isInElevator)).ToArray();
+            //Get all remnant items that should be in ship from  Environment Props 
+            GameObject environmentObj = rootGameObjects.ToList().Find(gameObject => gameObject.name == _environmentObjName);
+            GameObject propObj = environmentObj.transform.Find(_propObjName).gameObject;
+            GrabbableObject[] grabObjArray = propObj.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom || grabObj.isInElevator)).ToArray();
+            grabbableObjectsList.AddRange(remnantRootItemsArray);
+            grabbableObjectsList.AddRange(grabObjArray);
+            var array = grabbableObjectsList.ToArray();
 
             if (array == null || array.Length == 0)
             {
