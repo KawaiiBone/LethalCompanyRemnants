@@ -90,3 +90,7 @@
 #1.2.10
 - Fixed a bug where items in your hand would disappear when lifting off from a moon.
 - Fixed a bug where items in your hand would not save when lifting off from a moon or disconnecting.
+
+#1.2.11
+- Fixed a bug where items in your hand would disappear when lifting off from a moon for non hosts.
+- Fixed a bug where items in your hand would not save when lifting off from a moon or disconnecting for non hosts.
