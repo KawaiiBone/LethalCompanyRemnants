@@ -16,7 +16,6 @@ namespace Remnants.Patches
         #region Variables 
         private static float _courotineDelayTAmount = 11.0f;//same length as in the game
         private static string _propName = "Prop";
-        private static string[] _riskLevelArray = { "Safe", "D", "C", "B", "A", "S", "S+" };
         #endregion
 
         #region HarmonyMethods
@@ -33,16 +32,18 @@ namespace Remnants.Patches
                 return;
             }
 
-            if (!LoadAssetsBodies.HasLoadedAnyAssets || Remnants.Instance.RemnantsConfig.SpawnRarityOfBody.Value == 0)
+            if (!Remnants.Instance.LoadBodyAssets.HasLoadedAnyAssets || Remnants.Instance.RemnantsConfig.SpawnRarityOfBody.Value == 0)
                 return;
 
             var prefabAndRarityList = CreatePrefabAndRarityList();
-            int totalRarityValue = CalculateTotalRarityValue(prefabAndRarityList);
+            SpawnBodyBehaviour SpawningBody = Remnants.Instance.SpawningBody;
+            int totalRarityValue = SpawningBody.CalculateTotalRarityValue(prefabAndRarityList);
+            float spawnChance = SpawningBody.CalculateSpawnChance(StartOfRound.Instance.currentLevel.riskLevel);
             List<RemnantData> scrapItemDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList();
-            float spawnChance = CalculateSpawnChance();
             System.Random random = new System.Random();
             int maxPercentage = 101;
             bool willSpawnBody = false;
+            List<int> indexList = Remnants.Instance.RegisterBodySuits.SuitsIndexList;
             List<NetworkObjectReference> NetworkObjectReferenceList = new List<NetworkObjectReference>();
             List<int> scrapValueList = new List<int>();
             for (int i = 0; i < spawnedScrap.Length; i++)
@@ -63,22 +64,29 @@ namespace Remnants.Patches
                 if (scrapItemDataList.FindIndex(itemData => itemData.RemnantItemName == grabbableObject.itemProperties.name) == -1)
                     continue;
 
-                Vector3 spawnPosition = CalculateNavSpawnPosition(grabbableObject.transform.position);
-                if (spawnPosition == Vector3.zero)
+                if (!SpawningBody.CalculatePositionOnNavMesh(grabbableObject.transform.position, out Vector3 spawnPosition))
                 {
                     mls.LogWarning("Did not found place to spawn body, skipping it.");
                     continue;
                 }
 
-                int bodyIndex = GetRandomBodyIndex(prefabAndRarityList, totalRarityValue, random);
+                NetworkObject netBodyObject = null;
+                int bodyIndex = SpawningBody.GetRandomBodyIndex(prefabAndRarityList, random.Next(totalRarityValue));
                 if (Remnants.Instance.RemnantsConfig.ShouldBodiesBeScrap.Value == false)
                 {
-                    SpawnBody(prefabAndRarityList[bodyIndex].Key, spawnPosition);
+                    netBodyObject = SpawnBody(prefabAndRarityList[bodyIndex].Key, spawnPosition);
                 }
                 else
                 {
-                    NetworkObjectReferenceList.Add(SpawnScrapBody(prefabAndRarityList[bodyIndex].Key, spawnPosition, __instance.spawnedScrapContainer));
+                    netBodyObject = SpawnScrapBody(prefabAndRarityList[bodyIndex].Key, spawnPosition, __instance.spawnedScrapContainer);
+                    NetworkObjectReferenceList.Add(netBodyObject);
                     scrapValueList.Add(Remnants.Instance.RemnantsConfig.BodyScrapValue.Value);
+                }
+               
+                if(indexList.Count != 0)
+                {
+                    int suitIndex = random.Next(indexList.Count);
+                    netBodyObject.GetComponent<BodyGrabbableObject>().SyncIndexSuitServerRpc(suitIndex);
                 }
                 willSpawnBody = false;
             }
@@ -89,9 +97,7 @@ namespace Remnants.Patches
             //Here do courotine for sync scrap
             var couroutine = CoroutineHelper.Instance;
             if (couroutine == null)
-            {
                 couroutine = new GameObject().AddComponent<CoroutineHelper>();
-            }
 
             couroutine.ExecuteAfterDelay(() =>
             {
@@ -101,120 +107,20 @@ namespace Remnants.Patches
         }
         #endregion
         #region Methods
-        private static void SpawnBody(GameObject prefab, Vector3 spawnPosition)
+        private static NetworkObject SpawnBody(GameObject prefab, Vector3 spawnPosition)
         {
-            spawnPosition.y = spawnPosition.y + 1.0f;//Let player control this?
             GameObject defaultBody = UnityEngine.Object.Instantiate(prefab, spawnPosition, UnityEngine.Random.rotation, RoundManager.Instance.mapPropsContainer.transform);
-            //TEST
-            //ChangeSuit(defaultBody, prefab.name);
-            //TEST
-            defaultBody.GetComponent<NetworkObject>().Spawn(true);
+            NetworkObject netObject = defaultBody.GetComponent<NetworkObject>();
+            netObject.Spawn(true);
+            return netObject;
         }
 
         private static NetworkObject SpawnScrapBody(GameObject prefab, Vector3 spawnPosition, Transform parent)
         {
-            spawnPosition.y = spawnPosition.y + 1.0f;//Let player control this?
             GameObject defaultBody = UnityEngine.Object.Instantiate(prefab, spawnPosition, UnityEngine.Random.rotation, parent);
-            //TEST
-            //ChangeSuit(defaultBody, prefab.name);
-            //TEST
-            defaultBody.GetComponent<NetworkObject>().Spawn();
-            return defaultBody.GetComponent<NetworkObject>();
-        }
-
-        private static void ChangeSuit(GameObject gameObject, string originalObjName)
-        {
-            gameObject.GetComponent<BodyGrabbableObject>().UpdateSuit(3);
-            return;
-            Remnants.Instance.Mls.LogError(originalObjName);
-            if (!LoadAssetsBodies.BannedPrefabTexturesChange.Contains(originalObjName))
-            {
-                SkinnedMeshRenderer skinnedMeshedRenderer = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
-                Material suitMaterial = StartOfRound.Instance.unlockablesList.unlockables[Remnants.Instance.RegisterBodySuits.SuitsIndexList[3]].suitMaterial;
-                skinnedMeshedRenderer.material = suitMaterial;
-                for (int i = 0; i < skinnedMeshedRenderer.materials.Length; i++)
-                {
-                    skinnedMeshedRenderer.materials[i] = suitMaterial;
-                }
-                Remnants.Instance.Mls.LogError("Changed texture of: " + originalObjName);
-            }
-        }
-
-        private static Vector3 CalculateNavSpawnPosition(Vector3 grabObjPos)
-        {
-            var mls = Remnants.Instance.Mls;
-            float minDistance = 0.1f;//Let player control this?
-            float mediumDistance = 5.0f;
-            float maxDistance = 6.0f;
-            float moveDistance = 1.0f;
-            int areaMask = -1;
-            if (NavMesh.SamplePosition(grabObjPos, out NavMeshHit navOldHit, minDistance, areaMask))
-            {
-                if (Vector3.Distance(navOldHit.position, grabObjPos) < minDistance)
-                {
-                    mls.LogInfo("Already is on navmesh, spawning body on remnant item.");
-                    return grabObjPos;
-                }
-            }
-
-            if (NavMesh.SamplePosition(grabObjPos, out NavMeshHit navHit, maxDistance, areaMask))
-            {
-                Vector3 navHitYFlat = navHit.position;
-                navHitYFlat.y = grabObjPos.y;
-                Vector3 heading = navHitYFlat - grabObjPos;
-                float distance = heading.magnitude;
-                Vector3 direction = heading / distance;
-                Vector3 position = navHit.position + (direction * moveDistance);
-                if (NavMesh.SamplePosition(position, out NavMeshHit navNewHit, mediumDistance, areaMask))
-                {
-                    mls.LogInfo("Calculated and found position on navmesh, spawning body.");
-                    return navNewHit.position;
-                }
-                else
-                {
-                    mls.LogInfo("Not found calculated position on navmesh using previous position, spawning body.");
-                    return navHit.position;
-                }
-            }
-            else
-            {
-                mls.LogWarning("No location found on navmesh, not spawning body.");
-                return Vector3.zero;
-            }
-        }
-
-        private static float CalculateSpawnChance()
-        {
-            float spawnChance = Remnants.Instance.RemnantsConfig.SpawnRarityOfBody.Value;
-            float spawnBodyModifier = Remnants.Instance.RemnantsConfig.SpawnModifierRiskLevel.Value;
-            int riskLevel = Array.IndexOf(_riskLevelArray, StartOfRound.Instance.currentLevel.riskLevel);
-            if (!Mathf.Approximately(spawnBodyModifier, 0.0f) && riskLevel != -1)
-                spawnChance *= (riskLevel * spawnBodyModifier);
-
-            return spawnChance;
-        }
-
-        private static int GetRandomBodyIndex(List<KeyValuePair<GameObject, int>> prefabAndRarityList, int totalRarityValue, System.Random random)
-        {
-            int randomNumber = random.Next(totalRarityValue);
-            int totalValue = 0;
-            for (int i = 0; i < prefabAndRarityList.Count; ++i)
-            {
-                totalValue += prefabAndRarityList[i].Value;
-                if (totalValue > randomNumber)
-                    return i;
-            }
-            return 0;
-        }
-
-        private static int CalculateTotalRarityValue(List<KeyValuePair<GameObject, int>> prefabAndRarityList)
-        {
-            int totalRarityValue = 0;
-            foreach (var prefabRarity in prefabAndRarityList)
-            {
-                totalRarityValue += prefabRarity.Value;
-            }
-            return totalRarityValue;
+            NetworkObject netObject = defaultBody.GetComponent<NetworkObject>();
+            netObject.Spawn();
+            return netObject;
         }
 
         private static List<KeyValuePair<GameObject, int>> CreatePrefabAndRarityList()

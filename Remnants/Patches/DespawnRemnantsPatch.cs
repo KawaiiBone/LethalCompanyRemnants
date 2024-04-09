@@ -53,7 +53,7 @@ namespace Remnants.Patches
         #endregion
         #region HarmonyMethods
         [HarmonyPatch(typeof(RoundManager), "DespawnPropsAtEndOfRound")]
-        [HarmonyPostfix]//[HarmonyPostfix]HarmonyPrefix
+        [HarmonyPostfix]
 
         public static void DespawnRemnantItemsEndOfRound(object[] __args)
         {
@@ -64,9 +64,9 @@ namespace Remnants.Patches
             if (startOfRound == null)
                 return;
 
-            if (!NetworkManager.Singleton.IsServer/* || !GameNetworkManager.Instance.isHostingGame*/)
+            if (!NetworkManager.Singleton.IsServer)
                 return;
-            //The game cannot detect remnant items with simplemeans as GameObject.Find<GrabbableObject>() 
+            //The game cannot detect remnant items with simple means as GameObject.Find<GrabbableObject>() 
             //So this is the best way to find it by this mod self
             //Despawn remnant items in ship
             if ((StartOfRound.Instance.allPlayersDead || despawnAllItems) && Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItems.Value == true)
@@ -89,8 +89,8 @@ namespace Remnants.Patches
             DespawnItems(grabObjArray, true, despawnAllItems, _propObjName + " in " + _environmentObjName);
         }
 
-        [HarmonyPatch(typeof(GameNetworkManager), "DisconnectProcess")]//DisconnectProcess//Disconnect
-        [HarmonyPrefix]//HarmonyPostfix//HarmonyPrefix
+        [HarmonyPatch(typeof(GameNetworkManager), "DisconnectProcess")]
+        [HarmonyPrefix]
         public static void DespawnRemnantItemsOnDisconnect(GameNetworkManager __instance)
         {
             if (!__instance.isHostingGame)
@@ -103,14 +103,13 @@ namespace Remnants.Patches
         }
 
 
-        [HarmonyPatch(typeof(GameNetworkManager), "StartDisconnect")]//DisconnectProcess//Disconnect//StartDisconnect
-        [HarmonyPrefix]//HarmonyPostfix//HarmonyPrefix
+        [HarmonyPatch(typeof(GameNetworkManager), "StartDisconnect")]
+        [HarmonyPrefix]
 
         private static void DespawnRemnantItemsOnStartDisconnect()
         {
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Patching Despawn Remnant Items at start disconnect.");
-
             //Get all remnant items that should be in ship from root
             var hangarShip = GameObject.Find(_shipObjName);
             var grabbableObjectsList = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject)).ToList();
@@ -134,11 +133,8 @@ namespace Remnants.Patches
                     networkOBJ.DontDestroyWithOwner = false;
                     mls.LogInfo(grabbableObject.name + " DontDestroyWithOwner to false");
                 }
-
             }
-
         }
-
         #endregion
     }
 }

@@ -17,7 +17,7 @@ namespace Remnants.Behaviours
         private List<int> _suitsIndexList = new List<int>();
         public List<int> SuitsIndexList
         {
-            get { return _suitsIndexList; } 
+            get {return _suitsIndexList;} 
         }
         #endregion
 

@@ -94,3 +94,6 @@
 #1.2.11
 - Fixed a bug where items in your hand would disappear when lifting off from a moon for non hosts.
 - Fixed a bug where items in your hand would not save when lifting off from a moon or disconnecting for non hosts.
+
+#1.2.12
+- Added the random suits feature, where bodies will have random suits on rather than just the default one.

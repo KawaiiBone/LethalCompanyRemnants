@@ -37,7 +37,7 @@ namespace Remnants.Behaviours
                 mls.LogInfo("startOfRound is null or is already registering bodies to moons.");
                 return;
             }
-            if (!Data.LoadAssetsBodies.HasLoadedAnyAssets)
+            if (!Remnants.Instance.LoadBodyAssets.HasLoadedAnyAssets)
             {
                 mls.LogWarning("Did not load any body assets, skipping registering bodies");
                 return;
@@ -57,7 +57,7 @@ namespace Remnants.Behaviours
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("New moon found attempting to register bodies to moon: " + newLevel.PlanetName);
             PlanetsBodiesRarities.Add(newLevel.PlanetName, new Dictionary<string, int>());
-            var enemiesAndBodiesNames = Data.LoadAssetsBodies.EnemiesAndBodiesNames;
+            var enemiesAndBodiesNames = Remnants.Instance.LoadBodyAssets.EnemiesAndBodiesNames;
             foreach (var enemyWithRarity in newLevel.Enemies)
             {
                 if (enemyWithRarity.enemyType.isOutsideEnemy)

@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace Remnants.Data
 {
-    internal class LoadAssetsBodies
+    public class LoadAssetsBodies
     {
         #region Variables
         private bool _hasInitialized = false;
@@ -24,10 +24,9 @@ namespace Remnants.Data
         private AssetBundle _assetBundleBodies = null;
         private string[] _bodiesFileNamesArray = { "DefaultBodyProp", "HeadBurstBodyProp", "CoilHeadBodyProp", "WebbedBodyProp" };
         private string[] _bodiesItemsFileNamesArray = { "DefaultBodyItem", "HeadBurstBodyItem", "CoilBodyItem", "WebbedBodyItem" };
-        public static KeyValuePair<string, string>[] EnemiesAndBodiesNames = new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Any", "DefaultBody"), new KeyValuePair<string, string>("Spring", "CoilHeadBody"), new KeyValuePair<string, string>("Bunker Spider", "WebbedBody"), new KeyValuePair<string, string>("Girl", "HeadBurstBody") };
-        public static string[] BannedPrefabTexturesChange = { "WebbedBody", "WebbedBodyProp" };
-
-        public static bool HasLoadedAnyAssets = false;
+        public KeyValuePair<string, string>[] EnemiesAndBodiesNames = new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Any", "DefaultBody"), new KeyValuePair<string, string>("Spring", "CoilHeadBody"), new KeyValuePair<string, string>("Bunker Spider", "WebbedBody"), new KeyValuePair<string, string>("Girl", "HeadBurstBody") };
+        public string[] BannedPrefabTexturesChange = { "WebbedBody", "WebbedBodyProp" };
+        public bool HasLoadedAnyAssets = false;
         #endregion
 
         #region Initialize 
@@ -118,15 +117,11 @@ namespace Remnants.Data
             bodyItem.dropSFX = dropSFX;
             bodyItem.grabSFX = grabSFX;
             bodyItem.spawnPrefab.AddComponent<BodyMovementBehaviour>();
-            //TEST
-            //Destroy(bodyItem.spawnPrefab.GetComponent<PhysicsProp>());
-            //UnityEngine.GameObject.Destroy(bodyItem.spawnPrefab.GetComponent<PhysicsProp>());
-            //BodyGrabbableObject bodyGOBJ = bodyItem.spawnPrefab.AddComponent<BodyGrabbableObject>();
-            //bodyGOBJ.itemProperties = bodyItem;
-            //bodyGOBJ.grabbable = true;
-            //bodyGOBJ.grabbableToEnemies = true;
-            //bodyGOBJ.isInFactory = true;
-            //TEST
+            BodyGrabbableObject bodyGOBJ = bodyItem.spawnPrefab.AddComponent<BodyGrabbableObject>();
+            bodyGOBJ.itemProperties = bodyItem;
+            bodyGOBJ.grabbable = true;
+            bodyGOBJ.grabbableToEnemies = true;
+            bodyGOBJ.isInFactory = true;
             Items.RegisterItem(bodyItem);
             LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(bodyItem.spawnPrefab);
             HasLoadedAnyAssets = true;
