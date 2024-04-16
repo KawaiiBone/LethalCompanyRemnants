@@ -69,12 +69,13 @@ namespace Remnants.Patches
             //The game cannot detect remnant items with simple means as GameObject.Find<GrabbableObject>() 
             //So this is the best way to find it by this mod self
             //Despawn remnant items in ship
-            if ((StartOfRound.Instance.allPlayersDead || despawnAllItems) && Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItems.Value == true)
+            if (despawnAllItems || (StartOfRound.Instance.allPlayersDead /*|| despawnAllItems*/) && Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItems.Value == true)
             {
                 var hangarShip = GameObject.Find(_shipObjName);
                 GrabbableObject[] remnantShipItemsArray = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(
-                    grabObj => (!(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom || grabObj.isInElevator)) &&
-                    Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == grabObj.itemProperties.itemName) != -1).ToArray();
+                    grabObj => (!(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom || grabObj.isInElevator))).ToArray();
+                remnantShipItemsArray = remnantShipItemsArray.Where(remnantItem => remnantItem.itemProperties.isScrap && 
+                Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == remnantItem.itemProperties.itemName || scrapItem.origItem.itemName == remnantItem.itemProperties.itemName) != -1).ToArray();
                 DespawnItems(remnantShipItemsArray, false, despawnAllItems, _shipObjName);
             }
             //Despawn remnant items in root objects
@@ -105,7 +106,6 @@ namespace Remnants.Patches
 
         [HarmonyPatch(typeof(GameNetworkManager), "StartDisconnect")]
         [HarmonyPrefix]
-
         private static void DespawnRemnantItemsOnStartDisconnect()
         {
             var mls = Remnants.Instance.Mls;

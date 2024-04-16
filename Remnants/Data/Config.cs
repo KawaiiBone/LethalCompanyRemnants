@@ -100,7 +100,7 @@ namespace Remnants.Data
             MaxRemnantBatteryCharge = _configFile.Bind(_generalSection, "Max remnant battery charge", 90, "Maximum remnant item battery charge on first finding it.");
             MaxRemnantBatteryCharge.Value = Mathf.Clamp(MaxRemnantBatteryCharge.Value, MinRemnantBatteryCharge.Value, maxPercentage);
 
-            RemnantScrapCostPercentage = _configFile.Bind(_generalSection, "Remnant item scrap cost percentage", 0, "The percentage of how much worth of scrap a remnant item is compared to its normal credit cost. \nFrom 0 percentage scrap cost to 1000 percentage.");
+            RemnantScrapCostPercentage = _configFile.Bind(_generalSection, "Remnant item scrap cost percentage", 5, "The percentage of how much worth of scrap a remnant item is compared to its normal credit cost. \nFrom 0 percentage scrap cost to 1000 percentage.");
             RemnantScrapCostPercentage.Value = Mathf.Clamp(RemnantScrapCostPercentage.Value, 0, (int)maxItemCost);
 
             ShouldBodiesBeScrap = _configFile.Bind(_generalBodySection, "Should bodies be scrap", true, "When the bodies are a scrap they can be grabbed, have a scrap value and can be sold. \nIf not then it becomes a prop and cannot be interacted with.");

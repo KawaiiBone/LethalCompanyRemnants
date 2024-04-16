@@ -97,3 +97,9 @@
 
 #1.2.12
 - Added the random suits feature, where bodies will have random suits on rather than just the default one.
+
+#1.2.13
+- Increased random suits feature stability, now when something breaks it should show the default suit instead of something wrong.
+- Fixed bug saving issue with other mods that would detect some mod items as to be saved even if they were not in the ship.
+- Increased compatibility with other mods for registering store items as remnant items.
+- Tweaked the config default value of remnant items scrap cost from 0% to 5% of its credit cost, to show that you can tweak it in the config.

@@ -33,16 +33,16 @@ namespace Remnants.Patches
             //The game cannot detect remnant items with simplemeans as GameObject.Find<GrabbableObject>() 
             //So this is the best way to find it by this mod self
             var hangarShip = GameObject.Find(_shipObjName);
-            var grabbableObjectsList = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom || grabObj.isInElevator)).ToList();
+            var grabbableObjectsList = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom && grabObj.isInElevator)).ToList();
             //Get all remnant items that should be in ship from root
             var rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
             GameObject[] grabbableObjects = rootGameObjects.Where(gmObject => gmObject.GetComponent<GrabbableObject>() != null).ToArray(); ;
             GrabbableObject[] remnantRootItemsArray = grabbableObjects.Select(gameObj => gameObj.GetComponent<GrabbableObject>()).ToArray();
-            remnantRootItemsArray = remnantRootItemsArray.Where(grabObj => !(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom || grabObj.isInElevator)).ToArray();
+            remnantRootItemsArray = remnantRootItemsArray.Where(grabObj => !(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom && grabObj.isInElevator)).ToArray();
             //Get all remnant items that should be in ship from  Environment Props 
             GameObject environmentObj = rootGameObjects.ToList().Find(gameObject => gameObject.name == _environmentObjName);
             GameObject propObj = environmentObj.transform.Find(_propObjName).gameObject;
-            GrabbableObject[] grabObjArray = propObj.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom || grabObj.isInElevator)).ToArray();
+            GrabbableObject[] grabObjArray = propObj.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom && grabObj.isInElevator)).ToArray();
             grabbableObjectsList.AddRange(remnantRootItemsArray);
             grabbableObjectsList.AddRange(grabObjArray);
             var array = grabbableObjectsList.ToArray();

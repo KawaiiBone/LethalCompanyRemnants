@@ -59,6 +59,8 @@ namespace Remnants.Behaviours
             {
                 SkinnedMeshRenderer skinnedMeshedRenderer = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
                 Material suitMaterial = StartOfRound.Instance.unlockablesList.unlockables[_saveSuitIndex].suitMaterial;
+                if (suitMaterial == null)
+                    return;
                 skinnedMeshedRenderer.material = suitMaterial;
                 for (int i = 0; i < skinnedMeshedRenderer.materials.Length; i++)
                 {

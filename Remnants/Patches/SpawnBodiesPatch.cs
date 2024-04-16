@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using LethalLib.Modules;
 using Remnants.Behaviours;
 using Remnants.Data;
 using Remnants.utilities;
@@ -35,25 +36,10 @@ namespace Remnants.Patches
             if (!Remnants.Instance.LoadBodyAssets.HasLoadedAnyAssets || Remnants.Instance.RemnantsConfig.SpawnRarityOfBody.Value == 0)
                 return;
 
-            var prefabAndRarityList = CreatePrefabAndRarityList();
-            SpawnBodyBehaviour SpawningBody = Remnants.Instance.SpawningBody;
-            int totalRarityValue = SpawningBody.CalculateTotalRarityValue(prefabAndRarityList);
-            float spawnChance = SpawningBody.CalculateSpawnChance(StartOfRound.Instance.currentLevel.riskLevel);
+            List<Vector3> remnantItemsPosition = new List<Vector3>();
             List<RemnantData> scrapItemDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList();
-            System.Random random = new System.Random();
-            int maxPercentage = 101;
-            bool willSpawnBody = false;
-            List<int> indexList = Remnants.Instance.RegisterBodySuits.SuitsIndexList;
-            List<NetworkObjectReference> NetworkObjectReferenceList = new List<NetworkObjectReference>();
-            List<int> scrapValueList = new List<int>();
             for (int i = 0; i < spawnedScrap.Length; i++)
             {
-                if (!willSpawnBody)
-                    willSpawnBody = random.Next(maxPercentage) <= spawnChance;
-
-                if (!willSpawnBody)
-                    continue;
-
                 if (!spawnedScrap[i].TryGet(out var networkObject))
                     continue;
 
@@ -64,7 +50,31 @@ namespace Remnants.Patches
                 if (scrapItemDataList.FindIndex(itemData => itemData.RemnantItemName == grabbableObject.itemProperties.name) == -1)
                     continue;
 
-                if (!SpawningBody.CalculatePositionOnNavMesh(grabbableObject.transform.position, out Vector3 spawnPosition))
+                remnantItemsPosition.Add(grabbableObject.transform.position);          
+            }
+
+            if (remnantItemsPosition.Count == 0)
+                return;
+
+            List<int> indexList = Remnants.Instance.RegisterBodySuits.SuitsIndexList;
+            List<NetworkObjectReference> NetworkObjectReferenceList = new List<NetworkObjectReference>();
+            List<int> scrapValueList = new List<int>();
+            SpawnBodyBehaviour SpawningBody = Remnants.Instance.SpawningBody;
+            var prefabAndRarityList = CreatePrefabAndRarityList();
+            int totalRarityValue = SpawningBody.CalculateTotalRarityValue(prefabAndRarityList);
+            float spawnChance = SpawningBody.CalculateSpawnChance(StartOfRound.Instance.currentLevel.riskLevel);
+            System.Random random = new System.Random();
+            int maxPercentage = 101;
+            bool willSpawnBody = false;
+            foreach (var itemPosition in remnantItemsPosition)
+            {
+                if (!willSpawnBody)
+                    willSpawnBody = random.Next(maxPercentage) <= spawnChance;
+
+                if (!willSpawnBody)
+                    continue;
+
+                if (!SpawningBody.CalculatePositionOnNavMesh(itemPosition, out Vector3 spawnPosition))
                 {
                     mls.LogWarning("Did not found place to spawn body, skipping it.");
                     continue;
@@ -82,10 +92,10 @@ namespace Remnants.Patches
                     NetworkObjectReferenceList.Add(netBodyObject);
                     scrapValueList.Add(Remnants.Instance.RemnantsConfig.BodyScrapValue.Value);
                 }
-               
-                if(indexList.Count != 0)
+
+                if (indexList.Count != 0)
                 {
-                    int suitIndex = random.Next(indexList.Count);
+                    int suitIndex = indexList[random.Next(indexList.Count)];               
                     netBodyObject.GetComponent<BodyGrabbableObject>().SyncIndexSuitServerRpc(suitIndex);
                 }
                 willSpawnBody = false;
@@ -156,9 +166,7 @@ namespace Remnants.Patches
                 bodiesArray[netPrefab.Prefab.name]
                 ));
             }
-        }
-
-   
+        }  
         #endregion
     }
 }

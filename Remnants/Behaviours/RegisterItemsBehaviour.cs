@@ -105,7 +105,7 @@ namespace Remnants.Behaviours
 
         private bool IsAlreadyScrap(Item item)
         {
-            return (Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == item.itemName) != -1 || item.isScrap);
+            return item.isScrap || Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == item.itemName || scrapItem.origItem.itemName == item.itemName) != -1;
         }
 
         private bool IsPrefabIncorrect(GameObject gameObject)
