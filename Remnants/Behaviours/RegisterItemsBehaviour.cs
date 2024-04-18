@@ -39,24 +39,17 @@ namespace Remnants.Behaviours
             var mls = Remnants.Instance.Mls;
             if (StartOfRound.Instance != null)
             {
-                mls.LogInfo("In lobby, loading in no more items");
                 SceneManager.sceneLoaded -= StoreItemsRegisterAsScrap;
                 _scrapDataListBehaviour.UpdateScrapDataList();
                 return;
             }
 
             if (_isAddingItems)
-            {
-                mls.LogInfo("Did not load items because items are already loading in.");
                 return;
-            }
 
             List<Item> allItems = Resources.FindObjectsOfTypeAll<Item>().Concat(UnityEngine.Object.FindObjectsByType<Item>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)).ToList();
             if (allItems.Count == 0 || allItems == null)
-            {
-                mls.LogInfo("Did not load items because there are no items to load.");
                 return;
-            }
 
             mls.LogInfo("Loading in items.");
             _isAddingItems = true;

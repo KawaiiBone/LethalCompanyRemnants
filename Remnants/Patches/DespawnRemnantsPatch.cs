@@ -9,14 +9,8 @@ namespace Remnants.Patches
 {
     internal class DespawnRemnantsPatch
     {
-        #region Variables
-        private static string _shipObjName = "HangarShip";
-        private static string _environmentObjName = "Environment";
-        private static string _propObjName = "Props";
-        #endregion
-
         #region Methods
-        private static void DespawnItems(GrabbableObject[] grabbableObjects, bool skipShipRoom, bool despawnALlItems ,string placeOfDespawning)
+        private static void DespawnItems(GrabbableObject[] grabbableObjects, bool skipShipRoom, bool despawnALlItems, string placeOfDespawning)
         {
             var mls = Remnants.Instance.Mls;
             if (grabbableObjects == null || grabbableObjects.Length == 0)
@@ -35,7 +29,7 @@ namespace Remnants.Patches
 
                 if (!despawnALlItems && (skipShipRoom && (grabbableObject.isInShipRoom || grabbableObject.isInElevator)))
                     continue;
-                
+
                 if (grabbableObject.isHeld && grabbableObject.playerHeldBy != null)
                 {
                     if (despawnALlItems)
@@ -69,25 +63,13 @@ namespace Remnants.Patches
             //The game cannot detect remnant items with simple means as GameObject.Find<GrabbableObject>() 
             //So this is the best way to find it by this mod self
             //Despawn remnant items in ship
-            if (despawnAllItems || (StartOfRound.Instance.allPlayersDead /*|| despawnAllItems*/) && Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItems.Value == true)
+            var itemsLocationBeh = Remnants.Instance.RegisterItemLocationsBeh;
+            if (despawnAllItems || (StartOfRound.Instance.allPlayersDead && Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItems.Value == true))
             {
-                var hangarShip = GameObject.Find(_shipObjName);
-                GrabbableObject[] remnantShipItemsArray = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(
-                    grabObj => (!(grabObj is RagdollGrabbableObject) && (grabObj.isInShipRoom || grabObj.isInElevator))).ToArray();
-                remnantShipItemsArray = remnantShipItemsArray.Where(remnantItem => remnantItem.itemProperties.isScrap && 
-                Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == remnantItem.itemProperties.itemName || scrapItem.origItem.itemName == remnantItem.itemProperties.itemName) != -1).ToArray();
-                DespawnItems(remnantShipItemsArray, false, despawnAllItems, _shipObjName);
+                DespawnItems(itemsLocationBeh.GetShipRemnantItems(), !itemsLocationBeh.ShipObjectLocation.IsShipRoom, despawnAllItems, itemsLocationBeh.ShipObjectLocation.ObjectLocationsNames.Last());
             }
-            //Despawn remnant items in root objects
-            var rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-            GameObject[] grabbableObjects = rootGameObjects.Where(gmObject => gmObject.GetComponent<GrabbableObject>() != null).ToArray(); ;
-            GrabbableObject[] remnantRootItemsArray = grabbableObjects.Select(gameObj => gameObj.GetComponent<GrabbableObject>()).ToArray();
-            DespawnItems(remnantRootItemsArray, true, despawnAllItems, "root objects");
-            //Despawn remnant items in Environment Props array
-            GameObject environmentObj = rootGameObjects.ToList().Find(gameObject => gameObject.name == _environmentObjName);
-            GameObject propObj = environmentObj.transform.Find(_propObjName).gameObject;
-            GrabbableObject[] grabObjArray = propObj.GetComponentsInChildren<GrabbableObject>();
-            DespawnItems(grabObjArray, true, despawnAllItems, _propObjName + " in " + _environmentObjName);
+            DespawnItems(itemsLocationBeh.GetItemsInProps(), !itemsLocationBeh.PropObjectLocation.IsShipRoom, despawnAllItems, itemsLocationBeh.PropObjectLocation.ObjectLocationsNames.Last());
+            DespawnItems(itemsLocationBeh.GetItemsInRoot(), !itemsLocationBeh.RootObjectLocation.IsShipRoom, despawnAllItems, "Root objects");
         }
 
         [HarmonyPatch(typeof(GameNetworkManager), "DisconnectProcess")]
@@ -111,23 +93,14 @@ namespace Remnants.Patches
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Patching Despawn Remnant Items at start disconnect.");
             //Get all remnant items that should be in ship from root
-            var hangarShip = GameObject.Find(_shipObjName);
-            var grabbableObjectsList = hangarShip.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject)).ToList();
-            //Get all remnant items that should be in ship from root
-            var rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-            GameObject[] grabbableObjects = rootGameObjects.Where(gmObject => gmObject.GetComponent<GrabbableObject>() != null).ToArray(); ;
-            GrabbableObject[] remnantRootItemsArray = grabbableObjects.Select(gameObj => gameObj.GetComponent<GrabbableObject>()).ToArray();
-            remnantRootItemsArray = remnantRootItemsArray.Where(grabObj => !(grabObj is RagdollGrabbableObject)).ToArray();
-            //Get all remnant items that should be in ship from  Environment Props 
-            GameObject environmentObj = rootGameObjects.ToList().Find(gameObject => gameObject.name == _environmentObjName);
-            GameObject propObj = environmentObj.transform.Find(_propObjName).gameObject;
-            GrabbableObject[] grabObjArray = propObj.GetComponentsInChildren<GrabbableObject>().Where(grabObj => !(grabObj is RagdollGrabbableObject)).ToArray();
-            grabbableObjectsList.AddRange(remnantRootItemsArray);
-            grabbableObjectsList.AddRange(grabObjArray);
+            var itemsLocationBeh = Remnants.Instance.RegisterItemLocationsBeh;
+            var grabbableObjectsList = itemsLocationBeh.GetShipItems().ToList();
+            grabbableObjectsList.AddRange(itemsLocationBeh.GetItemsInProps());
+            grabbableObjectsList.AddRange(itemsLocationBeh.GetItemsInRoot());
 
             foreach (var grabbableObject in grabbableObjectsList)
             {
-               var networkOBJ = grabbableObject.GetComponent<NetworkObject>();
+                var networkOBJ = grabbableObject.GetComponent<NetworkObject>();
                 if (networkOBJ != null)
                 {
                     networkOBJ.DontDestroyWithOwner = false;

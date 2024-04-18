@@ -39,10 +39,8 @@ namespace Remnants.Behaviours
             var mls = Remnants.Instance.Mls;
             var startOfRound = StartOfRound.Instance;
             if (startOfRound == null || _isRegistering)
-            {
-                mls.LogInfo("startOfRound is null or is already registering indexes of suits.");
                 return;
-            }
+
             _isRegistering = true;
             mls.LogInfo("Registering suits indexes.");
             for (int i = 0; i < startOfRound.unlockablesList.unlockables.Count; i++)

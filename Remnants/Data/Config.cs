@@ -26,6 +26,7 @@ namespace Remnants.Data
         public ConfigEntry<int> RemnantScrapCostPercentage;
         public ConfigEntry<bool> ShouldSaveRemnantItems;
         public ConfigEntry<bool> ShouldDespawnRemnantItems;
+        public ConfigEntry<bool> ShouldAlwaysDespawnRemnantItems;
         public ConfigEntry<bool> ShouldBodiesBeScrap;
         public ConfigEntry<int> BodyScrapValue;
         public Dictionary<Levels.LevelTypes, Tuple<int, int>> LevelRarities = new Dictionary<Levels.LevelTypes, Tuple<int, int>>();
@@ -114,10 +115,10 @@ namespace Remnants.Data
             BodyScrapValue = _configFile.Bind(_generalBodySection, "Scrap value of the bodies", 5, "The scrap value of the bodies that this mod spawns. \nThis only works if the bodies are set to scrap.");
             BodyScrapValue.Value = Mathf.Clamp(BodyScrapValue.Value, 0, (int)maxItemCost);
 
-            MaxRemnantItemCost = _configFile.Bind(_otherSection, "Max value to calculate rarity", 400.0f, "This value exists to calculate the spawn rarity of specific remnant items. \nThis rarity is determined by their original store cost. \nThe more expensive an item is, the less chance it has to spawn. \nThe value below caps the max cost of items in service of the calculation of an item's rarity. \nThe default value has already been optimized.");
+            MaxRemnantItemCost = _configFile.Bind(_otherSection, "Max value to calculate rarity", 400.0f, "This value helps calculating the spawn rarity, the rarity is calculated by the credit cost of the shop item. \nThis caps the maximum cost of an item and setting it as min spawn rarity if it is the same or higher than this value. \nThe more an item cost, the less spawn chance/spawn rarity it has.");
             MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, minItemCost, maxItemCost);
 
-            _bannedNamesFromRegistering = _configFile.Bind(_otherSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice,Key", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
+            _bannedNamesFromRegistering = _configFile.Bind(_otherSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice,Key,Error", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
 
             _minRemnantLevelRarities = new List<ConfigEntry<int>>();
             _maxRemnantLevelRarities = new List<ConfigEntry<int>>();
@@ -139,6 +140,7 @@ namespace Remnants.Data
 
             ShouldSaveRemnantItems = _configFile.Bind(_saveLoadSection, "Save remnant items", true, "This ensures that the remnant items are saved in the ship when you reload the lobby.");
             ShouldDespawnRemnantItems = _configFile.Bind(_saveLoadSection, "Despawn remnant items on party wipe", true, "On party wipe all items are despawned from the ship, this ensures that remnant items also are despawned. \nIf you use a mod that prevents items from being despawned, here you can edit it too for remnant items.");
+            ShouldAlwaysDespawnRemnantItems = _configFile.Bind(_saveLoadSection, "Always despawn remnant items", false, "Despawns all remnant items when going away from moons, even if it is in the shiproom and you are holding it.");
 
             ConfigScrapDataList = _configRemnantDataPairList.ConvertAll(itemData =>
                      _configFile.Bind(_remnantsSection, itemData.Name, true, itemData.Discription));

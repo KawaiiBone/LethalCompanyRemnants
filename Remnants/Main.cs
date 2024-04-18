@@ -4,6 +4,8 @@ using HarmonyLib;
 using Remnants.Patches;
 using Remnants.Behaviours;
 using Remnants.Data;
+using UnityEngine;
+using System.Collections.Generic;
 
 namespace Remnants
 {
@@ -25,7 +27,10 @@ namespace Remnants
         public Data.Config RemnantsConfig = new Data.Config();
         public RegisterBodySuitsBehaviour RegisterBodySuits = new RegisterBodySuitsBehaviour();
         public LoadAssetsBodies LoadBodyAssets = new LoadAssetsBodies();
-        public SpawnBodyBehaviour SpawningBody = new SpawnBodyBehaviour();
+        public SpawnBodiesBehaviour SpawningBodyBeh = new SpawnBodiesBehaviour();
+        public RemnantItemsBehaviour RemnantItemsBeh = new RemnantItemsBehaviour();
+        public RandomizeBatteriesBehaviour ItemsBatteriesBeh = new RandomizeBatteriesBehaviour();
+        public RegisterItemLocationsBehaviour RegisterItemLocationsBeh = new RegisterItemLocationsBehaviour();
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
         private RegisterCustomMoonsData _registerCustomMoonsData = new RegisterCustomMoonsData();
@@ -41,10 +46,8 @@ namespace Remnants
 
             Mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
             Mls.LogInfo("modGUID has started");
-            _harmony.PatchAll(typeof(ScrapBatteryPatch));
-            _harmony.PatchAll(typeof(SpawnBodiesPatch));
+            _harmony.PatchAll(typeof(RemnantItemsPatch));
             _harmony.PatchAll(typeof(SpawnableScrapPatch));
-            //_harmony.PatchAll(typeof(OccludeAudioPatch));
             _harmony.PatchAll(typeof(SaveGamePatch));
             _harmony.PatchAll(typeof(DespawnRemnantsPatch));
             _harmony.PatchAll(typeof(BodyGrabbableObject));
@@ -55,7 +58,9 @@ namespace Remnants
             _registerCustomMoonsData.Initialize();
             LoadBodyAssets.Initialize();
             RegisterBodySuits.Initialize();
-            SpawningBody.Initialize();
+            SpawningBodyBeh.Initialize();
+            ItemsBatteriesBeh.Initialize();
+            RegisterItemLocationsBeh.Initialize();
             Mls.LogInfo("modGUID has loaded");
         }
         #endregion

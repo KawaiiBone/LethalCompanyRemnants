@@ -33,23 +33,15 @@ namespace Remnants.Behaviours
             var mls = Remnants.Instance.Mls;
             var startOfRound = StartOfRound.Instance;
             if (startOfRound == null || _isRegistering)
-            {
-                mls.LogInfo("startOfRound is null or is already registering bodies to moons.");
                 return;
-            }
             if (!Remnants.Instance.LoadBodyAssets.HasLoadedAnyAssets)
-            {
-                mls.LogWarning("Did not load any body assets, skipping registering bodies");
                 return;
-            }
 
             mls.LogInfo("Registering bodies to moons");
             _isRegistering = true;
             RegisterData(startOfRound.levels);
             SceneManager.sceneLoaded -= RegisterBodiesToMoons;
             _isRegistering = false;
-
-
         }
 
         public void RegisterBodiesToNewMoon(SelectableLevel newLevel)

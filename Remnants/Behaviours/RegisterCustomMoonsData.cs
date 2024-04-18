@@ -30,24 +30,17 @@ namespace Remnants.Behaviours
             var mls = Remnants.Instance.Mls;
             if (StartOfRound.Instance != null)
             {
-                mls.LogInfo("StartOfRound found, registering no more moons data.");
                 SceneManager.sceneLoaded -= RegisterMoonsData;
                 UpdateConfigCustomMoonList();
                 return;
             }
 
             if (_isRegistering)
-            {
-                mls.LogInfo("Already registering moons data.");
                 return;
-            }
 
             List<SelectableLevel> selectableLevels = Resources.FindObjectsOfTypeAll<SelectableLevel>().Concat(UnityEngine.Object.FindObjectsByType<SelectableLevel>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)).ToList();
             if (selectableLevels == null || selectableLevels.Count == 0)
-            {
-                mls.LogInfo("Did not load SelectableLevels because there are no SelectableLevels to load.");
                 return;
-            }
 
             _isRegistering = true;
             mls.LogInfo("Registering custom moons data.");
