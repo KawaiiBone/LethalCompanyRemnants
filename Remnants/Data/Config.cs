@@ -19,6 +19,7 @@ namespace Remnants.Data
         public ConfigEntry<int> MinRemnantBatteryCharge;
         public ConfigEntry<int> MaxRemnantBatteryCharge;
         public List<ConfigEntry<bool>> ConfigScrapDataList;
+        public List<ConfigEntry<bool>> ConfigSuitsDataList;
         public ConfigEntry<bool> UseSpecificLevelRarities;
         public ConfigEntry<float> MaxRemnantItemCost;
         public ConfigEntry<int> SpawnRarityOfBody;
@@ -38,7 +39,9 @@ namespace Remnants.Data
         private List<ConfigEntry<int>> _maxRemnantCustomLevelRarities = new List<ConfigEntry<int>>();
         private List<ConfigDataValue<bool>> _configRemnantDataPairList = new List<ConfigDataValue<bool>>();
         private List<ConfigDataValue<int>> _configCustomLevelsRarities = new List<ConfigDataValue<int>>();
+        private List<ConfigDataValue<bool>> _configSuitsDataList = new List<ConfigDataValue<bool>>();
         private ConfigEntry<string> _bannedNamesFromRegistering;
+        private ConfigEntry<string> _overriddenScrapItems;
         private ConfigFile _configFile;
         private string _configFileName = "\\Remnants.cfg";
         private string _generalSection = "General";
@@ -47,6 +50,7 @@ namespace Remnants.Data
         private string _customLevelsSection = "ModdedLevels";
         private string _otherSection = "Other";
         private string _remnantsSection = "Remnants";
+        private string _suitsSection = "Suits";
         private string _saveLoadSection = "Save/load";
         private string _bannedPlanetName = "71 Gordion";
 
@@ -109,7 +113,7 @@ namespace Remnants.Data
             SpawnRarityOfBody = _configFile.Bind(_generalBodySection, "Body spawn rarity", 2, "This number is the chance that a body spawns next to an remnant item.");
             SpawnRarityOfBody.Value = Mathf.Clamp(SpawnRarityOfBody.Value, 0, maxPercentage);
 
-                        SpawnModifierRiskLevel = _configFile.Bind(_generalBodySection, "Body spawn modifier per moon risk level", 1.2f, "By increasing this modifier you will increase the spawnchance of the body per risk level moon.");
+            SpawnModifierRiskLevel = _configFile.Bind(_generalBodySection, "Body spawn modifier per moon risk level", 1.2f, "By increasing this modifier you will increase the spawnchance of the body per risk level moon.");
             SpawnModifierRiskLevel.Value = Mathf.Clamp(SpawnModifierRiskLevel.Value, 0.0f, 10.0f);
 
             BodyScrapValue = _configFile.Bind(_generalBodySection, "Scrap value of the bodies", 5, "The scrap value of the bodies that this mod spawns. \nThis only works if the bodies are set to scrap.");
@@ -119,6 +123,8 @@ namespace Remnants.Data
             MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, minItemCost, maxItemCost);
 
             _bannedNamesFromRegistering = _configFile.Bind(_otherSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice,Key,Error", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
+            _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
+
 
             _minRemnantLevelRarities = new List<ConfigEntry<int>>();
             _maxRemnantLevelRarities = new List<ConfigEntry<int>>();
@@ -145,6 +151,8 @@ namespace Remnants.Data
             ConfigScrapDataList = _configRemnantDataPairList.ConvertAll(itemData =>
                      _configFile.Bind(_remnantsSection, itemData.Name, true, itemData.Discription));
 
+            ConfigSuitsDataList = _configSuitsDataList.ConvertAll(itemData =>
+                     _configFile.Bind(_suitsSection, itemData.Name, true, itemData.Discription));
 
             _minRemnantCustomLevelRarities = new List<ConfigEntry<int>>();
             _maxRemnantCustomLevelRarities = new List<ConfigEntry<int>>();
@@ -187,6 +195,18 @@ namespace Remnants.Data
                         Value = Convert.ToInt32(configDataInt.StringValue)
                     });
             }
+
+            var configSuitsSection = GetConfigSectionData(_suitsSection);
+            if (configSuitsSection != null || configSuitsSection.Count > 0)
+            {
+                _configSuitsDataList = configSuitsSection.ConvertAll(configDataSuit =>
+                 new ConfigDataValue<bool>
+                 {
+                     Name = configDataSuit.Name,
+                     Discription = configDataSuit.Discription,
+                     Value = Convert.ToBoolean(configDataSuit.StringValue)
+                 });
+            }
         }
 
 
@@ -195,6 +215,12 @@ namespace Remnants.Data
             if (_bannedNamesFromRegistering.Value.IsNullOrWhiteSpace())
                 return new List<string>();
             return _bannedNamesFromRegistering.Value.Split(',').ToList();
+        }
+        public List<string> GetOverriddenScrapItems()
+        {
+            if (_overriddenScrapItems.Value.IsNullOrWhiteSpace())
+                return new List<string>();
+            return _overriddenScrapItems.Value.Split(',').ToList();
         }
 
         public List<RemnantData> GetRemnantItemList()
@@ -218,7 +244,30 @@ namespace Remnants.Data
          _configFile.Bind(_remnantsSection, remnantData.RemnantItemName, remnantData.ShouldSpawn, "By changing the value, you can choose whether the certain item spawns or not."));
             _configFile.Save();
         }
-       
+
+        public List<SuitData> GetSuitsList()
+        {
+            //_configFile.Reload();
+
+            if (ConfigSuitsDataList == null || ConfigSuitsDataList.Count == 0)
+                return new List<SuitData>();
+
+            return ConfigSuitsDataList.ConvertAll(configEntry =>
+            new SuitData
+            {
+                SuitName = configEntry.Definition.Key,
+                UseSuit = configEntry.Value
+            });
+        }
+
+        public void SetSuitsList(List<SuitData> suitDataList)
+        {
+            ConfigSuitsDataList = suitDataList.ConvertAll(suitData =>
+         _configFile.Bind(_suitsSection, suitData.SuitName, suitData.UseSuit, "By changing the value, you can choose whether this suit is used on a body or not."));
+            _configFile.Save();
+        }
+
+
 
         public void SetCustomLevelsRarities(List<string> customMoonNames, int minPercentage = 1, int maxPercentage = 100)
         {
@@ -237,7 +286,6 @@ namespace Remnants.Data
 
             _configFile.Save();
         }
-
 
         public Dictionary<string, Tuple<int, int>> GetCustomLevelRarities()
         {

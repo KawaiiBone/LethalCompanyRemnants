@@ -32,16 +32,19 @@ Remnant items:
 - A list of banned items, preventing these items from being registered as scrap and becoming remnant items.
 - Banning remnant items from spawning on certain moons.
 - Makes you able to edit the scrap cost of remnant items via the config.
+- A list of scrap items that you can add in acting as remnant items for body spawning and randomizing batteries.
 
 Body spawning:
 - To make them grabbbable with a scrap value or have them just as a prop and non interactable.
 - The scrap value of a body.
 - The spawn chance of bodies.
 - The body spawn modifier in relation to the moon risk level.
+- Banning suits from being put on bodies.
 
 Save/Load:
 - Save remnant items.
 - Despawn remnant items on party wipe.
+- Despawn remnant items any time when leaving a moon.
 
 ## Feedback and issues
 If you find any bugs, issues, or have any feedback on how to improve the mod, you are always welcome to share it here on [Github](https://github.com/KawaiiBone/LethalCompanyRemnants/issues) or on the [Unofficial Lethal Company discord](https://discord.com/invite/nYcQFEpXfU). When you report an issue, please be sure to add the error in question and what other mods you were using at the time of the error. This way I can easily find the bug and patch it.

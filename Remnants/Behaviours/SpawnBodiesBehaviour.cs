@@ -102,9 +102,19 @@ namespace Remnants.Behaviours
                 if (indexList.Count != 0)
                 {
                     int suitIndex = indexList[random.Next(indexList.Count)];
-                    netBodyObject.GetComponent<BodyGrabbableObject>().SyncIndexSuitServerRpc(suitIndex);
+                    if(Remnants.Instance.RemnantsConfig.ShouldBodiesBeScrap.Value == false)
+                    {
+                        BodySuitBehaviour bodySuit = netBodyObject.GetComponent<BodySuitBehaviour>();
+                        bodySuit.SyncIndexSuitClientRpc(suitIndex);
+                    }
+                    else
+                    {
+                        BodyGrabbableObject bodyGrabbableObject = netBodyObject.GetComponent<BodyGrabbableObject>();
+                        bodyGrabbableObject.SyncIndexSuit(suitIndex);
+                    }
                 }
                 willSpawnBody = false;
+
             }
 
             if (NetworkObjectReferenceList.Count == 0)

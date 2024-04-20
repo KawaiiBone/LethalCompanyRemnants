@@ -26,6 +26,7 @@ namespace Remnants.Data
         private string[] _bodiesItemsFileNamesArray = { "DefaultBodyItem", "HeadBurstBodyItem", "CoilBodyItem", "WebbedBodyItem" };
         public KeyValuePair<string, string>[] EnemiesAndBodiesNames = new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Any", "DefaultBody"), new KeyValuePair<string, string>("Spring", "CoilHeadBody"), new KeyValuePair<string, string>("Bunker Spider", "WebbedBody"), new KeyValuePair<string, string>("Girl", "HeadBurstBody") };
         public string[] BannedPrefabTexturesChange = { "WebbedBody", "WebbedBodyProp" };
+        public string BannedPrefabTextureChange =  "WebbedBody";
         public bool HasLoadedAnyAssets = false;
         #endregion
 
@@ -96,6 +97,7 @@ namespace Remnants.Data
             {
                 mls.LogInfo("Loaded asset: " + bodyPrefab.name);
             }
+            bodyPrefab.AddComponent<BodySuitBehaviour>();
             LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(bodyPrefab);
             HasLoadedAnyAssets = true;
         }
@@ -117,6 +119,7 @@ namespace Remnants.Data
             bodyItem.dropSFX = dropSFX;
             bodyItem.grabSFX = grabSFX;
             bodyItem.spawnPrefab.AddComponent<BodyMovementBehaviour>();
+            bodyItem.spawnPrefab.AddComponent<BodySuitBehaviour>();
             BodyGrabbableObject bodyGOBJ = bodyItem.spawnPrefab.AddComponent<BodyGrabbableObject>();
             bodyGOBJ.itemProperties = bodyItem;
             bodyGOBJ.grabbable = true;

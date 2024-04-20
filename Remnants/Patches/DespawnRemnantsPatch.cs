@@ -60,9 +60,12 @@ namespace Remnants.Patches
 
             if (!NetworkManager.Singleton.IsServer)
                 return;
+
+            if (Remnants.Instance.RemnantsConfig.ShouldAlwaysDespawnRemnantItems.Value == true)
+                despawnAllItems = true;
             //The game cannot detect remnant items with simple means as GameObject.Find<GrabbableObject>() 
             //So this is the best way to find it by this mod self
-            //Despawn remnant items in ship
+            var remnantItemsBehaviour = Remnants.Instance.RemnantItemsBeh;
             var itemsLocationBeh = Remnants.Instance.RegisterItemLocationsBeh;
             if (despawnAllItems || (StartOfRound.Instance.allPlayersDead && Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItems.Value == true))
             {
@@ -70,6 +73,8 @@ namespace Remnants.Patches
             }
             DespawnItems(itemsLocationBeh.GetItemsInProps(), !itemsLocationBeh.PropObjectLocation.IsShipRoom, despawnAllItems, itemsLocationBeh.PropObjectLocation.ObjectLocationsNames.Last());
             DespawnItems(itemsLocationBeh.GetItemsInRoot(), !itemsLocationBeh.RootObjectLocation.IsShipRoom, despawnAllItems, "Root objects");
+            DespawnItems(remnantItemsBehaviour.RemnantItems.Select(remnantOBJ => remnantOBJ.GetComponent<GrabbableObject>()).ToArray(), true, despawnAllItems, "Unkown place");
+            remnantItemsBehaviour.RemoveDespawnedAndNullItems();
         }
 
         [HarmonyPatch(typeof(GameNetworkManager), "DisconnectProcess")]

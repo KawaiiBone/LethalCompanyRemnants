@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Remnants.utilities;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -28,6 +29,7 @@ namespace Remnants.Patches
             var spawnBodiesBeh = Remnants.Instance.SpawningBodyBeh;
             List<GameObject> newRemnantItemsList = new List<GameObject>();
             List<RemnantData> scrapItemDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList();
+            List<string> itemScrapList = Remnants.Instance.RemnantsConfig.GetOverriddenScrapItems();
             for (int i = 0; i < spawnedScrap.Length; i++)
             {
                 if (!spawnedScrap[i].TryGet(out var networkObject))
@@ -37,12 +39,15 @@ namespace Remnants.Patches
                 if (grabbableObject == null)
                     continue;
 
-                if (scrapItemDataList.FindIndex(itemData => itemData.RemnantItemName == grabbableObject.itemProperties.name) == -1)
+                if (itemScrapList.FindIndex(scrapName => scrapName == grabbableObject.itemProperties.itemName || scrapName == grabbableObject.itemProperties.name) != -1)
+                    newRemnantItemsList.Add(grabbableObject.gameObject);
+                else if (scrapItemDataList.FindIndex(itemData => itemData.RemnantItemName == grabbableObject.itemProperties.name) == -1)
                     continue;
-
-                mls.LogError(grabbableObject.itemProperties.itemName);
-                remnantItemsBehaviour.AddRemnantItemObject(grabbableObject.gameObject);
-                newRemnantItemsList.Add(grabbableObject.gameObject);
+                else
+                {
+                    remnantItemsBehaviour.AddRemnantItemObject(grabbableObject.gameObject);
+                    newRemnantItemsList.Add(grabbableObject.gameObject);
+                }
             }
             itemsBatteriesBeh.RandomizeItemsBattery(newRemnantItemsList);
             spawnBodiesBeh.SpawnBodiesOnItems(newRemnantItemsList);

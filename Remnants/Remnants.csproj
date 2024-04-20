@@ -105,6 +105,7 @@
   <ItemGroup>
     <Compile Include="Behaviours\BodyGrabbableObject.cs" />
     <Compile Include="Behaviours\BodyMovementBehaviour.cs" />
+    <Compile Include="Behaviours\BodySuitBehaviour.cs" />
     <Compile Include="Behaviours\RandomizeBatteriesBehaviour.cs" />
     <Compile Include="Behaviours\RegisterItemLocationsBehaviour.cs" />
     <Compile Include="Behaviours\RemnantItemsBehaviour.cs" />

@@ -17,7 +17,7 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.2.13";
+        private const string modVersion = "1.2.14";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);
@@ -50,7 +50,7 @@ namespace Remnants
             _harmony.PatchAll(typeof(SpawnableScrapPatch));
             _harmony.PatchAll(typeof(SaveGamePatch));
             _harmony.PatchAll(typeof(DespawnRemnantsPatch));
-            _harmony.PatchAll(typeof(BodyGrabbableObject));
+            _harmony.PatchAll(typeof(BodySuitBehaviour));
             _harmony.PatchAll(typeof(Remnants));
             RemnantsConfig.Initialize();
             _registerItemsBehaviour.Initialize();

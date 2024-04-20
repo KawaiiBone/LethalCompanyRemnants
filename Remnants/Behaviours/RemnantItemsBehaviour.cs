@@ -35,6 +35,9 @@ namespace Remnants.Behaviours
             if (gameObj == null)
                 return;
 
+            if (_remnantItemsObjects.Contains(gameObj))
+                return;
+
             _remnantItemsObjects.Add(gameObj);
         }
 

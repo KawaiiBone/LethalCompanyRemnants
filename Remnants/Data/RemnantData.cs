@@ -11,5 +11,12 @@ namespace Remnants.utilities
         public bool ShouldSpawn { get; set; }
     }
 
+    public class SuitData
+    {
+        [JsonProperty("SuitName")]
+        public string SuitName { get; set; }
 
+        [JsonProperty("UseSuit")]
+        public bool UseSuit { get; set; }
+    }
 }

@@ -103,3 +103,10 @@
 - Fixed bug saving issue with other mods that would detect some mod items as to be saved even if they were not in the ship.
 - Increased compatibility with other mods for registering store items as remnant items.
 - Tweaked the config default value of remnant items scrap cost from 0% to 5% of its credit cost, to show that you can tweak it in the config.
+
+#1.2.14
+- Fixed bug were game would crash on seed due to selecting body as prop and the suits feature not being able to adapt to it.
+- Added feature that gives you the option via config to despawn remnant items any time when leaving a moon.
+- Added feature that gives you the option via config to ban suits from being put on bodies.
+- Added feature that gives you the option via config that gives a list of scrap items that you can add in acting as remnant items for body spawning and randomizing batteries.
+- Made some config descriptions more coherent.
