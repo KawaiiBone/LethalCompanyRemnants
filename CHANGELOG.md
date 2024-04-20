@@ -106,7 +106,7 @@
 
 #1.2.14
 - Fixed bug were game would crash on seed due to selecting body as prop and the suits feature not being able to adapt to it.
-- Added feature that gives you the option via config to despawn remnant items any time when leaving a moon.
+- Added feature that gives you the option via config to despawn all remnant items regardless where they are when leaving a moon.
 - Added feature that gives you the option via config to ban suits from being put on bodies.
 - Added feature that gives you the option via config that gives a list of scrap items that you can add in acting as remnant items for body spawning and randomizing batteries.
 - Made some config descriptions more coherent.
