@@ -110,3 +110,6 @@
 - Added feature that gives you the option via config to ban suits from being put on bodies.
 - Added feature that gives you the option via config that gives a list of scrap items that you can add in acting as remnant items for body spawning and randomizing batteries.
 - Made some config descriptions more coherent.
+
+#1.2.15
+- Hotfix bug where the game would crash when you sold remnant items to the company.

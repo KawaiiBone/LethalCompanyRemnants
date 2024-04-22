@@ -27,14 +27,15 @@ namespace Remnants.Patches
                 if (networkObject == null || !networkObject.IsSpawned)
                     continue;
 
-                if (!despawnALlItems && (skipShipRoom && (grabbableObject.isInShipRoom || grabbableObject.isInElevator)))
+                if (!despawnALlItems && (skipShipRoom && (grabbableObject.isInShipRoom && /*||*/ grabbableObject.isInElevator)))
                     continue;
+
 
                 if (grabbableObject.isHeld && grabbableObject.playerHeldBy != null)
                 {
                     if (despawnALlItems)
                         grabbableObject.playerHeldBy.DropAllHeldItemsAndSync();
-                    else if (grabbableObject.playerHeldBy.isInHangarShipRoom || grabbableObject.playerHeldBy.isInElevator)
+                    else if (grabbableObject.playerHeldBy.isInHangarShipRoom && /*||*/ grabbableObject.playerHeldBy.isInElevator)
                         continue;
                     else
                         grabbableObject.playerHeldBy.DropAllHeldItemsAndSync();
@@ -73,7 +74,9 @@ namespace Remnants.Patches
             }
             DespawnItems(itemsLocationBeh.GetItemsInProps(), !itemsLocationBeh.PropObjectLocation.IsShipRoom, despawnAllItems, itemsLocationBeh.PropObjectLocation.ObjectLocationsNames.Last());
             DespawnItems(itemsLocationBeh.GetItemsInRoot(), !itemsLocationBeh.RootObjectLocation.IsShipRoom, despawnAllItems, "Root objects");
-            DespawnItems(remnantItemsBehaviour.RemnantItems.Select(remnantOBJ => remnantOBJ.GetComponent<GrabbableObject>()).ToArray(), true, despawnAllItems, "Unkown place");
+            remnantItemsBehaviour.RemoveDespawnedAndNullItems();
+            GrabbableObject[] grabbableObjectsArray = remnantItemsBehaviour.RemnantItems.ConvertAll(remnantOBJ => remnantOBJ.GetComponent<GrabbableObject>()).ToArray();
+            DespawnItems(grabbableObjectsArray, true, despawnAllItems, "Unknown place");
             remnantItemsBehaviour.RemoveDespawnedAndNullItems();
         }
 
