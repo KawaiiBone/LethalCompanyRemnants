@@ -7,6 +7,7 @@ namespace Remnants.Behaviours
     {
         #region Variables
         private List<RemnantData> _RemnantItemsListData = new List<RemnantData>();
+        private int _defaultRarityInfoValue = -1;
         #endregion
 
         #region Initialize 
@@ -21,7 +22,7 @@ namespace Remnants.Behaviours
 
             RemnantData scrapItemData = new RemnantData();
             scrapItemData.RemnantItemName = itemName;
-            scrapItemData.ShouldSpawn = true;
+            scrapItemData.RarityInfo = _defaultRarityInfoValue;
             _RemnantItemsListData.Add(scrapItemData);
         }
 
@@ -50,7 +51,7 @@ namespace Remnants.Behaviours
                 int index = fileScrapDataList.FindIndex(scrapData => scrapData.RemnantItemName == _RemnantItemsListData[i].RemnantItemName);
                 if (index != -1)
                 {
-                    _RemnantItemsListData[i].ShouldSpawn = fileScrapDataList[index].ShouldSpawn;
+                    _RemnantItemsListData[i].RarityInfo = fileScrapDataList[index].RarityInfo;
                 }
             }
             //Find data to list if it is not found

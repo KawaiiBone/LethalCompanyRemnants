@@ -16,16 +16,16 @@ namespace Remnants.Behaviours
         #region Variables
         private bool _hasInitialized = false;
         private float _maxReachDistance = 6.0f;
-        private float _minReachDistance = 0.125f;//Maybe limit is 0.165
+        private float _minReachDistance = 0.125f;//limit is 0.165
         private float _movedReachDistance = 5.0f;
         private float _moveDistance = 1.0f;
         private int _areaMask = -1;
         private float _yOffset = 1.0f;
         private string[] _riskLevelArray = { "Safe", "D", "C", "B", "A", "S", "S+" };
-        private float _spawnChance = 0.0f;
-        private float spawnChanceModifier = 0.0f;
         private float _courotineDelayTAmount = 11.0f;//same length as in the game
         private string _propName = "Prop";
+        private List<GameObject> _propBodyObjects = new List<GameObject>();
+        private List<GameObject> _scrapBodyObjects = new List<GameObject>();
         #endregion
 
         #region Initialize 
@@ -34,8 +34,7 @@ namespace Remnants.Behaviours
             if (!_hasInitialized)
             {
                 _hasInitialized = true;
-                _spawnChance = Remnants.Instance.RemnantsConfig.SpawnRarityOfBody.Value;
-                spawnChanceModifier = Remnants.Instance.RemnantsConfig.SpawnModifierRiskLevel.Value;
+                SceneManager.sceneLoaded += CollectBodiesFromNetworkObjects;
             }
         }
         #endregion
@@ -48,11 +47,11 @@ namespace Remnants.Behaviours
             mls.LogInfo("Spawning bodies on items.");
             if (itemsObjects == null || itemsObjects.Count == 0)
             {
-                mls.LogWarning("List to spawn bodies on null or is empty!");
+                mls.LogWarning("List to spawn bodies on, is null or is empty!");
                 return;
-            }     
+            }
 
-            if(roundManager == null)
+            if (roundManager == null)
             {
                 mls.LogWarning("Roundmanager not found!");
                 return;
@@ -61,12 +60,16 @@ namespace Remnants.Behaviours
             if (!Remnants.Instance.LoadBodyAssets.HasLoadedAnyAssets || Remnants.Instance.RemnantsConfig.SpawnRarityOfBody.Value == 0)
                 return;
 
-            List<Vector3> spawnPositions = new List<Vector3>();
-            spawnPositions = itemsObjects.ConvertAll<Vector3>(gameObj => gameObj.transform.position);
-            List<int> indexList = Remnants.Instance.RegisterBodySuits.SuitsIndexList;
             List<NetworkObjectReference> NetworkObjectReferenceList = new List<NetworkObjectReference>();
             List<int> scrapValueList = new List<int>();
+            List<Vector3> spawnPositions = itemsObjects.ConvertAll<Vector3>(gameObj => gameObj.transform.position);
+            List<int> suitsIndexList = Remnants.Instance.RegisterBodySuits.SuitsIndexList;
             var prefabAndRarityList = CreatePrefabAndRarityList();
+            if(prefabAndRarityList.Count == 0)
+            {
+                mls.LogWarning("No indoor enemies found on this moon, skipping body spawnining");
+                return;
+            }
             int totalRarityValue = CalculateTotalRarityValue(prefabAndRarityList);
             float spawnChance = CalculateSpawnChance(StartOfRound.Instance.currentLevel.riskLevel);
             System.Random random = new System.Random();
@@ -90,7 +93,7 @@ namespace Remnants.Behaviours
                 int bodyIndex = GetRandomBodyIndex(prefabAndRarityList, random.Next(totalRarityValue));
                 if (Remnants.Instance.RemnantsConfig.ShouldBodiesBeScrap.Value == false)
                 {
-                    netBodyObject = SpawnBody(prefabAndRarityList[bodyIndex].Key, spawnPosition);
+                    netBodyObject = SpawnPropBody(prefabAndRarityList[bodyIndex].Key, spawnPosition);
                 }
                 else
                 {
@@ -99,10 +102,10 @@ namespace Remnants.Behaviours
                     scrapValueList.Add(Remnants.Instance.RemnantsConfig.BodyScrapValue.Value);
                 }
 
-                if (indexList.Count != 0)
+                if (suitsIndexList.Count != 0)
                 {
-                    int suitIndex = indexList[random.Next(indexList.Count)];
-                    if(Remnants.Instance.RemnantsConfig.ShouldBodiesBeScrap.Value == false)
+                    int suitIndex = suitsIndexList[random.Next(suitsIndexList.Count)];
+                    if (Remnants.Instance.RemnantsConfig.ShouldBodiesBeScrap.Value == false)
                     {
                         BodySuitBehaviour bodySuit = netBodyObject.GetComponent<BodySuitBehaviour>();
                         bodySuit.SyncIndexSuitClientRpc(suitIndex);
@@ -135,7 +138,7 @@ namespace Remnants.Behaviours
 
         #region PrivateMethods
 
-        private NetworkObject SpawnBody(GameObject prefab, Vector3 spawnPosition)
+        private NetworkObject SpawnPropBody(GameObject prefab, Vector3 spawnPosition)
         {
             GameObject defaultBody = UnityEngine.Object.Instantiate(prefab, spawnPosition, UnityEngine.Random.rotation, RoundManager.Instance.mapPropsContainer.transform);
             NetworkObject netObject = defaultBody.GetComponent<NetworkObject>();
@@ -162,26 +165,23 @@ namespace Remnants.Behaviours
             if (!registerBodiesSpawn.PlanetsBodiesRarities.ContainsKey(planetName))
                 registerBodiesSpawn.RegisterBodiesToNewMoon(currentLevel);
 
-            Dictionary<string, int> bodiesArray = registerBodiesSpawn.PlanetsBodiesRarities[planetName];
-            IReadOnlyList<NetworkPrefab> prefabs = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
-
-            List<NetworkPrefab> bodyPrefabs = null;
+            Dictionary<string, int> bodiesArray = registerBodiesSpawn.PlanetsBodiesRarities[planetName];  
             if (Remnants.Instance.RemnantsConfig.ShouldBodiesBeScrap.Value == false)
             {
-                bodyPrefabs = prefabs.Where(netObj => bodiesArray.ToList().FindIndex(name => (name.Key + _propName) == netObj.Prefab.name) != -1).ToList();
-                return bodyPrefabs.ConvertAll(netPrefab =>
+                var selectedBodies = _propBodyObjects.Where(prefab => bodiesArray.ContainsKey(prefab.name.Substring(0, prefab.name.Length - _propName.Length))).ToList();
+                return selectedBodies.ConvertAll(prefab => 
                 new KeyValuePair<GameObject, int>(
-                netPrefab.Prefab,
-                bodiesArray[netPrefab.Prefab.name.Substring(0, netPrefab.Prefab.name.Length - _propName.Length)]
+                prefab,
+                bodiesArray[prefab.name.Substring(0, prefab.name.Length - _propName.Length)]
                 ));
             }
             else
             {
-                bodyPrefabs = prefabs.Where(netObj => bodiesArray.ContainsKey(netObj.Prefab.name)).ToList();
-                return bodyPrefabs.ConvertAll(netPrefab =>
+                var selectedBodies = _scrapBodyObjects.Where(prefab => bodiesArray.ContainsKey(prefab.name)).ToList();
+                return selectedBodies.ConvertAll(prefab =>
                 new KeyValuePair<GameObject, int>(
-                netPrefab.Prefab,
-                bodiesArray[netPrefab.Prefab.name]
+                prefab,
+                bodiesArray[prefab.name]
                 ));
             }
         }
@@ -213,7 +213,7 @@ namespace Remnants.Behaviours
             Vector3 direction = heading / distance;
             Vector3 movedPosition = maxRangeNavHit.position + (direction * _moveDistance);
             bool isWithinMovedRange = NavMesh.SamplePosition(movedPosition, out NavMeshHit movedNavHit, _movedReachDistance, _areaMask);
-            if(isWithinMovedRange)
+            if (isWithinMovedRange)
             {
                 mls.LogInfo("Moved position found on navmesh.");
                 newPosition = movedNavHit.position;
@@ -253,12 +253,40 @@ namespace Remnants.Behaviours
 
         private float CalculateSpawnChance(string riskLevelName)
         {
-            float spawnChance = _spawnChance;
+            float spawnChanceMod = Remnants.Instance.RemnantsConfig.SpawnModifierRiskLevel.Value;
+            float spawnChance = Remnants.Instance.RemnantsConfig.SpawnRarityOfBody.Value;
             int riskLevel = Array.IndexOf(_riskLevelArray, riskLevelName);
-            if (!Mathf.Approximately(spawnChanceModifier, 0.0f) && riskLevel != -1)
-                spawnChance *= (riskLevel * spawnChanceModifier);
+            if (!Mathf.Approximately(spawnChanceMod, 0.0f) && riskLevel != -1)
+                spawnChance *= (riskLevel * spawnChanceMod);
 
             return spawnChance;
+        }
+
+        private void CollectBodiesFromNetworkObjects(Scene scene, LoadSceneMode mode)
+        {
+            var mls = Remnants.Instance.Mls;
+            var gameNetworkManager = GameNetworkManager.Instance;
+            if (gameNetworkManager == null || gameNetworkManager.isDisconnecting)
+            {
+                _propBodyObjects.Clear();
+                _scrapBodyObjects.Clear();
+                return;
+            }
+
+            if (!gameNetworkManager.isHostingGame)
+                return;
+
+            if (_propBodyObjects.Count != 0 && _scrapBodyObjects.Count != 0)
+                return;
+
+            List<string> bodyObjNames = Remnants.Instance.LoadBodyAssets.EnemiesAndBodiesNames.Select(EnemyAndBodyName => EnemyAndBodyName.Value).ToList();
+            IReadOnlyList<NetworkPrefab> netPrefabs = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
+
+            var propBodyPrefabs = netPrefabs.Where(netObj => bodyObjNames.FindIndex(name => (name + _propName) == netObj.Prefab.name) != -1).ToList();
+            _propBodyObjects = propBodyPrefabs.ConvertAll(netObj => netObj.Prefab);
+
+            var scrapBodyPrefabs = netPrefabs.Where(netObj => bodyObjNames.Contains(netObj.Prefab.name)).ToList();
+            _scrapBodyObjects = scrapBodyPrefabs.ConvertAll(netObj => netObj.Prefab);
         }
         #endregion
     }

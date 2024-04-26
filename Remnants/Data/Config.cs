@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using BepInEx;
@@ -18,7 +19,7 @@ namespace Remnants.Data
         public ConfigEntry<int> MaxRemnantRarity;
         public ConfigEntry<int> MinRemnantBatteryCharge;
         public ConfigEntry<int> MaxRemnantBatteryCharge;
-        public List<ConfigEntry<bool>> ConfigScrapDataList;
+        public List<ConfigEntry<int>> ConfigScrapDataList;
         public List<ConfigEntry<bool>> ConfigSuitsDataList;
         public ConfigEntry<bool> UseSpecificLevelRarities;
         public ConfigEntry<float> MaxRemnantItemCost;
@@ -37,7 +38,7 @@ namespace Remnants.Data
         private List<ConfigEntry<int>> _maxRemnantLevelRarities = new List<ConfigEntry<int>>();
         private List<ConfigEntry<int>> _minRemnantCustomLevelRarities = new List<ConfigEntry<int>>();
         private List<ConfigEntry<int>> _maxRemnantCustomLevelRarities = new List<ConfigEntry<int>>();
-        private List<ConfigDataValue<bool>> _configRemnantDataPairList = new List<ConfigDataValue<bool>>();
+        private List<ConfigDataValue<int>> _configRemnantDataPairList = new List<ConfigDataValue<int>>();
         private List<ConfigDataValue<int>> _configCustomLevelsRarities = new List<ConfigDataValue<int>>();
         private List<ConfigDataValue<bool>> _configSuitsDataList = new List<ConfigDataValue<bool>>();
         private ConfigEntry<string> _bannedNamesFromRegistering;
@@ -123,8 +124,7 @@ namespace Remnants.Data
             MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, minItemCost, maxItemCost);
 
             _bannedNamesFromRegistering = _configFile.Bind(_otherSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice,Key,Error", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
-            _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
-
+            _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Scrap-example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
 
             _minRemnantLevelRarities = new List<ConfigEntry<int>>();
             _maxRemnantLevelRarities = new List<ConfigEntry<int>>();
@@ -149,7 +149,12 @@ namespace Remnants.Data
             ShouldAlwaysDespawnRemnantItems = _configFile.Bind(_saveLoadSection, "Always despawn remnant items", false, "Despawns all remnant items when going away from moons, even if it is in the shiproom and you are holding it.");
 
             ConfigScrapDataList = _configRemnantDataPairList.ConvertAll(itemData =>
-                     _configFile.Bind(_remnantsSection, itemData.Name, true, itemData.Discription));
+                     _configFile.Bind(_remnantsSection, itemData.Name, -1, itemData.Discription));
+            for (int i = 0; i < ConfigScrapDataList.Count; i++)
+            {
+                ConfigScrapDataList[i].Value = Mathf.Clamp(ConfigScrapDataList[i].Value, -1, maxPercentage);
+            }
+
 
             ConfigSuitsDataList = _configSuitsDataList.ConvertAll(itemData =>
                      _configFile.Bind(_suitsSection, itemData.Name, true, itemData.Discription));
@@ -176,11 +181,11 @@ namespace Remnants.Data
             if (configRemnantSection != null || configRemnantSection.Count > 0)
             {
                 _configRemnantDataPairList = configRemnantSection.ConvertAll(configData =>
-                 new ConfigDataValue<bool>
+                 new ConfigDataValue<int>
                  {
                      Name = configData.Name,
                      Discription = configData.Discription,
-                     Value = Convert.ToBoolean(configData.StringValue)
+                     Value = Convert.ToInt32(configData.StringValue)
                  });
             }
 
@@ -223,9 +228,10 @@ namespace Remnants.Data
             return _overriddenScrapItems.Value.Split(',').ToList();
         }
 
-        public List<RemnantData> GetRemnantItemList()
+        public List<RemnantData> GetRemnantItemList(bool reloadConfig = true)
         {
-            _configFile.Reload();
+            if (reloadConfig)
+                _configFile.Reload();
 
             if (ConfigScrapDataList == null || ConfigScrapDataList.Count == 0)
                 return new List<RemnantData>();
@@ -234,14 +240,15 @@ namespace Remnants.Data
             new RemnantData
             {
                 RemnantItemName = configEntry.Definition.Key,
-                ShouldSpawn = configEntry.Value
+                RarityInfo = configEntry.Value
             });
         }
+
 
         public void SetRemnantItemList(List<RemnantData> remnantDataList)
         {
             ConfigScrapDataList = remnantDataList.ConvertAll(remnantData =>
-         _configFile.Bind(_remnantsSection, remnantData.RemnantItemName, remnantData.ShouldSpawn, "By changing the value, you can choose whether the certain item spawns or not."));
+         _configFile.Bind(_remnantsSection, remnantData.RemnantItemName, remnantData.RarityInfo, "By changing the value you can choose what kind of spawn rarity it is.\n -1 is the default using its store credits cost to calculate the rarity.\n 0 Is preventing from spawning it, and 1 to 100 is its costum rarity to spawn."));
             _configFile.Save();
         }
 

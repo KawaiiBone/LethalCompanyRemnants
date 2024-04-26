@@ -30,7 +30,7 @@ Remnant items:
 - You can choose if you want a general rarity for all moons or a unique value for each moon.
 - The battery charge of remnant items with a minimum and maximum charge.
 - A list of banned items, preventing these items from being registered as scrap and becoming remnant items.
-- Banning remnant items from spawning on certain moons.
+- Choosing spawn options per item, using credit cost, choosing your own spawn rarity or disabling spawning entirely.
 - Makes you able to edit the scrap cost of remnant items via the config.
 - A list of scrap items that you can add in acting as remnant items for body spawning and randomizing batteries.
 

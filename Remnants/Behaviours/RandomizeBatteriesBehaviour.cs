@@ -13,8 +13,6 @@ namespace Remnants.Behaviours
 
         #region Variables
         private bool _hasInitialized = false;
-        private int _minBatteryCharge = 0;
-        private int _maxBatteryCharge = 0;
         private System.Random _random = new System.Random();
         #endregion
 
@@ -24,8 +22,6 @@ namespace Remnants.Behaviours
             if (!_hasInitialized)
             {
                 _hasInitialized = true;
-                _minBatteryCharge = Remnants.Instance.RemnantsConfig.MinRemnantBatteryCharge.Value;
-                _maxBatteryCharge = Remnants.Instance.RemnantsConfig.MaxRemnantBatteryCharge.Value;
             }
         }
         #endregion
@@ -57,7 +53,7 @@ namespace Remnants.Behaviours
                     grabbableObject.isInFactory == true && !grabbableObject.isInShipRoom))
                     continue;
 
-                int randomCharge = _random.Next(_minBatteryCharge, _maxBatteryCharge);
+                int randomCharge = _random.Next(Remnants.Instance.RemnantsConfig.MinRemnantBatteryCharge.Value, Remnants.Instance.RemnantsConfig.MaxRemnantBatteryCharge.Value);
                 grabbableObject.SyncBatteryServerRpc(randomCharge);
                 mls.LogInfo("Has updated " + grabbableObject.itemProperties.name + " charge to " + grabbableObject.insertedBattery.charge);
             }

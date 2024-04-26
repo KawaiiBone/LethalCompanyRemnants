@@ -16,7 +16,7 @@ namespace Remnants.Patches
             //Here we will delete all items that are banned
             List<SpawnableItemWithRarity> spawnableScrapList = __instance.currentLevel.spawnableScrap;
             List<RemnantData> scrapItemDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList();
-            spawnableScrapList.RemoveAll(spawnableItem => scrapItemDataList.FindIndex(itemData => !itemData.ShouldSpawn && itemData.RemnantItemName == spawnableItem.spawnableItem.name) != -1);
+            spawnableScrapList.RemoveAll(spawnableItem => scrapItemDataList.FindIndex(itemData => itemData.RarityInfo == 0 && itemData.RemnantItemName == spawnableItem.spawnableItem.name) != -1);
             __instance.currentLevel.spawnableScrap = spawnableScrapList;
         }
         #endregion

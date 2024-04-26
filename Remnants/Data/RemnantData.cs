@@ -8,7 +8,7 @@ namespace Remnants.utilities
         public string RemnantItemName { get; set; }
 
         [JsonProperty("ShouldSpawn")]
-        public bool ShouldSpawn { get; set; }
+        public int RarityInfo { get; set; }
     }
 
     public class SuitData

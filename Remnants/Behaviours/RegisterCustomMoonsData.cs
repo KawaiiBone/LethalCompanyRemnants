@@ -47,6 +47,7 @@ namespace Remnants.Behaviours
             RegisterBodiesSpawnBehaviour registerBodiesSpawn = Remnants.Instance.RegisterBodiesSpawn;
             foreach (var selectableLevel in selectableLevels)
             {
+
                 if (!registerBodiesSpawn.HasIllegalCharacters(selectableLevel.PlanetName) && !registerBodiesSpawn.PlanetsBodiesRarities.ContainsKey(selectableLevel.PlanetName))
                 {
                     registerBodiesSpawn.RegisterBodiesToNewMoon(selectableLevel);
