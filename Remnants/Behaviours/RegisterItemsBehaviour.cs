@@ -5,8 +5,6 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Unity.Netcode;
-using Remnants.utilities;
-using System.IO.Ports;
 
 namespace Remnants.Behaviours
 {
@@ -20,7 +18,7 @@ namespace Remnants.Behaviours
         private const int _minSellValue = 1, _maxSellValue = 2;
         private const float _minCreditCost = 1f, _toFullCostMod = 2.5f;
         private const float _maxPercentage = 100.0f;
-        private RemnantDataListBehaviour _scrapDataListBehaviour = new RemnantDataListBehaviour();
+        private RemnantDataListBehaviour _remnantDataListBehaviour = new RemnantDataListBehaviour();
         #endregion
 
         #region Initialize 
@@ -42,7 +40,7 @@ namespace Remnants.Behaviours
             if (StartOfRound.Instance != null)
             {
                 SceneManager.sceneLoaded -= StoreItemsRegisterAsScrap;
-                _scrapDataListBehaviour.UpdateScrapDataList();
+                _remnantDataListBehaviour.UpdateScrapDataList();
                 return;
             }
 
@@ -70,7 +68,7 @@ namespace Remnants.Behaviours
                     if (item == null)
                         continue;
   
-                    if (HasBannedName(item.name))
+                    if (HasBannedName(item))
                         continue;
           
                     if (IsAlreadyScrap(item))
@@ -101,9 +99,9 @@ namespace Remnants.Behaviours
             _isAddingItems = false;
         }
 
-        private bool HasBannedName(string name)
+        private bool HasBannedName(Item item)
         {
-            return _bannedItemsNamesList.FindIndex(x => x == name) != -1;
+            return _bannedItemsNamesList.FindIndex(x => x == item.name || x == item.itemName) != -1;
         }
 
         private bool IsAlreadyScrap(Item item)
@@ -172,7 +170,7 @@ namespace Remnants.Behaviours
                 Items.RegisterScrap(item, levelRarities, customLevelRarities);
             }
             mls.LogInfo("Added " + item.itemName + " as a scrap item.");
-            _scrapDataListBehaviour.AddItemToDataList(item.name);
+            _remnantDataListBehaviour.AddItemToDataList(item.name);
         }
 
        

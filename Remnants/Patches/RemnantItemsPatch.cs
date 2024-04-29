@@ -1,10 +1,8 @@
 ﻿using HarmonyLib;
 using Remnants.utilities;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Remnants.Patches
 {

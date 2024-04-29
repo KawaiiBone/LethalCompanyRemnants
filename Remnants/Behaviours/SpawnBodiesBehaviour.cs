@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Assertions.Must;
 using UnityEngine.SceneManagement;
 
 namespace Remnants.Behaviours
@@ -60,16 +57,17 @@ namespace Remnants.Behaviours
             if (!Remnants.Instance.LoadBodyAssets.HasLoadedAnyAssets || Remnants.Instance.RemnantsConfig.SpawnRarityOfBody.Value == 0)
                 return;
 
+            var prefabAndRarityList = CreatePrefabAndRarityList();
+            if (prefabAndRarityList == null || prefabAndRarityList.Count == 0)
+            {
+                mls.LogWarning("No indoor enemies found on this moon, skipping body spawning");
+                return;
+            }
+
             List<NetworkObjectReference> NetworkObjectReferenceList = new List<NetworkObjectReference>();
             List<int> scrapValueList = new List<int>();
             List<Vector3> spawnPositions = itemsObjects.ConvertAll<Vector3>(gameObj => gameObj.transform.position);
             List<int> suitsIndexList = Remnants.Instance.RegisterBodySuits.SuitsIndexList;
-            var prefabAndRarityList = CreatePrefabAndRarityList();
-            if(prefabAndRarityList.Count == 0)
-            {
-                mls.LogWarning("No indoor enemies found on this moon, skipping body spawnining");
-                return;
-            }
             int totalRarityValue = CalculateTotalRarityValue(prefabAndRarityList);
             float spawnChance = CalculateSpawnChance(StartOfRound.Instance.currentLevel.riskLevel);
             System.Random random = new System.Random();
@@ -117,7 +115,6 @@ namespace Remnants.Behaviours
                     }
                 }
                 willSpawnBody = false;
-
             }
 
             if (NetworkObjectReferenceList.Count == 0)

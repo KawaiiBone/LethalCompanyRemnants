@@ -7,7 +7,7 @@ namespace Remnants.utilities
         [JsonProperty("RemnantItemName")]
         public string RemnantItemName { get; set; }
 
-        [JsonProperty("ShouldSpawn")]
+        [JsonProperty("RarityInfo")]
         public int RarityInfo { get; set; }
     }
 

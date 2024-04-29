@@ -1,9 +1,6 @@
 ﻿using HarmonyLib;
-using LethalLib.Modules;
 using System.Linq;
 using Unity.Netcode;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Remnants.Patches
 {

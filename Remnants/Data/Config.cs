@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using BepInEx;
@@ -180,6 +179,20 @@ namespace Remnants.Data
             var configRemnantSection = GetConfigSectionData(_remnantsSection);
             if (configRemnantSection != null || configRemnantSection.Count > 0)
             {
+                //Adding a safe conversion from the previous setting
+                string stringValueFalse = "false";
+                string stringValueTrue = "true";
+                string stringDefaultValue = "-1";
+                for (int i = 0; i < configRemnantSection.Count; i++)
+                {
+                    if (configRemnantSection[i].StringValue.Contains(stringValueTrue) || configRemnantSection[i].StringValue.Contains(stringValueFalse))
+                    {
+                        ConfigData configData = configRemnantSection[i];
+                        configData.StringValue = stringDefaultValue;
+                        configRemnantSection[i] = configData;
+                    }
+                }
+
                 _configRemnantDataPairList = configRemnantSection.ConvertAll(configData =>
                  new ConfigDataValue<int>
                  {

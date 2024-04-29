@@ -1,9 +1,4 @@
-﻿using HarmonyLib;
-using LethalLib.Modules;
-using Remnants.Data;
-using System.Linq;
-using Unity.Netcode;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Remnants.Behaviours
 {
@@ -12,13 +7,15 @@ namespace Remnants.Behaviours
         #region Variables
         private int _saveSuitIndex = 0;
         private BodySuitBehaviour _bodySuitBehaviour = null;
-
         #endregion
 
         #region Initialize 
         void Awake()
         {
+            var mls = Remnants.Instance.Mls;
             _bodySuitBehaviour = GetComponent<BodySuitBehaviour>();
+            if (_bodySuitBehaviour == null)
+                mls.LogError("Did not found BodySuitBehaviour.");
         }
         #endregion
 
@@ -44,7 +41,8 @@ namespace Remnants.Behaviours
             {
                 Debug.LogError("GetItemDataToSave is being called on " + itemProperties.itemName + ", which does not have saveItemVariable set true.");
             }
-            _saveSuitIndex = _bodySuitBehaviour.saveSuitIndex;
+            if (_bodySuitBehaviour == null)
+                _saveSuitIndex = _bodySuitBehaviour.saveSuitIndex;
             return _saveSuitIndex;
         }
 
@@ -55,16 +53,16 @@ namespace Remnants.Behaviours
                 Debug.LogError("LoadItemSaveData is being called on " + itemProperties.itemName + ", which does not have saveItemVariable set true.");
             }
             _saveSuitIndex = saveData;
-            _bodySuitBehaviour.UpdateSuit(_saveSuitIndex);
+            if (_bodySuitBehaviour == null)
+                _bodySuitBehaviour.UpdateSuit(_saveSuitIndex);
         }
 
 
         public void SyncIndexSuit(int indexSuit)
         {
-            _bodySuitBehaviour.SyncIndexSuitClientRpc(indexSuit);
+            if (_bodySuitBehaviour == null)
+                _bodySuitBehaviour.SyncIndexSuitClientRpc(indexSuit);
         }
         #endregion
-
-
     }
 }
