@@ -39,9 +39,6 @@ namespace Remnants.Behaviours
                     continue;
 
                 GrabbableObject grabbableObject = ItemObj.GetComponent<GrabbableObject>();
-                //if (grabbableObject == null) //is this necessary?
-                //    continue;
-
                 if (!grabbableObject.itemProperties.requiresBattery)
                     continue;
 
@@ -51,7 +48,7 @@ namespace Remnants.Behaviours
 
                 int randomCharge = _random.Next(Remnants.Instance.RemnantsConfig.MinRemnantBatteryCharge.Value, Remnants.Instance.RemnantsConfig.MaxRemnantBatteryCharge.Value);
                 grabbableObject.SyncBatteryServerRpc(randomCharge);
-                mls.LogInfo("Has updated " + grabbableObject.itemProperties.name + " charge to " + grabbableObject.insertedBattery.charge);
+                mls.LogInfo("Has updated " + grabbableObject.itemProperties.itemName + " charge to " + grabbableObject.insertedBattery.charge);
             }
         }
         #endregion

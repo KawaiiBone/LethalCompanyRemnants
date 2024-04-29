@@ -162,7 +162,7 @@ namespace Remnants.Behaviours
             if (!registerBodiesSpawn.PlanetsBodiesRarities.ContainsKey(planetName))
                 registerBodiesSpawn.RegisterBodiesToNewMoon(currentLevel);
 
-            Dictionary<string, int> bodiesArray = registerBodiesSpawn.PlanetsBodiesRarities[planetName];  
+            Dictionary<string, int> bodiesArray = registerBodiesSpawn.PlanetsBodiesRarities[planetName];
             if (Remnants.Instance.RemnantsConfig.ShouldBodiesBeScrap.Value == false)
             {
                 var selectedBodies = _propBodyObjects.Where(prefab => bodiesArray.ContainsKey(prefab.name.Substring(0, prefab.name.Length - _propName.Length))).ToList();

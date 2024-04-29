@@ -113,3 +113,11 @@
 
 #1.2.15
 - Hotfix bug where the game would crash when you sold remnant items to the company.
+
+#1.2.16
+- Added feature that adds item spawning rarity per item, now you can edit it in the config in the section Remnants.  
+    -1 is default and uses the store cost to calculate the spawn rarity, 0 is banned from spawning it and 1-100 is its rarity in relative to the remnants spawn rarity on that moon.
+- Added feature that gives more scrap to spawn on moons relative to how much chance remnants items can spawn there. This feature can be tweaked in the config in section Other.
+- Added feature, rather than a fixed percentage cost for remnant items. You have a minimum and maximum percentage, which can be tweaked in the config.
+- Made body spawning more stable, so it should not crash on seed anymore.
+- Fixed typo in the default body.

@@ -39,7 +39,7 @@ namespace Remnants.Patches
 
                 if (itemScrapList.FindIndex(scrapName => scrapName == grabbableObject.itemProperties.itemName || scrapName == grabbableObject.itemProperties.name) != -1)
                     newRemnantItemsList.Add(grabbableObject.gameObject);
-                else if (scrapItemDataList.FindIndex(itemData => itemData.RemnantItemName == grabbableObject.itemProperties.name) == -1)
+                else if (scrapItemDataList.FindIndex(itemData => itemData.RemnantItemName == grabbableObject.itemProperties.itemName || itemData.RemnantItemName == grabbableObject.itemProperties.name) == -1)
                     continue;
                 else
                 {

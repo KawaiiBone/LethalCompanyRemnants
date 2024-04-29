@@ -76,14 +76,14 @@ namespace Remnants.Behaviours
            
                     if (IsPrefabIncorrect(item.spawnPrefab))
                     {
-                        mls.LogWarning(item.name + ": prefab is incorrect to be registered as scrap.");
+                        mls.LogWarning(item.itemName + ": prefab is incorrect to be registered as scrap.");
                         continue;
                     }
 
                     int creditsworth = GetItemCreditsWorth(item);
                     if (creditsworth >= _minCreditCost)
                     {
-                        int remnantsIndex = remnantItemList.FindIndex(remnantData => remnantData.RemnantItemName == item.name);
+                        int remnantsIndex = remnantItemList.FindIndex(remnantData => remnantData.RemnantItemName == item.itemName);
                         int itemRarityInfo = -1;
                         if(remnantsIndex != -1)
                             itemRarityInfo = remnantItemList[remnantsIndex].RarityInfo;
@@ -127,9 +127,10 @@ namespace Remnants.Behaviours
         {
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Registering " + item.itemName + " as scrap.");
-            float creditWorthPercentage = (float)Remnants.Instance.RemnantsConfig.RemnantScrapCostPercentage.Value / _maxPercentage;
-            item.minValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthPercentage), _minSellValue, int.MaxValue);
-            item.maxValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthPercentage), _maxSellValue, int.MaxValue);
+            float creditWorthMinPercentage = (float)Remnants.Instance.RemnantsConfig.RemnantScrapMinCostPercentage.Value / _maxPercentage;
+            float creditWorthMaxPercentage = (float)Remnants.Instance.RemnantsConfig.RemnantScrapMaxCostPercentage.Value / _maxPercentage;
+            item.minValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthMinPercentage), _minSellValue, int.MaxValue);
+            item.maxValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthMaxPercentage), _maxSellValue, int.MaxValue);
             item.itemSpawnsOnGround = true;
             LethalLib.Modules.Utilities.FixMixerGroups(item.spawnPrefab);
             GrabbableObject grabbable = item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
@@ -170,7 +171,7 @@ namespace Remnants.Behaviours
                 Items.RegisterScrap(item, levelRarities, customLevelRarities);
             }
             mls.LogInfo("Added " + item.itemName + " as a scrap item.");
-            _remnantDataListBehaviour.AddItemToDataList(item.name);
+            _remnantDataListBehaviour.AddItemToDataList(item.itemName);
         }
 
        

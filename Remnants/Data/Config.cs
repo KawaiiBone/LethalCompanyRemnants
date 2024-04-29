@@ -24,7 +24,8 @@ namespace Remnants.Data
         public ConfigEntry<float> MaxRemnantItemCost;
         public ConfigEntry<int> SpawnRarityOfBody;
         public ConfigEntry<float> SpawnModifierRiskLevel;
-        public ConfigEntry<int> RemnantScrapCostPercentage;
+        public ConfigEntry<int> RemnantScrapMinCostPercentage;
+        public ConfigEntry<int> RemnantScrapMaxCostPercentage;
         public ConfigEntry<bool> ShouldSaveRemnantItems;
         public ConfigEntry<bool> ShouldDespawnRemnantItems;
         public ConfigEntry<bool> ShouldAlwaysDespawnRemnantItems;
@@ -32,6 +33,7 @@ namespace Remnants.Data
         public ConfigEntry<int> BodyScrapValue;
         public Dictionary<Levels.LevelTypes, Tuple<int, int>> LevelRarities = new Dictionary<Levels.LevelTypes, Tuple<int, int>>();
         public Dictionary<string, Tuple<int, int>> CustomLevelRarities = new Dictionary<string, Tuple<int, int>>();
+        public ConfigEntry<int> IncreasedSpawnPool;
 
         private List<ConfigEntry<int>> _minRemnantLevelRarities = new List<ConfigEntry<int>>();
         private List<ConfigEntry<int>> _maxRemnantLevelRarities = new List<ConfigEntry<int>>();
@@ -105,8 +107,11 @@ namespace Remnants.Data
             MaxRemnantBatteryCharge = _configFile.Bind(_generalSection, "Max remnant battery charge", 90, "Maximum remnant item battery charge on first finding it.");
             MaxRemnantBatteryCharge.Value = Mathf.Clamp(MaxRemnantBatteryCharge.Value, MinRemnantBatteryCharge.Value, maxPercentage);
 
-            RemnantScrapCostPercentage = _configFile.Bind(_generalSection, "Remnant item scrap cost percentage", 5, "The percentage of how much worth of scrap a remnant item is compared to its normal credit cost. \nFrom 0 percentage scrap cost to 1000 percentage.");
-            RemnantScrapCostPercentage.Value = Mathf.Clamp(RemnantScrapCostPercentage.Value, 0, (int)maxItemCost);
+            RemnantScrapMinCostPercentage = _configFile.Bind(_generalSection, "Remnant item min scrap cost percentage", 5, "The min percentage of how much worth of scrap a remnant item is compared to its normal credit cost. \nFrom 0 percentage scrap cost to 1000 percentage.");
+            RemnantScrapMinCostPercentage.Value = Mathf.Clamp(RemnantScrapMinCostPercentage.Value, 0, (int)maxItemCost);
+
+            RemnantScrapMaxCostPercentage = _configFile.Bind(_generalSection, "Remnant item max scrap cost percentage", 20, "The max percentage of how much worth of scrap a remnant item is compared to its normal credit cost. \nFrom 0 percentage scrap cost to 1000 percentage.");
+            RemnantScrapMaxCostPercentage.Value = Mathf.Clamp(RemnantScrapMaxCostPercentage.Value, RemnantScrapMinCostPercentage.Value, (int)maxItemCost);
 
             ShouldBodiesBeScrap = _configFile.Bind(_generalBodySection, "Should bodies be scrap", true, "When the bodies are a scrap they can be grabbed, have a scrap value and can be sold. \nIf not then it becomes a prop and cannot be interacted with.");
 
@@ -124,6 +129,9 @@ namespace Remnants.Data
 
             _bannedNamesFromRegistering = _configFile.Bind(_otherSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice,Key,Error", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
             _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Scrap-example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
+
+            IncreasedSpawnPool = _configFile.Bind(_otherSection, "Max increase spawn pool", 15, "This value increases the amount of scrap that spawns in a level. \nIt is relative to the highest spawn chance of remnant items, the higher the remnants spawnchance the higher the pool size will be. \nThis value is the max increased pool size.");
+            IncreasedSpawnPool.Value = Mathf.Clamp(IncreasedSpawnPool.Value, 1, 25);
 
             _minRemnantLevelRarities = new List<ConfigEntry<int>>();
             _maxRemnantLevelRarities = new List<ConfigEntry<int>>();
