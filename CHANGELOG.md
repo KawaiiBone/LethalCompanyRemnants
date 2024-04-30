@@ -121,3 +121,5 @@
 - Added feature, rather than a fixed percentage cost for remnant items. You have a minimum and maximum percentage, which can be tweaked in the config.
 - Made body spawning more stable, so it should not crash on seed anymore.
 - Fixed typo in the default body.
+- Config changes: the percentage cost is replaced by a minimum and maximum, spawning pool config added and the remnants items are changed fully, names included.
+    It is requested that delete the config or delete only the Remnants section, to prevent cluttering the config and having unusable items names in there.

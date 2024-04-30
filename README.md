@@ -31,8 +31,9 @@ Remnant items:
 - The battery charge of remnant items with a minimum and maximum charge.
 - A list of banned items, preventing these items from being registered as scrap and becoming remnant items.
 - Choosing spawn options per item, using credit cost, choosing your own spawn rarity or disabling spawning entirely.
-- Makes you able to edit the scrap cost of remnant items via the config.
+- Makes you able to edit the minimum and maximum scrap cost of remnant items via the config.
 - A list of scrap items that you can add in acting as remnant items for body spawning and randomizing batteries.
+- Increasing the maximum spawning pool of scrap so there will be enough normal scrap to find.
 
 Body spawning:
 - To make them grabbbable with a scrap value or have them just as a prop and non interactable.
