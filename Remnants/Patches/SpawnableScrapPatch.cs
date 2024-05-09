@@ -13,6 +13,7 @@ namespace Remnants.Patches
         #region Variables
         private static int _currentLevelMinScrap = 0;
         private static int _currentLevelMaxScrap = 0;
+        private static List<SpawnableItemWithRarity> _removedSpawnableItems = new List<SpawnableItemWithRarity>();
         #endregion
 
         #region HarmonyMethods
@@ -25,7 +26,8 @@ namespace Remnants.Patches
             //Here we will delete all items that are banned //Should only be temporary
             List<SpawnableItemWithRarity> spawnableScrapList = __instance.currentLevel.spawnableScrap;
             List<RemnantData> scrapItemDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList();
-            spawnableScrapList.RemoveAll(spawnableItem => scrapItemDataList.FindIndex(itemData => itemData.RarityInfo == 0 && itemData.RemnantItemName == spawnableItem.spawnableItem.itemName) != -1);
+            _removedSpawnableItems = spawnableScrapList.Where(spawnableItem => scrapItemDataList.FindIndex(itemData => itemData.RarityInfo == 0 && itemData.RemnantItemName == spawnableItem.spawnableItem.itemName) != -1).ToList();
+            spawnableScrapList.RemoveAll(spawnableItem => _removedSpawnableItems.Contains(spawnableItem));
             __instance.currentLevel.spawnableScrap = spawnableScrapList;
             //Increase pool size
             _currentLevelMinScrap = __instance.currentLevel.minScrap;
@@ -61,6 +63,13 @@ namespace Remnants.Patches
         [HarmonyPostfix]
         public static void SpawnScrapInLevelEndPatch(RoundManager __instance)
         {
+            var mls = Remnants.Instance.Mls;
+            mls.LogInfo("Patching end of Spawn Scrap.");
+            //Reset spawnable list
+            __instance.currentLevel.spawnableScrap.AddRange(_removedSpawnableItems);
+            _removedSpawnableItems.Clear();
+
+            //Reset pool size
             __instance.currentLevel.minScrap = _currentLevelMinScrap;
             __instance.currentLevel.maxScrap = _currentLevelMaxScrap;
         }
