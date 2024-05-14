@@ -131,7 +131,7 @@ namespace Remnants.Data
             _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Scrap-example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
 
             IncreasedSpawnPool = _configFile.Bind(_otherSection, "Max increase spawn pool", 15, "This value increases the amount of scrap that spawns in a level. \nIt is relative to the highest spawn chance of remnant items, the higher the remnants spawnchance the higher the pool size will be. \nThis value is the max increased pool size.");
-            IncreasedSpawnPool.Value = Mathf.Clamp(IncreasedSpawnPool.Value, 1, 25);
+            IncreasedSpawnPool.Value = Mathf.Clamp(IncreasedSpawnPool.Value, 0, 25);
 
             _minRemnantLevelRarities = new List<ConfigEntry<int>>();
             _maxRemnantLevelRarities = new List<ConfigEntry<int>>();

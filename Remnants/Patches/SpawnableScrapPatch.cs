@@ -30,6 +30,9 @@ namespace Remnants.Patches
             spawnableScrapList.RemoveAll(spawnableItem => _removedSpawnableItems.Contains(spawnableItem));
             __instance.currentLevel.spawnableScrap = spawnableScrapList;
             //Increase pool size
+            if (Remnants.Instance.RemnantsConfig.IncreasedSpawnPool.Value <= 0)
+                return;
+
             _currentLevelMinScrap = __instance.currentLevel.minScrap;
             _currentLevelMaxScrap = __instance.currentLevel.maxScrap;
             float poolSizeIncrease = 1;
@@ -70,6 +73,8 @@ namespace Remnants.Patches
             _removedSpawnableItems.Clear();
 
             //Reset pool size
+            if (Remnants.Instance.RemnantsConfig.IncreasedSpawnPool.Value <= 0)
+                return;
             __instance.currentLevel.minScrap = _currentLevelMinScrap;
             __instance.currentLevel.maxScrap = _currentLevelMaxScrap;
         }

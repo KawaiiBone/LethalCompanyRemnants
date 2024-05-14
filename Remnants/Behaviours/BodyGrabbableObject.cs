@@ -41,7 +41,7 @@ namespace Remnants.Behaviours
             {
                 Debug.LogError("GetItemDataToSave is being called on " + itemProperties.itemName + ", which does not have saveItemVariable set true.");
             }
-            if (_bodySuitBehaviour == null)
+            if (_bodySuitBehaviour != null)
                 _saveSuitIndex = _bodySuitBehaviour.saveSuitIndex;
             return _saveSuitIndex;
         }
@@ -53,14 +53,14 @@ namespace Remnants.Behaviours
                 Debug.LogError("LoadItemSaveData is being called on " + itemProperties.itemName + ", which does not have saveItemVariable set true.");
             }
             _saveSuitIndex = saveData;
-            if (_bodySuitBehaviour == null)
+            if (_bodySuitBehaviour != null)
                 _bodySuitBehaviour.UpdateSuit(_saveSuitIndex);
         }
 
 
         public void SyncIndexSuit(int indexSuit)
         {
-            if (_bodySuitBehaviour == null)
+            if (_bodySuitBehaviour != null)
                 _bodySuitBehaviour.SyncIndexSuitClientRpc(indexSuit);
         }
         #endregion

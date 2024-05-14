@@ -51,6 +51,7 @@ namespace Remnants
             _harmony.PatchAll(typeof(SaveGamePatch));
             _harmony.PatchAll(typeof(DespawnRemnantsPatch));
             _harmony.PatchAll(typeof(BodySuitBehaviour));
+            _harmony.PatchAll(typeof(RegisterSuitsPatch));
             _harmony.PatchAll(typeof(Remnants));
             RemnantsConfig.Initialize();
             _registerItemsBehaviour.Initialize();
