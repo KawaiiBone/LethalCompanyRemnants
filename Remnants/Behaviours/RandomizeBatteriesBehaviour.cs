@@ -51,6 +51,26 @@ namespace Remnants.Behaviours
                 mls.LogInfo("Has updated " + grabbableObject.itemProperties.itemName + " charge to " + grabbableObject.insertedBattery.charge);
             }
         }
+
+        public void RandomizeItemBattery(GameObject itemObject = null)
+        {
+            var mls = Remnants.Instance.Mls;
+            if (itemObject == null)
+                return;
+
+            GrabbableObject grabbableObject = itemObject.GetComponent<GrabbableObject>();
+            if (grabbableObject== null || !grabbableObject.itemProperties.requiresBattery)
+                return;
+
+            if (!(grabbableObject.insertedBattery != null &&
+                grabbableObject.isInFactory == true && !grabbableObject.isInShipRoom))
+                return;
+
+            int randomCharge = _random.Next(Remnants.Instance.RemnantsConfig.MinRemnantBatteryCharge.Value, Remnants.Instance.RemnantsConfig.MaxRemnantBatteryCharge.Value);
+            grabbableObject.SyncBatteryServerRpc(randomCharge);
+            mls.LogInfo("Has updated " + grabbableObject.itemProperties.itemName + " charge to " + grabbableObject.insertedBattery.charge);
+
+        }
         #endregion
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Unity.Netcode;
+using LethalLib.Modules;
 using UnityEngine;
+using System.Linq;
 
 namespace Remnants.Behaviours
 {
@@ -9,10 +11,16 @@ namespace Remnants.Behaviours
     {
         #region Variables
         private bool _hasInitialized = false;
-        private List<GameObject> _remnantItemsObjects = new List<GameObject>();
-        public List<GameObject> RemnantItems
+        private List<GameObject> _foundRemnantItemsObjects = new List<GameObject>();
+        private List<Items.ScrapItem> _networkRemnantItems = new List<Items.ScrapItem>();
+        public List<GameObject> FoundRemnantItems
         {
-            get { return _remnantItemsObjects; }
+            get { return _foundRemnantItemsObjects; }
+        }
+
+        public List<Items.ScrapItem> NetworkRemnantItems
+        {
+            get { return _networkRemnantItems; }
         }
         #endregion
 
@@ -27,23 +35,34 @@ namespace Remnants.Behaviours
         #endregion
 
         #region Methods
-        public void AddRemnantItemObject(GameObject gameObj)
+        public void AddFoundRemnantItemObject(GameObject gameObj)
         {
             if (gameObj == null)
                 return;
 
-            if (_remnantItemsObjects.Contains(gameObj))
+            if (_foundRemnantItemsObjects.Contains(gameObj))
                 return;
 
-            _remnantItemsObjects.Add(gameObj);
+            _foundRemnantItemsObjects.Add(gameObj);
         }
 
         public void RemoveDespawnedAndNullItems()
         {
-            _remnantItemsObjects.RemoveAll(remnantItem =>
+            _foundRemnantItemsObjects.RemoveAll(remnantItem =>
             remnantItem == null ||
             remnantItem.GetComponent<NetworkObject>().IsSpawned == false
             );
+        }
+
+        public void AddNetworkRemnantItem(Items.ScrapItem scrapItem)
+        {
+            if (scrapItem == null)
+                return;
+
+            if (_networkRemnantItems.Contains(scrapItem))
+                return;
+
+            _networkRemnantItems.Add(scrapItem);
         }
         #endregion
     }

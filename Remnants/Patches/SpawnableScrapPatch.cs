@@ -22,7 +22,7 @@ namespace Remnants.Patches
         public static void SpawnScrapInLevelPatch(RoundManager __instance)
         {
             var mls = Remnants.Instance.Mls;
-            mls.LogInfo("Patching remntant items spawns.");
+            mls.LogInfo("Patching remnant items spawns.");
             //Here we will delete all items that are banned //Should only be temporary
             List<SpawnableItemWithRarity> spawnableScrapList = __instance.currentLevel.spawnableScrap;
             List<RemnantData> scrapItemDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList();
@@ -30,13 +30,13 @@ namespace Remnants.Patches
             spawnableScrapList.RemoveAll(spawnableItem => _removedSpawnableItems.Contains(spawnableItem));
             __instance.currentLevel.spawnableScrap = spawnableScrapList;
             //Increase pool size
-            if (Remnants.Instance.RemnantsConfig.IncreasedSpawnPool.Value <= 0)
+            if (Remnants.Instance.RemnantsConfig.IncreasedScrapSpawnPool.Value <= 0 || Remnants.Instance.RemnantsConfig.UseLegacySpawning.Value == false)
                 return;
 
             _currentLevelMinScrap = __instance.currentLevel.minScrap;
             _currentLevelMaxScrap = __instance.currentLevel.maxScrap;
             float poolSizeIncrease = 1;
-            float poolSizeModifier = 100.0f / (float)Remnants.Instance.RemnantsConfig.IncreasedSpawnPool.Value;
+            float poolSizeModifier = 100.0f / (float)Remnants.Instance.RemnantsConfig.IncreasedScrapSpawnPool.Value;
             if (Remnants.Instance.RemnantsConfig.UseSpecificLevelRarities.Value == false)
             {
                 poolSizeIncrease = (float)Remnants.Instance.RemnantsConfig.MaxRemnantRarity.Value / poolSizeModifier;
@@ -57,7 +57,7 @@ namespace Remnants.Patches
                     }
                 }
             }
-            poolSizeIncrease = Mathf.Clamp(poolSizeIncrease, 1.0f, Remnants.Instance.RemnantsConfig.IncreasedSpawnPool.Value);
+            poolSizeIncrease = Mathf.Clamp(poolSizeIncrease, 1.0f, Remnants.Instance.RemnantsConfig.IncreasedScrapSpawnPool.Value);
             __instance.currentLevel.minScrap += (int)(poolSizeIncrease);
             __instance.currentLevel.maxScrap += (int)(poolSizeIncrease);
         }
@@ -73,7 +73,7 @@ namespace Remnants.Patches
             _removedSpawnableItems.Clear();
 
             //Reset pool size
-            if (Remnants.Instance.RemnantsConfig.IncreasedSpawnPool.Value <= 0)
+            if (Remnants.Instance.RemnantsConfig.IncreasedScrapSpawnPool.Value <= 0 || Remnants.Instance.RemnantsConfig.UseLegacySpawning.Value == false)
                 return;
             __instance.currentLevel.minScrap = _currentLevelMinScrap;
             __instance.currentLevel.maxScrap = _currentLevelMaxScrap;

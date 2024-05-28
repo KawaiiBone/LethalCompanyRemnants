@@ -5,6 +5,8 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Unity.Netcode;
+using Remnants.utilities;
+using System.Reflection;
 
 namespace Remnants.Behaviours
 {
@@ -14,11 +16,14 @@ namespace Remnants.Behaviours
         private bool _hasInitialized = false;
         private bool _isAddingItems = false;
         private List<string> _bannedItemsNamesList = new List<string>();
+        private bool _useLegacySpawning = false;
 
         private const int _minSellValue = 1, _maxSellValue = 2;
         private const float _minCreditCost = 1f, _toFullCostMod = 2.5f;
         private const float _maxPercentage = 100.0f;
         private RemnantDataListBehaviour _remnantDataListBehaviour = new RemnantDataListBehaviour();
+        private List<RemnantData> _remnantItemList = new List<RemnantData>();
+        private RemnantItemsBehaviour _remnantItemsBehaviour = null;
         #endregion
 
         #region Initialize 
@@ -28,6 +33,9 @@ namespace Remnants.Behaviours
             {
                 _hasInitialized = true;
                 _bannedItemsNamesList = Remnants.Instance.RemnantsConfig.GetBannedItemNames();
+                _remnantItemList = Remnants.Instance.RemnantsConfig.GetRemnantItemList(false);
+                _useLegacySpawning = Remnants.Instance.RemnantsConfig.UseLegacySpawning.Value;
+                _remnantItemsBehaviour = Remnants.Instance.RemnantItemsBeh;
                 SceneManager.sceneLoaded += StoreItemsRegisterAsScrap;
             }
         }
@@ -41,6 +49,7 @@ namespace Remnants.Behaviours
             {
                 SceneManager.sceneLoaded -= StoreItemsRegisterAsScrap;
                 _remnantDataListBehaviour.UpdateScrapDataList();
+                _remnantItemList.Clear();
                 return;
             }
 
@@ -60,7 +69,6 @@ namespace Remnants.Behaviours
         private void AddStoreItemsToScrap(List<Item> allItems)
         {
             var mls = Remnants.Instance.Mls;
-            var remnantItemList = Remnants.Instance.RemnantsConfig.GetRemnantItemList(false);
             try
             {
                 foreach (Item item in allItems)
@@ -70,10 +78,12 @@ namespace Remnants.Behaviours
   
                     if (HasBannedName(item))
                         continue;
-          
-                    if (IsAlreadyScrap(item))
+
+                    if (_useLegacySpawning && IsAlreadyScrap(item))
                         continue;
-           
+                    else if (!_useLegacySpawning && IsAlreadyScrapOrRegistered(item))
+                        continue;
+
                     if (IsPrefabIncorrect(item.spawnPrefab))
                     {
                         mls.LogWarning(item.itemName + ": prefab is incorrect to be registered as scrap.");
@@ -83,10 +93,10 @@ namespace Remnants.Behaviours
                     int creditsworth = GetItemCreditsWorth(item);
                     if (creditsworth >= _minCreditCost)
                     {
-                        int remnantsIndex = remnantItemList.FindIndex(remnantData => remnantData.RemnantItemName == item.itemName);
+                        int remnantsIndex = _remnantItemList.FindIndex(remnantData => remnantData.RemnantItemName == item.itemName);
                         int itemRarityInfo = -1;
                         if(remnantsIndex != -1)
-                            itemRarityInfo = remnantItemList[remnantsIndex].RarityInfo;
+                            itemRarityInfo = _remnantItemList[remnantsIndex].RarityInfo;
 
                         RegisterItemAsScrap(item, creditsworth, itemRarityInfo);
                     }
@@ -107,6 +117,12 @@ namespace Remnants.Behaviours
         private bool IsAlreadyScrap(Item item)
         {
             return item.isScrap || Items.scrapItems.FindIndex(scrapItem => scrapItem.item.itemName == item.itemName || scrapItem.origItem.itemName == item.itemName) != -1;
+        }
+
+        private bool IsAlreadyScrapOrRegistered(Item item)
+        {
+            return item.isScrap || _remnantItemsBehaviour.NetworkRemnantItems.FindIndex(remnantItem => remnantItem.item.itemName == item.itemName
+            || remnantItem.origItem.itemName == item.itemName) != -1;
         }
 
         private bool IsPrefabIncorrect(GameObject gameObject)
@@ -146,8 +162,18 @@ namespace Remnants.Behaviours
                     rarity = CalculateRarityByCredits(creditsWorth, Remnants.Instance.RemnantsConfig.MinRemnantRarity.Value, Remnants.Instance.RemnantsConfig.MaxRemnantRarity.Value);
                 else
                     rarity = CalculateRarityOfItem(itenRarityInfo, Remnants.Instance.RemnantsConfig.MinRemnantRarity.Value, Remnants.Instance.RemnantsConfig.MaxRemnantRarity.Value);
-
-                Items.RegisterScrap(item, rarity, Levels.LevelTypes.All);
+                //Use new spawning version via legacy or by hand
+                if (_useLegacySpawning)
+                {
+                    Items.RegisterScrap(item, rarity, Levels.LevelTypes.All);
+                }
+                else
+                {
+                    var scrapItem = new Items.ScrapItem(item, rarity, Levels.LevelTypes.All);
+                    string name = Assembly.GetCallingAssembly().GetName().Name;
+                    scrapItem.modName = name;
+                    _remnantItemsBehaviour.AddNetworkRemnantItem(scrapItem);
+                }
             }
             else
             {
@@ -168,7 +194,18 @@ namespace Remnants.Behaviours
                     else
                         customLevelRarities.Add(customLevelRarity.Key, CalculateRarityOfItem(itenRarityInfo, customLevelRarity.Value.Item1, customLevelRarity.Value.Item2));
                 }
-                Items.RegisterScrap(item, levelRarities, customLevelRarities);
+                //Use new spawning version via legacy or by hand
+                if (_useLegacySpawning)
+                {
+                    Items.RegisterScrap(item, levelRarities, customLevelRarities);
+                }
+                else
+                {
+                    var scrapItem = new Items.ScrapItem(item, levelRarities, customLevelRarities);
+                    string name = Assembly.GetCallingAssembly().GetName().Name;
+                    scrapItem.modName = name;
+                    _remnantItemsBehaviour.AddNetworkRemnantItem(scrapItem);
+                }
             }
             mls.LogInfo("Added " + item.itemName + " as a scrap item.");
             _remnantDataListBehaviour.AddItemToDataList(item.itemName);

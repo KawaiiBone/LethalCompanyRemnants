@@ -20,7 +20,6 @@ namespace Remnants.Data
         private string _iconSpriteName = "ScrapItemIcon2";
         private string _dropSoundName = "BodyCollision2";
         private string _grabSoundName = "StartJump";
-        private string _playerRagdollLayer = "PlayerRagdoll";
         private AssetBundle _assetBundleBodies = null;
         private string[] _bodiesFileNamesArray = { "DefaultBodyProp", "HeadBurstBodyProp", "CoilHeadBodyProp", "WebbedBodyProp" };
         private string[] _bodiesItemsFileNamesArray = { "DefaultBodyItem", "HeadBurstBodyItem", "CoilBodyItem", "WebbedBodyItem" };

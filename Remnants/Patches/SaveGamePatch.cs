@@ -33,6 +33,7 @@ namespace Remnants.Patches
             grabbableObjectsList.AddRange(remnantRootItemsArray);
             grabbableObjectsList.AddRange(grabObjArray);
             var array = grabbableObjectsList.ToArray();
+            var remnantItemsNetworkList = Remnants.Instance.RemnantItemsBeh.NetworkRemnantItems;
 
             if (array == null || array.Length == 0)
             {
@@ -74,7 +75,7 @@ namespace Remnants.Patches
 
                         for (int j = 0; j < StartOfRound.Instance.allItemsList.itemsList.Count; j++)
                         {
-                            if (StartOfRound.Instance.allItemsList.itemsList[j] == array[i].itemProperties /*|| array[i].GetComponent<BodyMovementBehaviour>() != null*/)
+                            if (StartOfRound.Instance.allItemsList.itemsList[j] == array[i].itemProperties)
                             {
                                 mls.LogInfo("Adding item to save: " + array[i].itemProperties.itemName);
                                 list.Add(j);
@@ -82,7 +83,7 @@ namespace Remnants.Patches
                                 break;
                             }
                         }
-
+                   
                         if (array[i].itemProperties.isScrap)
                         {
                             list3.Add(array[i].scrapValue);

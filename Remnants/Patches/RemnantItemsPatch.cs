@@ -43,7 +43,7 @@ namespace Remnants.Patches
                     continue;
                 else
                 {
-                    remnantItemsBehaviour.AddRemnantItemObject(grabbableObject.gameObject);
+                    remnantItemsBehaviour.AddFoundRemnantItemObject(grabbableObject.gameObject);
                     newRemnantItemsList.Add(grabbableObject.gameObject);
                 }
             }

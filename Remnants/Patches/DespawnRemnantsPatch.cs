@@ -72,20 +72,39 @@ namespace Remnants.Patches
             DespawnItems(itemsLocationBeh.GetItemsInProps(), !itemsLocationBeh.PropObjectLocation.IsShipRoom, despawnAllItems, itemsLocationBeh.PropObjectLocation.ObjectLocationsNames.Last());
             DespawnItems(itemsLocationBeh.GetItemsInRoot(), !itemsLocationBeh.RootObjectLocation.IsShipRoom, despawnAllItems, "Root objects");
             remnantItemsBehaviour.RemoveDespawnedAndNullItems();
-            GrabbableObject[] grabbableObjectsArray = remnantItemsBehaviour.RemnantItems.ConvertAll(remnantOBJ => remnantOBJ.GetComponent<GrabbableObject>()).ToArray();
+            GrabbableObject[] grabbableObjectsArray = remnantItemsBehaviour.FoundRemnantItems.ConvertAll(remnantOBJ => remnantOBJ.GetComponent<GrabbableObject>()).ToArray();
             DespawnItems(grabbableObjectsArray, true, despawnAllItems, "Unknown place");
             remnantItemsBehaviour.RemoveDespawnedAndNullItems();
         }
 
-        [HarmonyPatch(typeof(GameNetworkManager), "DisconnectProcess")]
-        [HarmonyPrefix]
+        [HarmonyPatch(typeof(GameNetworkManager), "Disconnect")]
+        [HarmonyPostfix]
+
         public static void DespawnRemnantItemsOnDisconnect(GameNetworkManager __instance)
         {
+            var mls = Remnants.Instance.Mls;
+            mls.LogInfo("Patching Despawn Remnant Items at disconnect.");
+            if (!__instance.isDisconnecting && (StartOfRound.Instance == null))
+                return;
+
             if (!__instance.isHostingGame)
                 return;
 
+            object[] objects = { true };
+            DespawnRemnantItemsEndOfRound(objects);
+        }
+
+
+        [HarmonyPatch(typeof(GameNetworkManager), "DisconnectProcess")]
+        [HarmonyPrefix]
+        public static void DespawnRemnantItemsOnDisconnectProcess(GameNetworkManager __instance)
+        {
             var mls = Remnants.Instance.Mls;
-            mls.LogInfo("Patching Despawn Remnant Items at disconnect.");
+            mls.LogInfo("Patching Despawn Remnant Items at disconnect process.");
+
+            if (!__instance.isHostingGame)
+                return;
+
             object[] objects = { true };
             DespawnRemnantItemsEndOfRound(objects);
         }
@@ -96,7 +115,7 @@ namespace Remnants.Patches
         private static void DespawnRemnantItemsOnStartDisconnect()
         {
             var mls = Remnants.Instance.Mls;
-            mls.LogInfo("Patching Despawn Remnant Items at start disconnect.");
+            mls.LogInfo("Patching ownership of Remnant Items at start disconnect.");
             //Get all remnant items that should be in ship from root
             var itemsLocationBeh = Remnants.Instance.RegisterItemLocationsBeh;
             var grabbableObjectsList = itemsLocationBeh.GetShipItems().ToList();
