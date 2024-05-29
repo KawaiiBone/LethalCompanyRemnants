@@ -73,8 +73,8 @@ namespace Remnants.Behaviours
         public bool SetRandomOffsetOnNavmesh(Vector3 startPosition, out Vector3 newPosition)
         {
             var mls = Remnants.Instance.Mls;
-            bool isWithinMaxRange = NavMesh.SamplePosition(startPosition, out NavMeshHit maxRangeNavHit, _minReachDistance, _areaMask);
-            if (!isWithinMaxRange)
+            bool isWithinNavmeshRange = NavMesh.SamplePosition(startPosition, out NavMeshHit maxRangeNavHit, _minReachDistance, _areaMask);
+            if (!isWithinNavmeshRange)
             {
                 mls.LogWarning("Position is not on Navmesh.");
                 newPosition = Vector3.zero;
@@ -87,9 +87,9 @@ namespace Remnants.Behaviours
             bool foundRandomPosition = NavMesh.SamplePosition(startPosition + randomPosition, out NavMeshHit randomNavHit, distance, _areaMask);
             if(!foundRandomPosition)
             {
-                mls.LogWarning("Random position is not on Navmesh.");
-                newPosition = Vector3.zero;
-                return false;
+                mls.LogWarning("Random position is not on Navmesh, using starting position.");
+                newPosition = startPosition;
+                return true;
             }
             newPosition = randomNavHit.position;
             return true;

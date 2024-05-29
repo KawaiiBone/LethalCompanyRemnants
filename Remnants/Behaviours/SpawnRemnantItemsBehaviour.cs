@@ -19,7 +19,7 @@ namespace Remnants.Behaviours
         private float _courotineDelayTAmount = 11.0f;//same length as in the game
         private RandomizeBatteriesBehaviour _randomizeBatteriesBeh = null;
         private int _maxPercentage = 100;
-        private PositionOnNavMeshBehaviour _positionOnNavMeshBeh = new PositionOnNavMeshBehaviour(0, 0, 0, 0.3f, 0);
+        private PositionOnNavMeshBehaviour _positionOnNavMeshBeh = new PositionOnNavMeshBehaviour(0, 0.125f, 0, 1.3f, 0);
         private List<Vector3> _bodySpawnPositions = new List<Vector3>();
         public List<Vector3> BodySpawnPositions
         {
@@ -67,7 +67,7 @@ namespace Remnants.Behaviours
                 KeyValuePair<string, int> remnantItemToSpawnData = GetRandomSpawnData(remnantItemsContainer, totalRarity);
                 if (remnantItemToSpawnData.Key.IsNullOrWhiteSpace())
                 {
-                    mls.LogWarning("Remnant item spawn data not found");
+                    mls.LogError("Remnant item spawn data not found");
                     break;
                 }
 
@@ -80,7 +80,7 @@ namespace Remnants.Behaviours
                     int randomInsideAiNode = roundManager.AnomalyRandom.Next(0, roundManager.insideAINodes.Length);
                     Vector3 randomNavMeshPositionInBoxPredictable = roundManager.GetRandomNavMeshPositionInBoxPredictable(roundManager.insideAINodes[randomInsideAiNode].transform.position, 8f, roundManager.navHit, roundManager.AnomalyRandom, -1);
                     spawnPosition = randomNavMeshPositionInBoxPredictable;
-                    hasNotSpawnedItemOnABody = true;
+                    hasNotSpawnedItemOnABody = true;          
                 }
                 else if(currentAmountItemsSpawnOnBody > 0 && _positionOnNavMeshBeh.SetRandomOffsetOnNavmesh(_bodySpawnPositions.Last(), out spawnPosition))
                 {
@@ -89,8 +89,8 @@ namespace Remnants.Behaviours
                 }
                 else
                 {
-                    mls.LogError("Something went wrong with spawning remnant items spawning positions.");
-                    break;
+                    mls.LogWarning("Something went wrong with spawning remnant items spawning positions.");
+                    continue;
                 }
 
                 if(hasNotSpawnedItemOnABody && _random.Next(_maxPercentage) <= spawnChance)

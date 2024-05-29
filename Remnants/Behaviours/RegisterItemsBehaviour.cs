@@ -86,7 +86,7 @@ namespace Remnants.Behaviours
 
                     if (IsPrefabIncorrect(item.spawnPrefab))
                     {
-                        mls.LogWarning(item.itemName + ": prefab is incorrect to be registered as scrap.");
+                        //mls.LogWarning(item.itemName + ": prefab is incorrect to be registered as scrap.");
                         continue;
                     }
 
