@@ -123,3 +123,13 @@
 - Fixed typo in the default body.
 - Config changes: the percentage cost is replaced by a minimum and maximum, spawning pool config added and the remnants items are changed fully, names included.
     It is requested that delete the config or delete only the Remnants section, to prevent cluttering the config and having unusable items names in there.
+
+#1.3.0
+- Added feature, remnant items spawn separately from normal scrap, now it does not spawn anymore in lockers.
+    This gives a lot more options to edit the spawning which gives more options to change stuff via the config.
+    Options you can change is in the README, here are some examples: amount of remnant items spawns, max duplicates and how many remnant items on a body.
+- Added feature that makes the body suits able to use suits from other mods.
+- Changed names of bodies types of death in more or less like in the Lethal Company Wiki.
+- Updated feature, now the spawnable remnant items can be fully updated during the game, banned and unbanned.
+- Fixed bug where only the default suit for bodies are found when you choose in the config feature, make bodies as scrap.
+- Fixed incompatibility bug with other mods that made remnant items not despawn at all.

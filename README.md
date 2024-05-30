@@ -14,7 +14,7 @@ Along this, there is a small chance that you will find a corpse along the scrap 
 
 #### Register store items as scrap, also known as remnant items.
 This mod takes the game's store items and registers them as scrap, so you can find these store items on moons alongside other scrap.
-Items that use a battery will have a random battery charge to make it seem as if they have been used.
+Remnant items that use a battery will have a random battery charge to make it seem as if they have been used.
 This mod is also compatible with other mods that add more items to the game, which means that you can find modded store items on moons as well.
 
 #### Spawn bodies near remnant items.
@@ -33,6 +33,15 @@ Remnant items:
 - Choosing spawn options per item, using credit cost, choosing your own spawn rarity or disabling spawning entirely.
 - Makes you able to edit the minimum and maximum scrap cost of remnant items via the config.
 - A list of scrap items that you can add in acting as remnant items for body spawning and randomizing batteries.
+
+Spawning remnant items:
+- The minimum and maximum remnant items spawned on moons.
+- A modifier that increases the amount of remnant items that spawns on moons, depending on the risk level of that moon.
+- The maximum duplicates of the same remnant item that can spawn on a moon.
+- The maximum remnant items found on a body.
+
+Spawning remnant items: (legacy spawning)
+- Use legacy spawning, spawning like normal scrap. This will prevent the other way of spawning remnant items.
 - Increasing the maximum spawning pool of scrap so there will be enough normal scrap to find.
 
 Body spawning:
