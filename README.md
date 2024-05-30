@@ -65,3 +65,9 @@ This mod is also available on the [thunderstore website](https://thunderstore.io
 If you want to download this mod manually, you should know that it is dependent on [BepInEx](https://github.com/BepInEx) and [Lethal Lib](https://github.com/EvaisaDev/LethalLib).
 When the dependencies are added, you can just copy the files in the plugins folder and add them in the BepInEx plugins folder.
 
+## Known Issues
+The scrap bodies you can find via this mod are at odd angles and might be annoying if you want to carry them. 
+This is because the bodies shake too much before setting into position.
+If anyone has a good way of fixing this issue, be sure to let me know.
+
+
