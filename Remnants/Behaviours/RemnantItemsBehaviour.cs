@@ -11,9 +11,9 @@ namespace Remnants.Behaviours
     {
         #region Variables
         private bool _hasInitialized = false;
-        private List<GameObject> _foundRemnantItemsObjects = new List<GameObject>();
+        private static List<GameObject> _foundRemnantItemsObjects = new List<GameObject>();
         private List<Items.ScrapItem> _networkRemnantItems = new List<Items.ScrapItem>();
-        public List<GameObject> FoundRemnantItems
+        public static List<GameObject> FoundRemnantItems
         {
             get { return _foundRemnantItemsObjects; }
         }

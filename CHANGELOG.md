@@ -133,3 +133,15 @@
 - Updated feature, now the spawnable remnant items can be fully updated during the game, banned and unbanned.
 - Fixed bug where only the default suit for bodies are found when you choose in the config feature, make bodies as scrap.
 - Fixed incompatibility bug with other mods that made remnant items not despawn at all.
+
+#1.3.1
+- Added feature, minimum remnant items spawned on a body.
+- Added feature, new list of items that are banned from saving it can be found in the config in section save/load.
+- Changed save items on ship patch to a transpiler, making it more compatible with other mods.
+- Added a transpiler to the despawn items with still a fail safe patch if the transpiler fails.
+- Updated to new version of Lethallib.
+- Updated readme, added section Possible incompatibilities.
+- Fixed bug that caused no remnant items to spawn on moon Artifice.
+- Fixed saving issue that would cause some remnant items to not be saved under very specific conditions when picked up.
+- Fixed bug, that would keep previous items saved when no items were present on the ship.
+- Fixed Bug, that remnant items could not be 0 as scrap value.

@@ -48,6 +48,7 @@ namespace Remnants.Behaviours
                 return;
           
             List<Items.ScrapItem> networkRemnantItems = GetAvailableNetworkRemnantItems();
+            int minRemnantItemsOnBody = Remnants.Instance.RemnantsConfig.MinItemsFoundOnBodies.Value;
             int maxRemnantItemsOnBody = Remnants.Instance.RemnantsConfig.MaxItemsFoundOnBodies.Value;
             int amountRemnantItemsToSpawn = CalculateAmountItemsToSpawn(roundManager);
             List<KeyValuePair<string, int>> remnantItemsBaseContainer = CreateRemnantItemsBaseContainer(roundManager, networkRemnantItems);
@@ -58,7 +59,7 @@ namespace Remnants.Behaviours
             _bodySpawnPositions.Clear();
             float spawnChance = CalculateBodySpawnChance(StartOfRound.Instance.currentLevel.riskLevel);
             bool hasNotSpawnedItemOnABody = true;
-            int currentAmountItemsSpawnOnBody = 0;
+            int currentAmountItemsSpawnOnBody = 0;  
             for (int spawnIndex = 0; spawnIndex < amountRemnantItemsToSpawn; spawnIndex++)
             {
                 if (totalRarity <= 0 || remnantItemsContainer.Count == 0)
@@ -95,7 +96,7 @@ namespace Remnants.Behaviours
 
                 if(hasNotSpawnedItemOnABody && _random.Next(_maxPercentage) <= spawnChance)
                 {
-                    currentAmountItemsSpawnOnBody = _random.Next(maxRemnantItemsOnBody - 1);
+                    currentAmountItemsSpawnOnBody = _random.Next(minRemnantItemsOnBody, maxRemnantItemsOnBody) - 1;
                     _bodySpawnPositions.Add(spawnPosition);
                 }
 
@@ -137,7 +138,6 @@ namespace Remnants.Behaviours
 
         private int CalculateAmountItemsToSpawn(RoundManager roundManager)
         {
-
             int minRemnantItemsSpawn = Remnants.Instance.RemnantsConfig.MinRemnantItemsSpawning.Value;
             int maxRemnantItemsSpawn = Remnants.Instance.RemnantsConfig.MaxRemnantItemsSpawning.Value;
             float spawnRemnantItemsModifier = Remnants.Instance.RemnantsConfig.RemnantItemsSpawningModifier.Value;

@@ -1,14 +1,9 @@
 ﻿using HarmonyLib;
-using LethalLib.Modules;
-using Remnants.Behaviours;
-using Remnants.utilities;
-using System;
-using System.Collections.Generic;
-using Unity.Netcode;
-using UnityEngine;
+
 
 namespace Remnants.Patches
 {
+
     internal class SpawnRemnantItemsPatch
     {
         #region HarmonyMethods

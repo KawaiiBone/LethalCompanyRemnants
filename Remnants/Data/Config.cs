@@ -40,6 +40,7 @@ namespace Remnants.Data
         public ConfigEntry<int> MaxRemnantItemsSpawning;
         public ConfigEntry<float> RemnantItemsSpawningModifier;
         public ConfigEntry<int> MaxDuplicatesRemnantItems;
+        public ConfigEntry<int> MinItemsFoundOnBodies;
         public ConfigEntry<int> MaxItemsFoundOnBodies;
 
 
@@ -52,6 +53,7 @@ namespace Remnants.Data
         private List<ConfigDataValue<bool>> _configSuitsDataList = new List<ConfigDataValue<bool>>();
         private ConfigEntry<string> _bannedNamesFromRegistering;
         private ConfigEntry<string> _overriddenScrapItems;
+        private ConfigEntry<string> _bannedItemsFromSaving;
         private ConfigFile _configFile;
         private string _configFileName = "\\Remnants.cfg";
         private string _generalSection = "General";
@@ -157,8 +159,12 @@ namespace Remnants.Data
             MaxDuplicatesRemnantItems = _configFile.Bind(_spawningSection, "Maximum duplicates can spawn", 4, "The maximum duplicates of a remnant item that can spawn on a moon. \nDo note that the spawning of remnant items will stop when it has used up all maximum duplicates.");
             MaxDuplicatesRemnantItems.Value = Mathf.Clamp(MaxDuplicatesRemnantItems.Value, 1, _maxDuplicatesOfARemnantItem);
 
-            MaxItemsFoundOnBodies = _configFile.Bind(_spawningSection, "Maximum remnant items found on a body", 3, "The maximum remnant items found on a body.");
-            MaxItemsFoundOnBodies.Value = Mathf.Clamp(MaxItemsFoundOnBodies.Value, 1, _maximumItemsFoundOnBody);
+
+            MinItemsFoundOnBodies = _configFile.Bind(_spawningSection, "Minimum remnant items found on a body", 1, "The Minimum remnant items found on a body.");
+            MinItemsFoundOnBodies.Value = Mathf.Clamp(MinItemsFoundOnBodies.Value, 1, _maximumItemsFoundOnBody);
+
+            MaxItemsFoundOnBodies = _configFile.Bind(_spawningSection, "Maximum remnant items found on a body", 4, "The maximum remnant items found on a body.");
+            MaxItemsFoundOnBodies.Value = Mathf.Clamp(MaxItemsFoundOnBodies.Value, MinItemsFoundOnBodies.Value, _maximumItemsFoundOnBody);
 
             UseLegacySpawning = _configFile.Bind(_spawningLegacySection, "Use legacy spawning", false, "Chooses if you want to use the older version of spawning remnant items. \nThe older version spawns along the normal scrap, which can be in lockers. \nWhile this is active this means that the new version will be disabled.");
             IncreasedScrapSpawnPool = _configFile.Bind(_spawningLegacySection, "Max increase scrap spawn pool", 15, "Increases the total scrap spawn pool to accommodate the remnant items spawning along the scrap items. \nThis is intended to make sure you get enough scrap value per moon.");
@@ -185,6 +191,7 @@ namespace Remnants.Data
             ShouldSaveRemnantItems = _configFile.Bind(_saveLoadSection, "Save remnant items", true, "This ensures that the remnant items are saved in the ship when you reload the lobby.");
             ShouldDespawnRemnantItems = _configFile.Bind(_saveLoadSection, "Despawn remnant items on party wipe", true, "On party wipe all items are despawned from the ship, this ensures that remnant items also are despawned. \nIf you use a mod that prevents items from being despawned, here you can edit it too for remnant items.");
             ShouldAlwaysDespawnRemnantItems = _configFile.Bind(_saveLoadSection, "Always despawn remnant items", false, "Despawns all remnant items when going away from moons, even if it is in the shiproom and you are holding it.");
+            _bannedItemsFromSaving = _configFile.Bind(_saveLoadSection, "Item list banned from saving", "Clipboard,StickyNote,Binoculars,MapDevice,Error", "List of items that are barred saving on the ship. \nThese default items are there to avoid issues with saving items on the ship. \nTo add more names to the list, be sure to add a comma between names.");
 
             ConfigScrapDataList = _configRemnantDataPairList.ConvertAll(itemData =>
                      _configFile.Bind(_remnantsSection, itemData.Name, -1, itemData.Discription));
@@ -267,11 +274,18 @@ namespace Remnants.Data
         }
 
 
-        public List<string> GetBannedItemNames()
+        public List<string> GetBannedFromRegisteringItemNames()
         {
             if (_bannedNamesFromRegistering.Value.IsNullOrWhiteSpace())
                 return new List<string>();
             return _bannedNamesFromRegistering.Value.Split(',').ToList();
+        }
+
+        public List<string> GetBannedFromSavingItemNames()
+        {
+            if (_bannedItemsFromSaving.Value.IsNullOrWhiteSpace())
+                return new List<string>();
+            return _bannedItemsFromSaving.Value.Split(',').ToList();
         }
         public List<string> GetOverriddenScrapItems()
         {

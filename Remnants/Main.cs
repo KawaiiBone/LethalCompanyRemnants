@@ -7,7 +7,7 @@ using Remnants.Data;
 
 namespace Remnants
 {
-    [BepInDependency("evaisa.lethallib", "0.15.1")]
+    [BepInDependency("evaisa.lethallib", "0.16.0")]
     [BepInPlugin(modGUID, modName, modVersion)]
 
     public class Remnants : BaseUnityPlugin
@@ -15,7 +15,7 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.3.0";
+        private const string modVersion = "1.3.1";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);
@@ -28,12 +28,12 @@ namespace Remnants
         public SpawnBodiesBehaviour SpawningBodyBeh = new SpawnBodiesBehaviour();
         public RemnantItemsBehaviour RemnantItemsBeh = new RemnantItemsBehaviour();
         public RandomizeBatteriesBehaviour ItemsBatteriesBeh = new RandomizeBatteriesBehaviour();
-        public RegisterItemLocationsBehaviour RegisterItemLocationsBeh = new RegisterItemLocationsBehaviour();
+        public RemnantItemsLocationsBehaviour RegisterItemLocationsBeh = new RemnantItemsLocationsBehaviour();
         public SpawnRemnantItemsBehaviour SpawnRemnantItemsBeh = new SpawnRemnantItemsBehaviour();
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
         private RegisterCustomMoonsData _registerCustomMoonsData = new RegisterCustomMoonsData();
-        private string[] _riskLevelArray = { "Safe", "D", "C", "B", "A", "S", "S+" };
+        private string[] _riskLevelArray = { "Safe", "D", "C", "B", "A", "S", "S+", "S++", "S+++" };
         public string[] RiskLevelArray
         {
             get { return _riskLevelArray; }
@@ -53,11 +53,11 @@ namespace Remnants
             _harmony.PatchAll(typeof(RemnantItemsPatch));
             _harmony.PatchAll(typeof(SpawnRemnantItemsPatch));
             _harmony.PatchAll(typeof(SpawnableScrapPatch));
-            _harmony.PatchAll(typeof(SaveGamePatch));
             _harmony.PatchAll(typeof(DespawnRemnantsPatch));
             _harmony.PatchAll(typeof(BodySuitBehaviour));
             _harmony.PatchAll(typeof(RegisterSuitsPatch));
             _harmony.PatchAll(typeof(AddRemnantItemsToItemList));
+            _harmony.PatchAll(typeof(SaveGameTranspiler));
             _harmony.PatchAll(typeof(Remnants));
             RemnantsConfig.Initialize();
             _registerItemsBehaviour.Initialize();
@@ -69,6 +69,7 @@ namespace Remnants
             ItemsBatteriesBeh.Initialize();
             RegisterItemLocationsBeh.Initialize();
             SpawnRemnantItemsBeh.Initialize();
+
             Mls.LogInfo("modGUID has loaded");
         }
         #endregion

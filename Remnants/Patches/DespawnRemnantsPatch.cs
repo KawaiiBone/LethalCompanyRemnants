@@ -1,11 +1,22 @@
 ﻿using HarmonyLib;
+using Remnants.Behaviours;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace Remnants.Patches
 {
     internal class DespawnRemnantsPatch
     {
+        #region Variables
+        private static MethodInfo _firstMethodToFind = SymbolExtensions.GetMethodInfo(() => UnityEngine.Object.FindObjectsOfType<GrabbableObject>());
+        private static bool CanUseTranspiler = true;
+        #endregion
+
+
         #region Methods
         private static void DespawnItems(GrabbableObject[] grabbableObjects, bool skipShipRoom, bool despawnALlItems, string placeOfDespawning)
         {
@@ -42,12 +53,8 @@ namespace Remnants.Patches
                 networkObject.Despawn();
             }
         }
-        #endregion
-        #region HarmonyMethods
-        [HarmonyPatch(typeof(RoundManager), "DespawnPropsAtEndOfRound")]
-        [HarmonyPostfix]
 
-        public static void DespawnRemnantItemsEndOfRound(object[] __args)
+        private static void DespawnRemnantItems(object[] __args)
         {
             var mls = Remnants.Instance.Mls;
             bool despawnAllItems = (bool)__args[0];
@@ -72,10 +79,57 @@ namespace Remnants.Patches
             DespawnItems(itemsLocationBeh.GetItemsInProps(), !itemsLocationBeh.PropObjectLocation.IsShipRoom, despawnAllItems, itemsLocationBeh.PropObjectLocation.ObjectLocationsNames.Last());
             DespawnItems(itemsLocationBeh.GetItemsInRoot(), !itemsLocationBeh.RootObjectLocation.IsShipRoom, despawnAllItems, "Root objects");
             remnantItemsBehaviour.RemoveDespawnedAndNullItems();
-            GrabbableObject[] grabbableObjectsArray = remnantItemsBehaviour.FoundRemnantItems.ConvertAll(remnantOBJ => remnantOBJ.GetComponent<GrabbableObject>()).ToArray();
+            GrabbableObject[] grabbableObjectsArray = RemnantItemsBehaviour.FoundRemnantItems.ConvertAll(remnantOBJ => remnantOBJ.GetComponent<GrabbableObject>()).ToArray();
             DespawnItems(grabbableObjectsArray, true, despawnAllItems, "Unknown place");
             remnantItemsBehaviour.RemoveDespawnedAndNullItems();
         }
+
+
+
+
+        #endregion
+        #region HarmonyMethods
+        [HarmonyPatch(typeof(RoundManager), "DespawnPropsAtEndOfRound")]
+        [HarmonyPostfix]
+        private static void DespawnRemnantItemsAtEndOfRoundPatch(object[] __args)
+        {
+            if (CanUseTranspiler)
+                return;
+
+            var mls = Remnants.Instance.Mls;
+            mls.LogInfo("Patching Despawn Remnant Items AtEndOfRound.");
+            DespawnRemnantItems(__args);
+        }
+
+
+        [HarmonyPatch(typeof(RoundManager), "DespawnPropsAtEndOfRound")]
+        [HarmonyTranspiler]
+        static IEnumerable<CodeInstruction> DespawnPropsAtEndOfRoundTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var mls = Remnants.Instance.Mls;
+            var codes = new List<CodeInstruction>(instructions);
+            int indexFirstCall = -1;
+            for (int i = 0; i < codes.Count; ++i)
+            {
+                if (codes[i].opcode == OpCodes.Call && codes[i].Calls(_firstMethodToFind))
+                {
+                    indexFirstCall = i;
+                    break;
+                }
+            }
+
+            if (indexFirstCall == -1)
+            {
+                mls.LogError("Could not find first call to edit, using old patching method to despawn remnant items.");
+                CanUseTranspiler = false;
+                return codes.AsEnumerable();
+            }
+            MethodInfo proteinHitFoce = typeof(RemnantItemsLocationsBehaviour).GetMethod(nameof(RemnantItemsLocationsBehaviour.GetAllItems));
+            codes.Insert(indexFirstCall + 1, new CodeInstruction(OpCodes.Call, proteinHitFoce));
+            mls.LogInfo("Transpiler succes with function: Despawn Props At End Of Round.");
+            return codes.AsEnumerable();
+        }
+
 
         [HarmonyPatch(typeof(GameNetworkManager), "Disconnect")]
         [HarmonyPostfix]
@@ -91,7 +145,7 @@ namespace Remnants.Patches
                 return;
 
             object[] objects = { true };
-            DespawnRemnantItemsEndOfRound(objects);
+            DespawnRemnantItems(objects);
         }
 
 
@@ -106,7 +160,7 @@ namespace Remnants.Patches
                 return;
 
             object[] objects = { true };
-            DespawnRemnantItemsEndOfRound(objects);
+            DespawnRemnantItems(objects);
         }
 
 

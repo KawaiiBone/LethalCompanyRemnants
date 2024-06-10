@@ -32,7 +32,7 @@ namespace Remnants.Behaviours
             if (!_hasInitialized)
             {
                 _hasInitialized = true;
-                _bannedItemsNamesList = Remnants.Instance.RemnantsConfig.GetBannedItemNames();
+                _bannedItemsNamesList = Remnants.Instance.RemnantsConfig.GetBannedFromRegisteringItemNames();
                 _remnantItemList = Remnants.Instance.RemnantsConfig.GetRemnantItemList(false);
                 _useLegacySpawning = Remnants.Instance.RemnantsConfig.UseLegacySpawning.Value;
                 _remnantItemsBehaviour = Remnants.Instance.RemnantItemsBeh;
@@ -145,8 +145,11 @@ namespace Remnants.Behaviours
             mls.LogInfo("Registering " + item.itemName + " as scrap.");
             float creditWorthMinPercentage = (float)Remnants.Instance.RemnantsConfig.RemnantScrapMinCostPercentage.Value / _maxPercentage;
             float creditWorthMaxPercentage = (float)Remnants.Instance.RemnantsConfig.RemnantScrapMaxCostPercentage.Value / _maxPercentage;
-            item.minValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthMinPercentage), _minSellValue, int.MaxValue);
-            item.maxValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthMaxPercentage), _maxSellValue, int.MaxValue);
+            if(_useLegacySpawning)
+            {
+                item.minValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthMinPercentage), _minSellValue, int.MaxValue);
+                item.maxValue = Mathf.Clamp((int)(creditsWorth * _toFullCostMod * creditWorthMaxPercentage), _maxSellValue, int.MaxValue);
+            }
             item.itemSpawnsOnGround = true;
             LethalLib.Modules.Utilities.FixMixerGroups(item.spawnPrefab);
             GrabbableObject grabbable = item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
@@ -172,6 +175,8 @@ namespace Remnants.Behaviours
                     var scrapItem = new Items.ScrapItem(item, rarity, Levels.LevelTypes.All);
                     string name = Assembly.GetCallingAssembly().GetName().Name;
                     scrapItem.modName = name;
+                    scrapItem.item.minValue = Mathf.Clamp((int)(creditsWorth /** _toFullCostMod*/ * creditWorthMinPercentage), 0, int.MaxValue);
+                    scrapItem.item.maxValue = Mathf.Clamp((int)(creditsWorth /** _toFullCostMod*/ * creditWorthMaxPercentage), 0, int.MaxValue);
                     _remnantItemsBehaviour.AddNetworkRemnantItem(scrapItem);
                 }
             }
@@ -204,14 +209,14 @@ namespace Remnants.Behaviours
                     var scrapItem = new Items.ScrapItem(item, levelRarities, customLevelRarities);
                     string name = Assembly.GetCallingAssembly().GetName().Name;
                     scrapItem.modName = name;
+                    scrapItem.item.minValue = Mathf.Clamp((int)(creditsWorth /** _toFullCostMod*/ * creditWorthMinPercentage), 0, int.MaxValue);
+                    scrapItem.item.maxValue = Mathf.Clamp((int)(creditsWorth /** _toFullCostMod*/ * creditWorthMaxPercentage), 0, int.MaxValue);
                     _remnantItemsBehaviour.AddNetworkRemnantItem(scrapItem);
                 }
             }
             mls.LogInfo("Added " + item.itemName + " as a scrap item.");
             _remnantDataListBehaviour.AddItemToDataList(item.itemName);
         }
-
-       
 
         private int CalculateRarityByCredits(int itemCreditWorth, int minStoreScrapRarity, int maxStoreScrapRarity)
         {

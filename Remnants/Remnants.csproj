@@ -108,7 +108,7 @@
     <Compile Include="Behaviours\BodySuitBehaviour.cs" />
     <Compile Include="Behaviours\PositionOnNavMeshBehaviour.cs" />
     <Compile Include="Behaviours\RandomizeBatteriesBehaviour.cs" />
-    <Compile Include="Behaviours\RegisterItemLocationsBehaviour.cs" />
+    <Compile Include="Behaviours\RemnantItemsLocationsBehaviour.cs" />
     <Compile Include="Behaviours\RemnantItemsBehaviour.cs" />
     <Compile Include="Behaviours\SpawnBodiesBehaviour.cs" />
     <Compile Include="Behaviours\RegisterBodySuitsBehaviour.cs" />
@@ -124,7 +124,7 @@
     <Compile Include="Patches\DespawnRemnantsPatch.cs" />
     <Compile Include="Patches\RegisterSuitsPatch.cs" />
     <Compile Include="Patches\RemnantItemsPatch.cs" />
-    <Compile Include="Patches\SaveGamePatch.cs" />
+    <Compile Include="Patches\SaveGameTranspiler.cs" />
     <Compile Include="Patches\SpawnableScrapPatch.cs" />
     <Compile Include="Patches\SpawnRemnantItemsPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
