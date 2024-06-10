@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
-using LethalLib.Modules;
 using Remnants.utilities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

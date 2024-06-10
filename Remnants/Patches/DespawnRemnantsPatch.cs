@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Unity.Netcode;
-using UnityEngine;
 
 namespace Remnants.Patches
 {

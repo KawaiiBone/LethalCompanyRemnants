@@ -1,12 +1,10 @@
 ﻿using HarmonyLib;
 using Remnants.Behaviours;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
-using static HarmonyLib.AccessTools;
 
 namespace Remnants.Patches
 {

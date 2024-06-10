@@ -5,7 +5,6 @@ using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using LethalLib.Modules;
-using Newtonsoft.Json.Serialization;
 using Remnants.utilities;
 using UnityEngine;
 

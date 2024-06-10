@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using LethalLib.Modules;
+﻿using LethalLib.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 
-
 namespace Remnants.Patches
 {
 

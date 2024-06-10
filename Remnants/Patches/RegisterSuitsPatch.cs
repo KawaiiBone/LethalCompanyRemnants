@@ -1,8 +1,4 @@
 ﻿using HarmonyLib;
-using Remnants.utilities;
-using System.Collections.Generic;
-using Unity.Netcode;
-using UnityEngine;
 
 namespace Remnants.Patches
 {
