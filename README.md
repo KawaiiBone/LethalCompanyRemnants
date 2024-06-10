@@ -38,7 +38,7 @@ Spawning remnant items:
 - The minimum and maximum remnant items spawned on moons.
 - A modifier that increases the amount of remnant items that spawns on moons, depending on the risk level of that moon.
 - The maximum duplicates of the same remnant item that can spawn on a moon.
-- The maximum remnant items found on a body.
+- The minimum and maximum remnant items found on a body.
 
 Spawning remnant items: (legacy spawning)
 - Use legacy spawning, spawning like normal scrap. This will prevent the other way of spawning remnant items.
@@ -66,8 +66,15 @@ If you want to download this mod manually, you should know that it is dependent 
 When the dependencies are added, you can just copy the files in the plugins folder and add them in the BepInEx plugins folder.
 
 ## Known Issues
+
+### Odd body behaviour
 The scrap bodies you can find via this mod are at odd angles and might be annoying if you want to carry them. 
 This is because the bodies shake too much before setting into position.
 If anyone has a good way of fixing this issue, be sure to let me know.
 
-
+### Possible incompatibilities 
+This mod has an issue that the normal game does not detect remnant items that easily, so to fix this issue it has to edit the despawning and saving of items.
+By doing so, it can create some incompatibilities with other mods, normally the despawning of remnant items should be fine.
+But saving can cause some issues and make it so that remnant items are not saved at all due to incompatibilities with other mods.
+Normally this should not break the gameplay of that mod, if you want to be sure you can go and disable remnant items from saving in the config.
+If there are other compatibility issues with other mods, there is a big chance that it can be fixed via the config.
