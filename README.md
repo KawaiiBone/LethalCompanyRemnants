@@ -55,6 +55,7 @@ Save/Load:
 - Save remnant items.
 - Despawn remnant items on party wipe.
 - Despawn all remnant items regardless where they are when leaving a moon.
+- A list of banned items, preventing these items from being saved on the ship.
 
 ## Feedback and issues
 If you find any bugs, issues, or have any feedback on how to improve the mod, you are always welcome to share it here on [Github](https://github.com/KawaiiBone/LethalCompanyRemnants/issues), [Unofficial Lethal Company discord](https://discord.com/invite/nYcQFEpXfU) or on the [LC Modding discord](https://discord.com/invite/lcmod). When you report an issue, please be sure to add the error in question and what other mods you were using at the time of the error. This way I can easily find the bug and patch it.
