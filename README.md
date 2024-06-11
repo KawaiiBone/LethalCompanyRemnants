@@ -59,14 +59,14 @@ Save/Load:
 - Despawn all remnant items regardless where they are when leaving a moon.
 - A list of banned items, preventing these items from being saved on the ship.
 
-## Feedback and issues
-If you find any bugs, issues, or have any feedback on how to improve the mod, you are always welcome to share it here on [Github](https://github.com/KawaiiBone/LethalCompanyRemnants/issues), [Unofficial Lethal Company discord](https://discord.com/invite/nYcQFEpXfU) or on the [LC Modding discord](https://discord.com/invite/lcmod). When you report an issue, please be sure to add the error in question and what other mods you were using at the time of the error. This way I can easily find the bug and patch it.
- 
 ## Installing
 This mod is also available on the [thunderstore website](https://thunderstore.io/c/lethal-company/p/KawaiiBone/Remnants/).
 
 If you want to download this mod manually, you should know that it is dependent on [BepInEx](https://github.com/BepInEx) and [Lethal Lib](https://github.com/EvaisaDev/LethalLib).
 When the dependencies are added, you can just copy the files in the plugins folder and add them in the BepInEx plugins folder.
+
+## Feedback and issues
+If you find any bugs, issues, or have any feedback on how to improve the mod, you are always welcome to share it here on [Github](https://github.com/KawaiiBone/LethalCompanyRemnants/issues), [Unofficial Lethal Company discord](https://discord.com/invite/nYcQFEpXfU) or on the [LC Modding discord](https://discord.com/invite/lcmod). When you report an issue, please be sure to add the error in question and what other mods you were using at the time of the error. This way I can easily find the bug and patch it.
 
 ## Known Issues
 
@@ -97,5 +97,6 @@ The following mods were a great inspiration for the creation of the Remnants Mod
 - [Monsterdrops](https://github.com/fardin2000/MonsterDrops): Making it easier to synchronize scrap values on the network.
 - [Batteries](https://github.com/eXish/lc-batteries): For finding a way to make items spawn in a more unique and separate way.
 
-And finally, I want to thank all of you for giving lots of feedback and support. I really appreciate it! I couldn't have made this mod into what it is now without all the bug reports, feature requests, and other helpful feedback. 
 A special thanks to Sapphy for supporting and aiding me with editing and cleaning up the public texts. If you want to support her or check out her work, you can find her on [Amazon](https://www.amazon.com/stores/Sapphire-Bellatora/author/B0CNHGCP4S?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true)! 
+
+And finally, I want to thank all of you for giving lots of feedback and support. I really appreciate it! I couldn't have made this mod into what it is now without all the bug reports, feature requests, and other helpful feedback. 
