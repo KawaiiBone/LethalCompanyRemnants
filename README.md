@@ -81,3 +81,21 @@ By doing so, it can create some incompatibilities with other mods, normally the 
 But saving can cause some issues and make it so that remnant items are not saved at all due to incompatibilities with other mods.
 Normally this should not break the gameplay of that mod, if you want to be sure you can go and disable remnant items from saving in the config.
 If there are other compatibility issues with other mods, there is a big chance that it can be fixed via the config.
+
+## Credits
+
+I would like to thank the following people for the assistance their work and efforts have provided in creating the Remnants Mod: 
+- [Lethal company modding wiki](https://lethal.wiki/) and its authors: For giving a very clear overview on how to create a mod.
+- [MrMiinxx](https://www.youtube.com/@iMinx): To their easy-to-follow guides on how to start programming a mod for Lethal Company. 
+- [Bepinex](https://github.com/BepInEx/) and [Harmony](https://harmony.pardeike.net/): For providing their framework and library. Without this, modding would be very difficult. 
+- [Lethallib](https://github.com/EvaisaDev/LethalLib): This library made it easier to create this mod and taught me a lot about how the game and modding works.
+
+Because of these people and their resources and contributions, I had everything I needed to start making the Remnants Mod and to further develop it.
+
+The following mods were a great inspiration for the creation of the Remnants Mod:
+- [BuyableShotgunShells](https://github.com/MegaPiggy/LethalCompanyBuyableShotgunShells): An easy way to find objects in the game.
+- [Monsterdrops](https://github.com/fardin2000/MonsterDrops): Making it easier to synchronize scrap values on the network.
+- [Batteries](https://github.com/eXish/lc-batteries): For finding a way to make items spawn in a more unique and separate way.
+
+And finally, I want to thank all of you for giving lots of feedback and support. I really appreciate it! I couldn't have made this mod into what it is now without all the bug reports, feature requests, and other helpful feedback. 
+A special thanks to Sapphy for supporting and aiding me with editing and cleaning up the public texts. If you want to support her or check out her work, you can find her on [Amazon](https://www.amazon.com/stores/Sapphire-Bellatora/author/B0CNHGCP4S?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true)! 
