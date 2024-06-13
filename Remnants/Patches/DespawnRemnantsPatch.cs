@@ -34,7 +34,7 @@ namespace Remnants.Patches
                 if (networkObject == null || !networkObject.IsSpawned)
                     continue;
 
-                if (!despawnALlItems && (skipShipRoom && (grabbableObject.isInShipRoom && /*||*/ grabbableObject.isInElevator)))
+                if (!despawnALlItems && (skipShipRoom && (grabbableObject.isInShipRoom && grabbableObject.isInElevator)))
                     continue;
 
 
@@ -42,7 +42,7 @@ namespace Remnants.Patches
                 {
                     if (despawnALlItems)
                         grabbableObject.playerHeldBy.DropAllHeldItemsAndSync();
-                    else if (grabbableObject.playerHeldBy.isInHangarShipRoom && /*||*/ grabbableObject.playerHeldBy.isInElevator)
+                    else if (grabbableObject.playerHeldBy.isInHangarShipRoom && grabbableObject.playerHeldBy.isInElevator)
                         continue;
                     else
                         grabbableObject.playerHeldBy.DropAllHeldItemsAndSync();

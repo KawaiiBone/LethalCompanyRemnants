@@ -21,7 +21,7 @@ namespace Remnants
         private readonly Harmony _harmony = new Harmony(modGUID);
         internal ManualLogSource Mls;
 
-        public RegisterBodiesSpawnBehaviour  RegisterBodiesSpawn = new RegisterBodiesSpawnBehaviour();
+        public RegisterBodiesSpawnBehaviour RegisterBodiesSpawn = new RegisterBodiesSpawnBehaviour();
         public Data.Config RemnantsConfig = new Data.Config();
         public RegisterBodySuitsBehaviour RegisterBodySuits = new RegisterBodySuitsBehaviour();
         public LoadAssetsBodies LoadBodyAssets = new LoadAssetsBodies();
@@ -61,7 +61,7 @@ namespace Remnants
             _harmony.PatchAll(typeof(Remnants));
             RemnantsConfig.Initialize();
             _registerItemsBehaviour.Initialize();
-             RegisterBodiesSpawn.Initialize();
+            RegisterBodiesSpawn.Initialize();
             _registerCustomMoonsData.Initialize();
             LoadBodyAssets.Initialize();
             RegisterBodySuits.Initialize();

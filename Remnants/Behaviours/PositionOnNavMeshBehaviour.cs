@@ -41,7 +41,7 @@ namespace Remnants.Behaviours
             //mls.LogInfo("Distance from navmesh: " + maxRangeNavHit.distance);
             if (maxRangeNavHit.distance <= _minReachDistance)
             {
-                mls.LogInfo("Position is already on navmesh.");
+                //mls.LogInfo("Position is already on navmesh.");
                 newPosition = startPosition;
                 newPosition.y += _yOffset;
                 return true;
@@ -56,14 +56,14 @@ namespace Remnants.Behaviours
             bool isWithinMovedRange = NavMesh.SamplePosition(movedPosition, out NavMeshHit movedNavHit, _movedReachDistance, _areaMask);
             if (isWithinMovedRange)
             {
-                mls.LogInfo("Moved position found on navmesh.");
+                //mls.LogInfo("Moved position found on navmesh.");
                 newPosition = movedNavHit.position;
                 newPosition.y += _yOffset;
                 return true;
             }
             else
             {
-                mls.LogInfo("Moved position not found on navmesh, using older position on navmesh.");
+                mls.LogWarning("Moved position not found on navmesh, using older position on navmesh.");
                 newPosition = maxRangeNavHit.position;
                 newPosition.y += _yOffset;
                 return true;

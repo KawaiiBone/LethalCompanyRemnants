@@ -18,7 +18,6 @@ namespace Remnants.Behaviours
         System.Random _random = new System.Random();
         private PositionOnNavMeshBehaviour _positionOnNavMeshBehaviour = new PositionOnNavMeshBehaviour(6.0f, 0.125f, 5.0f, 1.0f, 1.0f);
         private int _maxPercentage = 100;
-
         #endregion
 
         #region Initialize 

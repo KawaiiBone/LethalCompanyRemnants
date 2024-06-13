@@ -6,7 +6,6 @@ namespace Remnants.utilities
 {
     //I got this class from https://github.com/fardin2000/MonsterDrops
     //This helps me with easily syncing items in Lethal Company
-
     internal class CoroutineHelper : MonoBehaviour
     {
         #region Variables

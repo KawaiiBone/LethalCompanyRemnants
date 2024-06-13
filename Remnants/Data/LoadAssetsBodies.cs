@@ -44,7 +44,7 @@ namespace Remnants.Data
         private void LoadAssetBundle(Scene scene, LoadSceneMode mode)
         {
             var mls = Remnants.Instance.Mls;
-            //This is here to check if the right resources
+            //This is here to check if the right resources are present
             Sprite iconSprite = Resources.FindObjectsOfTypeAll<Sprite>().Concat(UnityEngine.Object.FindObjectsByType<Sprite>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID)).
              ToList().Find(sprite => sprite.name == _iconSpriteName);
             if (_isLoadingBundle || iconSprite == null)
