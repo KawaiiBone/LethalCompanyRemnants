@@ -15,7 +15,7 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.3.1";
+        private const string modVersion = "1.3.2";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);
@@ -32,7 +32,6 @@ namespace Remnants
         public SpawnRemnantItemsBehaviour SpawnRemnantItemsBeh = new SpawnRemnantItemsBehaviour();
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
-        private RegisterCustomMoonsData _registerCustomMoonsData = new RegisterCustomMoonsData();
         private string[] _riskLevelArray = { "Safe", "D", "C", "B", "A", "S", "S+", "S++", "S+++" };
         public string[] RiskLevelArray
         {
@@ -62,7 +61,6 @@ namespace Remnants
             RemnantsConfig.Initialize();
             _registerItemsBehaviour.Initialize();
             RegisterBodiesSpawn.Initialize();
-            _registerCustomMoonsData.Initialize();
             LoadBodyAssets.Initialize();
             RegisterBodySuits.Initialize();
             SpawningBodyBeh.Initialize();

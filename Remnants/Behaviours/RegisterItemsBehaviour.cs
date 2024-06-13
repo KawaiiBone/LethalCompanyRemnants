@@ -27,8 +27,8 @@ namespace Remnants.Behaviours
         private float _creditsWorthMaxPercentage = _maxPercentage;
 
         //Delegates
-        private Func<Item, bool> _delegateCheckIsScrap = null;
-        private Action<Item, bool, int, int> _actionCreateRemnantItem = null;
+        private Func<Item, bool> _checkIsScrapFunc = null;
+        private Action<Item, bool, int, int> _createRemnantItemAction = null;
         #endregion
 
         #region Initialize 
@@ -47,19 +47,19 @@ namespace Remnants.Behaviours
 
                 if (useLegacySpawning)
                 {
-                    _delegateCheckIsScrap = IsAlreadyScrap;
+                    _checkIsScrapFunc = IsAlreadyScrap;
                     if (UseSpecificLevelRarities)
-                        _actionCreateRemnantItem = CreateMoonSpecificLegacyRemnantItem;
+                        _createRemnantItemAction = CreateMoonSpecificLegacyRemnantItem;
                     else
-                        _actionCreateRemnantItem = CreateMoonGeneralLegacyRemnantItem;
+                        _createRemnantItemAction = CreateMoonGeneralLegacyRemnantItem;
                 }
                 else
                 {
-                    _delegateCheckIsScrap = IsAlreadyScrapOrRegistered;
+                    _checkIsScrapFunc = IsAlreadyScrapOrRegistered;
                     if (UseSpecificLevelRarities)
-                        _actionCreateRemnantItem = CreateMoonSpecificRemnantItem;
+                        _createRemnantItemAction = CreateMoonSpecificRemnantItem;
                     else
-                        _actionCreateRemnantItem = CreateMoonGeneralRemnantItem;
+                        _createRemnantItemAction = CreateMoonGeneralRemnantItem;
                 }
                 SceneManager.sceneLoaded += StoreItemsRegisterAsScrap;
             }
@@ -105,7 +105,7 @@ namespace Remnants.Behaviours
                     if (HasBannedName(item))
                         continue;
 
-                    if (_delegateCheckIsScrap(item))
+                    if (_checkIsScrapFunc(item))
                         continue;
 
                     if (IsPrefabIncorrect(item.spawnPrefab))
@@ -164,7 +164,7 @@ namespace Remnants.Behaviours
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Registering " + item.itemName + " as scrap.");
             bool useRarityByCredits = itemRarityInfo == -1 || itemRarityInfo == 0;
-            _actionCreateRemnantItem(item, useRarityByCredits, itemRarityInfo, creditsWorth);
+            _createRemnantItemAction(item, useRarityByCredits, itemRarityInfo, creditsWorth);
             mls.LogInfo("Added " + item.itemName + " as a scrap item.");
             _remnantDataListBehaviour.AddItemToDataList(item.itemName);
         }

@@ -145,3 +145,8 @@
 - Fixed saving issue that would cause some remnant items to not be saved under very specific conditions when picked up.
 - Fixed bug, that would keep previous items saved when no items were present on the ship.
 - Fixed Bug, that remnant items could not be 0 as scrap value.
+
+#1.3.2
+- Change in registering items, made sure that the store items are not changed anymore, but only the remnant items to increase compatibility with other mods.
+- Removed not used anymore newsoft json package. 
+- Improved performance in registering store items as remnant items.

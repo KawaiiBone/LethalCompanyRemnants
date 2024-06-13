@@ -110,7 +110,6 @@
     <Compile Include="Behaviours\SpawnBodiesBehaviour.cs" />
     <Compile Include="Behaviours\RegisterBodySuitsBehaviour.cs" />
     <Compile Include="Behaviours\RegisterBodiesSpawnBehaviour.cs" />
-    <Compile Include="Behaviours\RegisterCustomMoonsData.cs" />
     <Compile Include="Behaviours\RegisterItemsBehaviour.cs" />
     <Compile Include="Behaviours\RemnantDataListBehaviour.cs" />
     <Compile Include="Behaviours\SpawnRemnantItemsBehaviour.cs" />
