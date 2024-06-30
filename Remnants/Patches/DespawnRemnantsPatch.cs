@@ -12,7 +12,7 @@ namespace Remnants.Patches
     {
         #region Variables
         private static MethodInfo _firstMethodToFind = SymbolExtensions.GetMethodInfo(() => UnityEngine.Object.FindObjectsOfType<GrabbableObject>());
-        private static bool CanUseTranspiler = true;
+        private static bool _canUseTranspiler = true;
         #endregion
 
 
@@ -71,7 +71,7 @@ namespace Remnants.Patches
             //So this is the best way to find it by this mod self
             var remnantItemsBehaviour = Remnants.Instance.RemnantItemsBeh;
             var itemsLocationBeh = Remnants.Instance.RegisterItemLocationsBeh;
-            if (despawnAllItems || (StartOfRound.Instance.allPlayersDead && Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItems.Value == true))
+            if (despawnAllItems || (StartOfRound.Instance.allPlayersDead && Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItemsOnPartyWipe.Value == true))
             {
                 DespawnItems(itemsLocationBeh.GetShipRemnantItems(), !itemsLocationBeh.ShipObjectLocation.IsShipRoom, despawnAllItems, itemsLocationBeh.ShipObjectLocation.ObjectLocationsNames.Last());
             }
@@ -92,7 +92,7 @@ namespace Remnants.Patches
         [HarmonyPostfix]
         private static void DespawnRemnantItemsAtEndOfRoundPatch(object[] __args)
         {
-            if (CanUseTranspiler)
+            if (_canUseTranspiler)
                 return;
 
             var mls = Remnants.Instance.Mls;
@@ -106,6 +106,13 @@ namespace Remnants.Patches
         static IEnumerable<CodeInstruction> DespawnPropsAtEndOfRoundTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             var mls = Remnants.Instance.Mls;
+            if (Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItemsOnPartyWipe.Value == false)
+            {
+                mls.LogWarning("Using config feature: Do not despawn remnant items on party wipe. This will not use the transpiler for cleaning up items, and may cause issues.");
+                _canUseTranspiler = false;
+                return instructions;
+            }
+
             var codes = new List<CodeInstruction>(instructions);
             int indexFirstCall = -1;
             for (int i = 0; i < codes.Count; ++i)
@@ -120,11 +127,11 @@ namespace Remnants.Patches
             if (indexFirstCall == -1)
             {
                 mls.LogError("Could not find first call to edit, using old patching method to despawn remnant items.");
-                CanUseTranspiler = false;
+                _canUseTranspiler = false;
                 return codes.AsEnumerable();
             }
-            MethodInfo proteinHitFoce = typeof(RemnantItemsLocationsBehaviour).GetMethod(nameof(RemnantItemsLocationsBehaviour.GetAllItems));
-            codes.Insert(indexFirstCall + 1, new CodeInstruction(OpCodes.Call, proteinHitFoce));
+            MethodInfo methodInfoGetAllItems = typeof(RemnantItemsLocationsBehaviour).GetMethod(nameof(RemnantItemsLocationsBehaviour.GetAllItems));
+            codes.Insert(indexFirstCall + 1, new CodeInstruction(OpCodes.Call, methodInfoGetAllItems));
             mls.LogInfo("Transpiler succes with function: Despawn Props At End Of Round.");
             return codes.AsEnumerable();
         }

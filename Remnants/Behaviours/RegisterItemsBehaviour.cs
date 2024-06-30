@@ -44,7 +44,6 @@ namespace Remnants.Behaviours
                 _remnantItemsBehaviour = Remnants.Instance.RemnantItemsBeh;
                 _creditsWorthMinPercentage = (float)Remnants.Instance.RemnantsConfig.RemnantScrapMinCostPercentage.Value / _maxPercentage;
                 _creditsWorthMaxPercentage = (float)Remnants.Instance.RemnantsConfig.RemnantScrapMaxCostPercentage.Value / _maxPercentage;
-
                 if (useLegacySpawning)
                 {
                     _checkIsScrapFunc = IsAlreadyScrap;
@@ -238,6 +237,7 @@ namespace Remnants.Behaviours
             GrabbableObject grabbable = scrapItem.item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
             if (grabbable != null)
                 grabbable.isInFactory = true;
+
             return scrapItem;
         }
 

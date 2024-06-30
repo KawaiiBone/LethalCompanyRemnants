@@ -49,6 +49,7 @@ namespace Remnants
 
             Mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
             Mls.LogInfo("modGUID has started");
+            RemnantsConfig.Initialize();
             _harmony.PatchAll(typeof(RemnantItemsPatch));
             _harmony.PatchAll(typeof(SpawnRemnantItemsPatch));
             _harmony.PatchAll(typeof(SpawnableScrapPatch));
@@ -58,7 +59,6 @@ namespace Remnants
             _harmony.PatchAll(typeof(AddRemnantItemsToItemList));
             _harmony.PatchAll(typeof(SaveGameTranspiler));
             _harmony.PatchAll(typeof(Remnants));
-            RemnantsConfig.Initialize();
             _registerItemsBehaviour.Initialize();
             RegisterBodiesSpawn.Initialize();
             LoadBodyAssets.Initialize();
@@ -67,7 +67,6 @@ namespace Remnants
             ItemsBatteriesBeh.Initialize();
             RegisterItemLocationsBeh.Initialize();
             SpawnRemnantItemsBeh.Initialize();
-
             Mls.LogInfo("modGUID has loaded");
         }
         #endregion

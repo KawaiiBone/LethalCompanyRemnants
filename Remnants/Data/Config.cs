@@ -27,7 +27,7 @@ namespace Remnants.Data
         public ConfigEntry<int> RemnantScrapMinCostPercentage;
         public ConfigEntry<int> RemnantScrapMaxCostPercentage;
         public ConfigEntry<bool> ShouldSaveRemnantItems;
-        public ConfigEntry<bool> ShouldDespawnRemnantItems;
+        public ConfigEntry<bool> ShouldDespawnRemnantItemsOnPartyWipe;
         public ConfigEntry<bool> ShouldAlwaysDespawnRemnantItems;
         public ConfigEntry<bool> ShouldBodiesBeScrap;
         public ConfigEntry<int> BodyScrapValue;
@@ -188,7 +188,7 @@ namespace Remnants.Data
             }
 
             ShouldSaveRemnantItems = _configFile.Bind(_saveLoadSection, "Save remnant items", true, "This ensures that the remnant items are saved in the ship when you reload the lobby.");
-            ShouldDespawnRemnantItems = _configFile.Bind(_saveLoadSection, "Despawn remnant items on party wipe", true, "On party wipe all items are despawned from the ship, this ensures that remnant items also are despawned. \nIf you use a mod that prevents items from being despawned, here you can edit it too for remnant items.");
+            ShouldDespawnRemnantItemsOnPartyWipe = _configFile.Bind(_saveLoadSection, "Despawn remnant items on party wipe", true, "On party wipe all items are despawned from the ship, this ensures that remnant items also are despawned. \nIf you use a mod that prevents items from being despawned, here you can edit it too for remnant items. \nThis will not use the transpiler for cleaning up items, and may cause issues.");
             ShouldAlwaysDespawnRemnantItems = _configFile.Bind(_saveLoadSection, "Always despawn remnant items", false, "Despawns all remnant items when going away from moons, even if it is in the shiproom and you are holding it.");
             _bannedItemsFromSaving = _configFile.Bind(_saveLoadSection, "Item list banned from saving", "Clipboard,StickyNote,Binoculars,MapDevice,Error", "List of items that are barred saving on the ship. \nThese default items are there to avoid issues with saving items on the ship. \nTo add more names to the list, be sure to add a comma between names.");
 
