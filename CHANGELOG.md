@@ -150,3 +150,6 @@
 - Change in registering items, made sure that the store items are not changed anymore, but only the remnant items to increase compatibility with other mods.
 - Removed not used anymore newsoft json package. 
 - Improved performance in registering store items as remnant items.
+
+#1.3.3
+- Fixed bug config feature: Always despawn remnant items. This config feature works now but disables the despawning transpiler and uses the old one. This may cause issues with despawning remnant items.

@@ -55,7 +55,7 @@ Body spawning:
 
 Save/Load:
 - Save remnant items.
-- Despawn remnant items on party wipe.
+- Despawn remnant items on party wipe, do take note that this feature uses the old despawning method and may cause issues.
 - Despawn all remnant items regardless where they are when leaving a moon.
 - A list of banned items, preventing these items from being saved on the ship.
 
