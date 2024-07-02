@@ -237,7 +237,6 @@ namespace Remnants.Behaviours
             GrabbableObject grabbable = scrapItem.item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
             if (grabbable != null)
                 grabbable.isInFactory = true;
-
             return scrapItem;
         }
 

@@ -59,6 +59,8 @@ Save/Load:
 - Despawn all remnant items regardless where they are when leaving a moon.
 - A list of banned items, preventing these items from being saved on the ship.
 
+Now also compatible with Lethal Config.
+
 ## Installing
 This mod is also available on the [thunderstore website](https://thunderstore.io/c/lethal-company/p/KawaiiBone/Remnants/).
 

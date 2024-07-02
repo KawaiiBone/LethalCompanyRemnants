@@ -46,6 +46,9 @@
     <Reference Include="Facepunch Transport for Netcode for GameObjects">
       <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Facepunch Transport for Netcode for GameObjects.dll</HintPath>
     </Reference>
+    <Reference Include="LethalConfig">
+      <HintPath>..\..\LethalCompanyLibrabries\LethalConfig\plugins\LethalConfig\LethalConfig.dll</HintPath>
+    </Reference>
     <Reference Include="LethalLib">
       <HintPath>..\..\LethalCompanyLibrabries\plugins\LethalLib\LethalLib.dll</HintPath>
     </Reference>

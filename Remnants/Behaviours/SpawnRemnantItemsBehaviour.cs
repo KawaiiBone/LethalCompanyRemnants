@@ -49,7 +49,7 @@ namespace Remnants.Behaviours
           
             List<Items.ScrapItem> networkRemnantItems = GetAvailableNetworkRemnantItems();
             int minRemnantItemsOnBody = Remnants.Instance.RemnantsConfig.MinItemsFoundOnBodies.Value;
-            int maxRemnantItemsOnBody = Remnants.Instance.RemnantsConfig.MaxItemsFoundOnBodies.Value;
+            int maxRemnantItemsOnBody = Mathf.Clamp(Remnants.Instance.RemnantsConfig.MaxItemsFoundOnBodies.Value, minRemnantItemsOnBody, int.MaxValue);
             int amountRemnantItemsToSpawn = CalculateAmountItemsToSpawn(roundManager);
             List<KeyValuePair<string, int>> remnantItemsBaseContainer = CreateRemnantItemsBaseContainer(roundManager, networkRemnantItems);
             List<KeyValuePair<string, int>> remnantItemsContainer = CreateRemnantItemsContainer(remnantItemsBaseContainer);
@@ -139,7 +139,7 @@ namespace Remnants.Behaviours
         private int CalculateAmountItemsToSpawn(RoundManager roundManager)
         {
             int minRemnantItemsSpawn = Remnants.Instance.RemnantsConfig.MinRemnantItemsSpawning.Value;
-            int maxRemnantItemsSpawn = Remnants.Instance.RemnantsConfig.MaxRemnantItemsSpawning.Value;
+            int maxRemnantItemsSpawn = Mathf.Clamp( Remnants.Instance.RemnantsConfig.MaxRemnantItemsSpawning.Value, minRemnantItemsSpawn, int.MaxValue);
             float spawnRemnantItemsModifier = Remnants.Instance.RemnantsConfig.RemnantItemsSpawningModifier.Value;
             int riskLevel = 0;
             riskLevel = Mathf.Clamp(Array.IndexOf(_riskLevelArray, roundManager.currentLevel.riskLevel), 0, _riskLevelArray.Length);

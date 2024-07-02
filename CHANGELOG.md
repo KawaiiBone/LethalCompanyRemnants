@@ -153,3 +153,6 @@
 
 #1.3.3
 - Fixed bug config feature: Always despawn remnant items. This config feature works now but disables the despawning transpiler and uses the old one. This may cause issues with despawning remnant items.
+
+#1.3.4
+-  Added feature that makes the mod: compatible with Lethal Config and can be edited in the game. This does not mean that this mod is dependable on Lethal Config, it just works with and without Lethal Config.

@@ -7,6 +7,9 @@ using BepInEx.Configuration;
 using LethalLib.Modules;
 using Remnants.utilities;
 using UnityEngine;
+using LethalConfig;
+using LethalConfig.ConfigItems.Options;
+using LethalConfig.ConfigItems;
 
 namespace Remnants.Data
 {
@@ -71,11 +74,14 @@ namespace Remnants.Data
         private const int _minPercentage = 1;
         private const int _maxRemnantItemsSpawned = 50;
         private const float _minItemCost = 5.0f;
-        private const float _maxItemCost = 10000.0f;
+        private const float _maxItemCost = 1000.0f;
+        private const float _maxItemStoreCost = 10000.0f;
         private const float _maxModifierWithMoonThreath = 10.0f;
         private const int _maxDuplicatesOfARemnantItem = 15;
         private const int _maximumItemsFoundOnBody = 10;
-        private int _maximumScrapSpawnPoolIncrease = 30;
+        private const int _maximumScrapSpawnPoolIncrease = 30;
+
+        private const string _LethalConfigName = "ainavt.lc.lethalconfig";
 
         struct ConfigData
         {
@@ -141,7 +147,7 @@ namespace Remnants.Data
             BodyScrapValue.Value = Mathf.Clamp(BodyScrapValue.Value, 0, (int)_maxItemCost);
 
             MaxRemnantItemCost = _configFile.Bind(_otherSection, "Max value to calculate rarity", 400.0f, "This value helps calculating the spawn rarity, the rarity is calculated by the credit cost of the shop item. \nThis caps the maximum cost of an item and setting it as min spawn rarity if it is the same or higher than this value. \nThe more an item cost, the less spawn chance/spawn rarity it has.");
-            MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, _minItemCost, _maxItemCost);
+            MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, _minItemCost, _maxItemStoreCost);
 
             _bannedNamesFromRegistering = _configFile.Bind(_otherSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice,Key,Error", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
             _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Scrap-example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
@@ -216,6 +222,18 @@ namespace Remnants.Data
                     new Tuple<int, int>(_minRemnantCustomLevelRarities.Last().Value, _maxRemnantCustomLevelRarities.Last().Value));
             }
 
+            var mls = Remnants.Instance.Mls;
+          
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(_LethalConfigName))
+            {
+                mls.LogInfo("LethalConfig found, creating lethal config items");
+                CreateLethalConfigItems();
+            }
+            else
+            {
+                mls.LogInfo("LethalConfig not found");
+            }
+
             _configFile.Save();
         }
 
@@ -271,6 +289,106 @@ namespace Remnants.Data
                  });
             }
         }
+
+        private void CreateLethalConfigItems()
+        {
+            //General section
+            var minRemnantRaritySlider = new IntSliderConfigItem(MinRemnantRarity, new IntSliderOptions  {Min = _minPercentage, Max = _maxPercentage});
+            LethalConfigManager.AddConfigItem(minRemnantRaritySlider);
+            var maxRemnantRaritySlider = new IntSliderConfigItem(MaxRemnantRarity, new IntSliderOptions { Min = MinRemnantRarity.Value, Max = _maxPercentage });
+            LethalConfigManager.AddConfigItem(maxRemnantRaritySlider);
+
+            var minRemnantBatteryChargeSlider = new IntSliderConfigItem(MinRemnantBatteryCharge, new IntSliderOptions { Min = _minPercentage, Max = _maxPercentage });
+            LethalConfigManager.AddConfigItem(minRemnantBatteryChargeSlider);
+            var maxRemnantBatteryChargeSlider = new IntSliderConfigItem(MaxRemnantBatteryCharge, new IntSliderOptions { Min = MinRemnantBatteryCharge.Value, Max = _maxPercentage });
+            LethalConfigManager.AddConfigItem(maxRemnantBatteryChargeSlider);
+
+            var remnantScrapMinCostPercentageSlider = new IntSliderConfigItem(RemnantScrapMinCostPercentage, new IntSliderOptions { Min = 0, Max = (int)_maxItemCost });
+            LethalConfigManager.AddConfigItem(remnantScrapMinCostPercentageSlider);
+            var remnantScrapMaxCostPercentageSlider = new IntSliderConfigItem(RemnantScrapMaxCostPercentage, new IntSliderOptions { Min = RemnantScrapMinCostPercentage.Value, Max = (int)_maxItemCost });
+            LethalConfigManager.AddConfigItem(remnantScrapMaxCostPercentageSlider);
+            //GeneralBody section
+            var shouldBodiesBeScrapCheckBox = new BoolCheckBoxConfigItem(ShouldBodiesBeScrap, false);
+            LethalConfigManager.AddConfigItem(shouldBodiesBeScrapCheckBox);
+
+            var spawnRarityOfBodySlider = new IntSliderConfigItem(SpawnRarityOfBody, new IntSliderOptions { Min = 0, Max = _maxPercentage, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(spawnRarityOfBodySlider);
+
+            var bodySpawnModifierRiskLeveSlider = new FloatSliderConfigItem(BodySpawnModifierRiskLevel, new FloatSliderOptions { Min = 0.0f, Max = _maxModifierWithMoonThreath, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(bodySpawnModifierRiskLeveSlider);
+           
+            var bodyScrapValueSlider = new IntSliderConfigItem(BodyScrapValue, new IntSliderOptions { Min = 0, Max = (int)_maxItemCost, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(bodyScrapValueSlider);
+            //Spawning section
+            var minRemnantItemsSpawningSlider = new IntSliderConfigItem(MinRemnantItemsSpawning, new IntSliderOptions { Min = 1, Max = _maxRemnantItemsSpawned, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(minRemnantItemsSpawningSlider);
+            var maxRemnantItemsSpawningSlider = new IntSliderConfigItem(MaxRemnantItemsSpawning, new IntSliderOptions { Min = MinRemnantItemsSpawning.Value, Max = _maxRemnantItemsSpawned, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(maxRemnantItemsSpawningSlider);
+
+            var remnantItemsSpawningModifierSlider = new FloatSliderConfigItem(RemnantItemsSpawningModifier, new FloatSliderOptions { Min = -1.0f, Max = _maxModifierWithMoonThreath, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(remnantItemsSpawningModifierSlider);
+
+            var maxDuplicatesRemnantItemsSlider = new IntSliderConfigItem(MaxDuplicatesRemnantItems, new IntSliderOptions { Min = 1, Max = _maxDuplicatesOfARemnantItem, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(maxDuplicatesRemnantItemsSlider);
+
+            var minItemsFoundOnBodiesSlider = new IntSliderConfigItem(MinItemsFoundOnBodies, new IntSliderOptions { Min = 1, Max = _maximumItemsFoundOnBody, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(minItemsFoundOnBodiesSlider);
+            var maxItemsFoundOnBodiesSlider = new IntSliderConfigItem(MaxItemsFoundOnBodies, new IntSliderOptions { Min = MinItemsFoundOnBodies.Value, Max = _maximumItemsFoundOnBody, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(maxItemsFoundOnBodiesSlider);
+            //Legacy spawning section
+            var useLegacySpawningBox = new BoolCheckBoxConfigItem(UseLegacySpawning);
+            LethalConfigManager.AddConfigItem(useLegacySpawningBox);
+
+            var increasedScrapSpawnPoolSlider = new IntSliderConfigItem(IncreasedScrapSpawnPool, new IntSliderOptions { Min = 0, Max = _maximumScrapSpawnPoolIncrease, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(increasedScrapSpawnPoolSlider);
+            //Saving section
+            var shouldSaveRemnantItemsBox = new BoolCheckBoxConfigItem(ShouldSaveRemnantItems);
+            LethalConfigManager.AddConfigItem(shouldSaveRemnantItemsBox);
+
+            var shouldDespawnRemnantItemsOnPartyWipeBox = new BoolCheckBoxConfigItem(ShouldDespawnRemnantItemsOnPartyWipe);
+            LethalConfigManager.AddConfigItem(shouldDespawnRemnantItemsOnPartyWipeBox);
+
+            var shouldAlwaysDespawnRemnantItemsBox = new BoolCheckBoxConfigItem(ShouldAlwaysDespawnRemnantItems);
+            LethalConfigManager.AddConfigItem(shouldAlwaysDespawnRemnantItemsBox);
+
+            var bannedItemsFromSavingInput = new TextInputFieldConfigItem(_bannedItemsFromSaving);
+            LethalConfigManager.AddConfigItem(bannedItemsFromSavingInput);
+            //Other section
+            var maxRemnantItemCostSlider = new FloatSliderConfigItem(MaxRemnantItemCost, new FloatSliderOptions { Min = _minItemCost, Max = _maxItemStoreCost });
+            LethalConfigManager.AddConfigItem(maxRemnantItemCostSlider);
+
+            var bannedNamesFromRegisteringInput = new TextInputFieldConfigItem(_bannedNamesFromRegistering);
+            LethalConfigManager.AddConfigItem(bannedNamesFromRegisteringInput);
+
+            var overriddenScrapItemsInput = new TextInputFieldConfigItem(_overriddenScrapItems, false);
+            LethalConfigManager.AddConfigItem(overriddenScrapItemsInput);
+            //Remnant items section
+            for (int i = 0; i < ConfigScrapDataList.Count; i++)
+            {
+                var remnantItemSpawnData = new IntSliderConfigItem(ConfigScrapDataList[i], new IntSliderOptions { Min = -1, Max = _maxPercentage });
+                LethalConfigManager.AddConfigItem(remnantItemSpawnData);
+            }
+            //Moons vanilla section
+            var useSpecificLevelRaritiesInput = new BoolCheckBoxConfigItem(UseSpecificLevelRarities);
+            LethalConfigManager.AddConfigItem(useSpecificLevelRaritiesInput);
+
+            for (int i = 0; i < _minRemnantLevelRarities.Count; i++)
+            {
+                var minRemnantLevelRaritiesSlider = new IntSliderConfigItem(_minRemnantLevelRarities[i], new IntSliderOptions { Min = _minPercentage, Max = _maxPercentage});
+                var maxRemnantLevelRaritiesSlider = new IntSliderConfigItem(_maxRemnantLevelRarities[i], new IntSliderOptions { Min = _minRemnantLevelRarities[i].Value, Max = _maxPercentage });
+                LethalConfigManager.AddConfigItem(minRemnantLevelRaritiesSlider);
+                LethalConfigManager.AddConfigItem(maxRemnantLevelRaritiesSlider);
+            }
+            //Costum Moons section
+            for (int i = 0; i < _minRemnantCustomLevelRarities.Count; i++)
+            {
+                var minRemnantLevelRaritiesSlider = new IntSliderConfigItem(_minRemnantCustomLevelRarities[i], new IntSliderOptions { Min = _minPercentage, Max = _maxPercentage });
+                var maxRemnantLevelRaritiesSlider = new IntSliderConfigItem(_maxRemnantCustomLevelRarities[i], new IntSliderOptions { Min = _minRemnantCustomLevelRarities[i].Value, Max = _maxPercentage });
+                LethalConfigManager.AddConfigItem(minRemnantLevelRaritiesSlider);
+                LethalConfigManager.AddConfigItem(maxRemnantLevelRaritiesSlider);
+            }
+        }
+
 
 
         public List<string> GetBannedFromRegisteringItemNames()
