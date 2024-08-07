@@ -20,18 +20,9 @@ namespace Remnants.Behaviours
         }
 
         private void Start()
-        {
-            //base.Start();
-            //for (int i = 0; i < propColliders.Length; i++)
-            //{
-            //    propColliders[i].includeLayers = -2621449;
-            //}
-            
+        {     
             propColliders = base.gameObject.GetComponentsInChildren<Collider>();
- 
-
             originalScale = base.transform.localScale;
-
             if (itemProperties.isScrap && RoundManager.Instance.mapPropsContainer != null)
             {
                 radarIcon = UnityEngine.Object.Instantiate(StartOfRound.Instance.itemRadarIconPrefab, RoundManager.Instance.mapPropsContainer.transform).transform;
