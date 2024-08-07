@@ -1,4 +1,5 @@
-﻿using Remnants.utilities;
+﻿using BepInEx;
+using Remnants.utilities;
 using System.Collections.Generic;
 
 namespace Remnants.Behaviours
@@ -9,6 +10,7 @@ namespace Remnants.Behaviours
         private bool _hasInitialized = false;
         private List<int> _suitsIndexList = new List<int>();
         private List<SuitData> _suitsData = new List<SuitData>();
+        private char[] _illegalChars = new char[] { '=', '\n', '\t', '\\', '\"', '\'', '[', ']' };
         public List<int> SuitsIndexList
         {
             get { return _suitsIndexList; }
@@ -47,7 +49,7 @@ namespace Remnants.Behaviours
                 {
                     string suitName = unlockableItemsList[i].unlockableName;
                     int suitDataIndex = _suitsData.FindIndex(suitData => suitData.SuitName == suitName);
-                    if (registeredSuitsNames.Contains(suitName))
+                    if (registeredSuitsNames.Contains(suitName) || HasIllegalCharacters(suitName))
                         continue;
 
                     if (suitDataIndex == -1)
@@ -66,6 +68,14 @@ namespace Remnants.Behaviours
                 }
             }
             mls.LogInfo("Suits data registered.");
+        }
+
+        private bool HasIllegalCharacters(string name)
+        {
+            if (name.IsNullOrWhiteSpace())
+                return true;
+
+            return name.IndexOfAny(_illegalChars) != -1;
         }
         #endregion
     }

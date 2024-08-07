@@ -16,7 +16,7 @@ namespace Remnants.Data
     public class Config
     {
         #region Variables
-        private bool _hasInitialized = false;
+        #region PublicData
         public ConfigEntry<int> MinRemnantRarity;
         public ConfigEntry<int> MaxRemnantRarity;
         public ConfigEntry<int> MinRemnantBatteryCharge;
@@ -44,8 +44,10 @@ namespace Remnants.Data
         public ConfigEntry<int> MaxDuplicatesRemnantItems;
         public ConfigEntry<int> MinItemsFoundOnBodies;
         public ConfigEntry<int> MaxItemsFoundOnBodies;
+        #endregion
 
-
+        #region PrivateData
+        private bool _hasInitialized = false;
         private List<ConfigEntry<int>> _minRemnantLevelRarities = new List<ConfigEntry<int>>();
         private List<ConfigEntry<int>> _maxRemnantLevelRarities = new List<ConfigEntry<int>>();
         private List<ConfigEntry<int>> _minRemnantCustomLevelRarities = new List<ConfigEntry<int>>();
@@ -57,6 +59,11 @@ namespace Remnants.Data
         private ConfigEntry<string> _overriddenScrapItems;
         private ConfigEntry<string> _bannedItemsFromSaving;
         private ConfigFile _configFile;
+        private string _bannedPlanetName = "71 Gordion";
+        private const string _LethalConfigName = "ainavt.lc.lethalconfig";
+        #endregion
+
+        #region PrivateConfigData
         private string _configFileName = "\\Remnants.cfg";
         private string _generalSection = "General";
         private string _generalBodySection = "GeneralBody";
@@ -68,7 +75,6 @@ namespace Remnants.Data
         private string _spawningLegacySection = "SpawningLegacy";
         private string _suitsSection = "Suits";
         private string _saveLoadSection = "Save/load";
-        private string _bannedPlanetName = "71 Gordion";
 
         private const int _maxPercentage = 100;
         private const int _minPercentage = 1;
@@ -80,14 +86,28 @@ namespace Remnants.Data
         private const int _maxDuplicatesOfARemnantItem = 15;
         private const int _maximumItemsFoundOnBody = 10;
         private const int _maximumScrapSpawnPoolIncrease = 30;
+        private const int _defaultMinRarity = 1;
+        private const int _defaultMaxRarity = 100;
+        #endregion
 
-        private const string _LethalConfigName = "ainavt.lc.lethalconfig";
+
+
+
+
 
         struct ConfigData
         {
             public string Name;
             public string Discription;
             public string StringValue;
+
+
+            public ConfigData(string name, string discription, string stringValue)
+            {
+                this.Name = name;
+                this.Discription = discription;
+                this.StringValue = stringValue;
+            }
         }
 
         struct ConfigDataValue<T> where T : struct
@@ -117,10 +137,10 @@ namespace Remnants.Data
 
             _configFile = new ConfigFile(Paths.ConfigPath + _configFileName, true);
 
-            MinRemnantRarity = _configFile.Bind(_generalSection, "Min remnant item rarity", 5, "Minimum chance of a remnant item spawning.");
+            MinRemnantRarity = _configFile.Bind(_generalSection, "Min remnant item rarity", _defaultMinRarity, "Minimum chance of a remnant item spawning.");
             MinRemnantRarity.Value = Mathf.Clamp(MinRemnantRarity.Value, _minPercentage, _maxPercentage);
 
-            MaxRemnantRarity = _configFile.Bind(_generalSection, "Max remnant item rarity", 25, "Maximum chance of a remnant item spawning.");
+            MaxRemnantRarity = _configFile.Bind(_generalSection, "Max remnant item rarity", _defaultMaxRarity, "Maximum chance of a remnant item spawning.");
             MaxRemnantRarity.Value = Mathf.Clamp(MaxRemnantRarity.Value, MinRemnantRarity.Value, _maxPercentage);
 
             MinRemnantBatteryCharge = _configFile.Bind(_generalSection, "Min remnant battery charge", 20, "Minimum remnant item battery charge on first finding it.");
@@ -153,9 +173,9 @@ namespace Remnants.Data
             _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Scrap-example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
 
 
-            MinRemnantItemsSpawning = _configFile.Bind(_spawningSection, "Minimum remnant items spawned on a moon", 5, "The minimum remnant items that can spawn on a moon. \nThis value gets increased by the threat level a moon has, along the down below modifier.");
+            MinRemnantItemsSpawning = _configFile.Bind(_spawningSection, "Minimum remnant items spawned on a moon", 3, "The minimum remnant items that can spawn on a moon. \nThis value gets increased by the threat level a moon has, along the down below modifier.");
             MinRemnantItemsSpawning.Value = Mathf.Clamp(MinRemnantItemsSpawning.Value, 1, _maxRemnantItemsSpawned);
-            MaxRemnantItemsSpawning = _configFile.Bind(_spawningSection, "Maximum remnant items spawned on a moon", 15, "The maximum remnant items that can spawn on a moon. \nThis value gets increased by the threat level a moon has, along the down below modifier.");
+            MaxRemnantItemsSpawning = _configFile.Bind(_spawningSection, "Maximum remnant items spawned on a moon", 8, "The maximum remnant items that can spawn on a moon. \nThis value gets increased by the threat level a moon has, along the down below modifier.");
             MaxRemnantItemsSpawning.Value = Mathf.Clamp(MaxRemnantItemsSpawning.Value, MinRemnantItemsSpawning.Value, _maxRemnantItemsSpawned);
 
             RemnantItemsSpawningModifier = _configFile.Bind(_spawningSection, "Remnant items spawn modifier", 1.0f, "A modifier that increases the spawn pool of remnant items in relative to the moon threat level. \nPutting the value under zero, will disable this feature and will always use the normal spawn amount.");
@@ -185,9 +205,9 @@ namespace Remnants.Data
                     || moonName == Levels.LevelTypes.Vanilla.ToString() || moonName == Levels.LevelTypes.Modded.ToString())
                     continue;
 
-                _minRemnantLevelRarities.Add(_configFile.Bind(_levelsSection, moonName + " min remnant rarity", 5, "Minimum chance of a remnant item spawning on moon: " + moonName + " ."));
+                _minRemnantLevelRarities.Add(_configFile.Bind(_levelsSection, moonName + " min remnant rarity", _defaultMinRarity, "Minimum chance of a remnant item spawning on moon: " + moonName + "."));
                 _minRemnantLevelRarities.Last().Value = Mathf.Clamp(_minRemnantLevelRarities.Last().Value, _minPercentage, _maxPercentage);
-                _maxRemnantLevelRarities.Add(_configFile.Bind(_levelsSection, moonName + " max remnant rarity", 25, "Maximum chance of a remnant item spawning on moon: " + moonName + " ."));
+                _maxRemnantLevelRarities.Add(_configFile.Bind(_levelsSection, moonName + " max remnant rarity", _defaultMaxRarity, "Maximum chance of a remnant item spawning on moon: " + moonName + "."));
                 _maxRemnantLevelRarities.Last().Value = Mathf.Clamp(_maxRemnantLevelRarities.Last().Value, _minRemnantLevelRarities.Last().Value, _maxPercentage);
                 LevelRarities.Add((Levels.LevelTypes)Enum.Parse(typeof(Levels.LevelTypes), moonName),
                     new Tuple<int, int>(_minRemnantLevelRarities.Last().Value, _maxRemnantLevelRarities.Last().Value));
@@ -199,7 +219,7 @@ namespace Remnants.Data
             _bannedItemsFromSaving = _configFile.Bind(_saveLoadSection, "Item list banned from saving", "Clipboard,StickyNote,Binoculars,MapDevice,Error", "List of items that are barred saving on the ship. \nThese default items are there to avoid issues with saving items on the ship. \nTo add more names to the list, be sure to add a comma between names.");
 
             ConfigScrapDataList = _configRemnantDataPairList.ConvertAll(itemData =>
-                     _configFile.Bind(_remnantsSection, itemData.Name, -1, itemData.Discription));
+                     _configFile.Bind(_remnantsSection, itemData.Name, -1, "Set here the spawn rarity.\n -1 is the default using its store credits cost to calculate the rarity.\n 0 Is preventing from spawning it, and 1 to 100 is its costum rarity to spawn."));
             for (int i = 0; i < ConfigScrapDataList.Count; i++)
             {
                 ConfigScrapDataList[i].Value = Mathf.Clamp(ConfigScrapDataList[i].Value, -1, _maxPercentage);
@@ -213,9 +233,9 @@ namespace Remnants.Data
             _maxRemnantCustomLevelRarities = new List<ConfigEntry<int>>();
             for (int i = 0; i < _configCustomLevelsRarities.Count; i += 2)
             {
-                _minRemnantCustomLevelRarities.Add(_configFile.Bind(_customLevelsSection, _configCustomLevelsRarities[i].Name, 5, _configCustomLevelsRarities[i].Discription));
+                _minRemnantCustomLevelRarities.Add(_configFile.Bind(_customLevelsSection, _configCustomLevelsRarities[i].Name, _defaultMinRarity, _configCustomLevelsRarities[i].Discription));
                 _minRemnantCustomLevelRarities.Last().Value = Mathf.Clamp(_minRemnantCustomLevelRarities.Last().Value, _minPercentage, _maxPercentage);
-                _maxRemnantCustomLevelRarities.Add(_configFile.Bind(_customLevelsSection, _configCustomLevelsRarities[i + 1].Name, 25, _configCustomLevelsRarities[i + 1].Discription));
+                _maxRemnantCustomLevelRarities.Add(_configFile.Bind(_customLevelsSection, _configCustomLevelsRarities[i + 1].Name, _defaultMaxRarity, _configCustomLevelsRarities[i + 1].Discription));
                 _maxRemnantCustomLevelRarities.Last().Value = Mathf.Clamp(_maxRemnantCustomLevelRarities.Last().Value, _minRemnantCustomLevelRarities.Last().Value, _maxPercentage);
 
                 CustomLevelRarities.Add(RemoveEndSentence(_configCustomLevelsRarities[i].Name, " min remnant rarity"),
@@ -431,7 +451,7 @@ namespace Remnants.Data
         public void SetRemnantItemList(List<RemnantData> remnantDataList)
         {
             ConfigScrapDataList = remnantDataList.ConvertAll(remnantData =>
-         _configFile.Bind(_remnantsSection, remnantData.RemnantItemName, remnantData.RarityInfo, "By changing the value you can choose what kind of spawn rarity it is.\n -1 is the default using its store credits cost to calculate the rarity.\n 0 Is preventing from spawning it, and 1 to 100 is its costum rarity to spawn."));
+         _configFile.Bind(_remnantsSection, remnantData.RemnantItemName, remnantData.RarityInfo, "Set here the spawn rarity.\n -1 is the default using its store credits cost to calculate the rarity.\n 0 Is preventing from spawning it, and 1 to 100 is its costum rarity to spawn."));
             _configFile.Save();
         }
 
@@ -466,9 +486,9 @@ namespace Remnants.Data
                 if (CustomLevelRarities.ContainsKey(customMoonName) || customMoonName == _bannedPlanetName)
                     continue;
 
-                _minRemnantCustomLevelRarities.Add(_configFile.Bind(_customLevelsSection, customMoonName + " min remnant rarity", 5, "Minimum chance of a remnant item spawning on moon: " + customMoonName + " ."));
+                _minRemnantCustomLevelRarities.Add(_configFile.Bind(_customLevelsSection, customMoonName + " min remnant rarity", _defaultMinRarity, "Minimum chance of a remnant item spawning on moon: " + customMoonName + "."));
                 _minRemnantCustomLevelRarities.Last().Value = Mathf.Clamp(_minRemnantCustomLevelRarities.Last().Value, minPercentage, maxPercentage);
-                _maxRemnantCustomLevelRarities.Add(_configFile.Bind(_customLevelsSection, customMoonName + " max remnant rarity", 25, "Maximum chance of a remnant item spawning on moon: " + customMoonName + " ."));
+                _maxRemnantCustomLevelRarities.Add(_configFile.Bind(_customLevelsSection, customMoonName + " max remnant rarity", _defaultMaxRarity, "Maximum chance of a remnant item spawning on moon: " + customMoonName + "."));
                 _maxRemnantCustomLevelRarities.Last().Value = Mathf.Clamp(_maxRemnantCustomLevelRarities.Last().Value, _minRemnantCustomLevelRarities.Last().Value, maxPercentage);
                 CustomLevelRarities.Add(customMoonName,
                     new Tuple<int, int>(_minRemnantCustomLevelRarities.Last().Value, _maxRemnantCustomLevelRarities.Last().Value));

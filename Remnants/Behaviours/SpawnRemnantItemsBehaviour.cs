@@ -143,9 +143,12 @@ namespace Remnants.Behaviours
             float spawnRemnantItemsModifier = Remnants.Instance.RemnantsConfig.RemnantItemsSpawningModifier.Value;
             int riskLevel = 0;
             riskLevel = Mathf.Clamp(Array.IndexOf(_riskLevelArray, roundManager.currentLevel.riskLevel), 0, _riskLevelArray.Length);
-            float remnantItemsAmountModifier = roundManager.scrapAmountMultiplier;
-            remnantItemsAmountModifier = remnantItemsAmountModifier * ((riskLevel * _spawnBalanceModifier) * spawnRemnantItemsModifier);
-            return (int)((float)_random.Next(minRemnantItemsSpawn, maxRemnantItemsSpawn) * remnantItemsAmountModifier);
+            float remnantItemsAmountRiskModifier = 1.0f;
+            if (spawnRemnantItemsModifier > 0.0f)
+                remnantItemsAmountRiskModifier = (riskLevel * _spawnBalanceModifier) * spawnRemnantItemsModifier;
+
+            float remnantItemsAmountTotalModifier  = roundManager.scrapAmountMultiplier * remnantItemsAmountRiskModifier;
+            return (int)((float)_random.Next(minRemnantItemsSpawn, maxRemnantItemsSpawn) * remnantItemsAmountTotalModifier);
         }
 
         private List<KeyValuePair<string, int>> CreateRemnantItemsBaseContainer(RoundManager roundManager, List<Items.ScrapItem> networkRemnantItems)
@@ -208,13 +211,14 @@ namespace Remnants.Behaviours
 
         private KeyValuePair<string, int> GetRandomSpawnData(List<KeyValuePair<string, int>> remnantItemsContainer, int totalRarity)
         {
+     
             //via seed randomly pick an item from the container
             int randomRarity = _random.Next(0, totalRarity);
             int currentTotalRarity = 0;
             KeyValuePair<string, int> remnantItemToSpawnData = new KeyValuePair<string, int>("", 0);
             foreach (var remnantItemData in remnantItemsContainer)
             {
-                if (currentTotalRarity <= randomRarity)
+                if (randomRarity <= currentTotalRarity + remnantItemData.Value)
                 {
                     remnantItemToSpawnData = remnantItemData;
                     return remnantItemToSpawnData;

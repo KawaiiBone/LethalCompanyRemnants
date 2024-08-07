@@ -156,3 +156,10 @@
 
 #1.3.4
 -  Added feature that makes the mod: compatible with Lethal Config and can be edited in the game. This does not mean that this mod is dependable on Lethal Config, it just works with and without Lethal Config.
+
+#1.3.5
+- Fixed item bodies bug, now they act as before again.
+- Fixed Bug body suit behaviour crash due to illegal characters for container.
+- Fixed Bug random remnant spawning doesn't according to design.
+- Fixed config description bug where the information for the items in the Remnant section were only partly present.
+- Changed some default config values for spawning and rarity so they are more according to the new spawning of Remnant items rather than the legacy one.
