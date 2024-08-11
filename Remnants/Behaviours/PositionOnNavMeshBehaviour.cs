@@ -12,6 +12,7 @@ namespace Remnants.Behaviours
         private float _moveDistance = 1.0f;
         private float _yOffset = 1.0f;
         private const int _areaMask = -1;
+        private float _maxDistanceFromNavmesh = 0.5f;
         #endregion
 
 
@@ -73,7 +74,7 @@ namespace Remnants.Behaviours
         public bool SetRandomOffsetOnNavmesh(Vector3 startPosition, out Vector3 newPosition)
         {
             var mls = Remnants.Instance.Mls;
-            bool isWithinNavmeshRange = NavMesh.SamplePosition(startPosition, out NavMeshHit maxRangeNavHit, _minReachDistance, _areaMask);
+            bool isWithinNavmeshRange = NavMesh.SamplePosition(startPosition, out NavMeshHit maxRangeNavHit, _maxDistanceFromNavmesh, _areaMask);
             if (!isWithinNavmeshRange)
             {
                 mls.LogWarning("Position is not on Navmesh.");

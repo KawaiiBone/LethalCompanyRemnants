@@ -163,3 +163,6 @@
 - Fixed Bug random remnant spawning doesn't according to design.
 - Fixed config description bug where the information for the items in the Remnant section were only partly present.
 - Changed some default config values for spawning and rarity so they are more according to the new spawning of Remnant items rather than the legacy one.
+
+#1.3.6
+- Fixed bug where some remnant items and bodies don't spawn due to compatibility issue on modded maps.
