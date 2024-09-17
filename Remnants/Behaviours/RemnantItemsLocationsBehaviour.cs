@@ -148,6 +148,21 @@ namespace Remnants.Behaviours
             itemsList.RemoveAll(grabObj => _bannedItemsFromSaving.Contains(grabObj.itemProperties.itemName) || _bannedItemsFromSaving.Contains(grabObj.itemProperties.name));
             return itemsList.ToArray();
         }
+
+       public bool DetermineYesNo(GrabbableObject grabbableObject)
+        {
+            var mls = Remnants.Instance.Mls;
+            if (grabbableObject == null)
+            {
+                mls.LogError("grabbableObject is null!");
+                return false;
+
+            }
+            mls.LogError("grabbableObject is NOT null!");
+            return true;
+            return grabbableObject.itemProperties.isScrap;
+        }
+
         #endregion
 
         #region PrivateMethods

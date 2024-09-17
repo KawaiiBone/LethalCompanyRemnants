@@ -36,8 +36,8 @@ namespace Remnants.Patches
                 mls.LogError("Could not find first call to edit, unable to save remnant items.");
                 return codes.AsEnumerable();
             }
-            MethodInfo proteinHitFoce = typeof(RemnantItemsLocationsBehaviour).GetMethod(nameof(RemnantItemsLocationsBehaviour.GetItemsToSave));
-            codes.Insert(indexFirstCall + 1, new CodeInstruction(OpCodes.Call, proteinHitFoce));
+            MethodInfo ItemsToSaveMethod = typeof(RemnantItemsLocationsBehaviour).GetMethod(nameof(RemnantItemsLocationsBehaviour.GetItemsToSave));
+            codes.Insert(indexFirstCall + 1, new CodeInstruction(OpCodes.Call, ItemsToSaveMethod));
             mls.LogInfo("Transpiler succes with function: Save Items In Ship.");
             return codes.AsEnumerable();
         }

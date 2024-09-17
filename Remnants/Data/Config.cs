@@ -33,7 +33,8 @@ namespace Remnants.Data
         public ConfigEntry<bool> ShouldDespawnRemnantItemsOnPartyWipe;
         public ConfigEntry<bool> ShouldAlwaysDespawnRemnantItems;
         public ConfigEntry<bool> ShouldBodiesBeScrap;
-        public ConfigEntry<int> BodyScrapValue;
+        public ConfigEntry<int> MinBodyScrapValue;
+        public ConfigEntry<int> MaxBodyScrapValue;
         public Dictionary<Levels.LevelTypes, Tuple<int, int>> LevelRarities = new Dictionary<Levels.LevelTypes, Tuple<int, int>>();
         public Dictionary<string, Tuple<int, int>> CustomLevelRarities = new Dictionary<string, Tuple<int, int>>();
         public ConfigEntry<int> IncreasedScrapSpawnPool;
@@ -44,6 +45,7 @@ namespace Remnants.Data
         public ConfigEntry<int> MaxDuplicatesRemnantItems;
         public ConfigEntry<int> MinItemsFoundOnBodies;
         public ConfigEntry<int> MaxItemsFoundOnBodies;
+        public ConfigEntry<bool> UseBeltBagTranspiler;
         #endregion
 
         #region PrivateData
@@ -163,14 +165,19 @@ namespace Remnants.Data
             BodySpawnModifierRiskLevel = _configFile.Bind(_generalBodySection, "Body spawn modifier per moon risk level", 1.2f, "By increasing this modifier you will increase the spawnchance of the body per risk level moon.");
             BodySpawnModifierRiskLevel.Value = Mathf.Clamp(BodySpawnModifierRiskLevel.Value, 0.0f, _maxModifierWithMoonThreath);
 
-            BodyScrapValue = _configFile.Bind(_generalBodySection, "Scrap value of the bodies", 5, "The scrap value of the bodies that this mod spawns. \nThis only works if the bodies are set to scrap.");
-            BodyScrapValue.Value = Mathf.Clamp(BodyScrapValue.Value, 0, (int)_maxItemCost);
+            MinBodyScrapValue = _configFile.Bind(_generalBodySection, "Min scrap value of the bodies", 8, "The minimum scrap value of the bodies that this mod spawns. \nThis only works if the bodies are set to scrap.");
+            MinBodyScrapValue.Value = Mathf.Clamp(MinBodyScrapValue.Value, 0, (int)_maxItemCost);
+
+            MaxBodyScrapValue = _configFile.Bind(_generalBodySection, "Max scrap value of the bodies", 25, "The maximum scrap value of the bodies that this mod spawns. \nThis only works if the bodies are set to scrap.");
+            MaxBodyScrapValue.Value = Mathf.Clamp(MaxBodyScrapValue.Value, MinBodyScrapValue.Value, (int)_maxItemCost);
 
             MaxRemnantItemCost = _configFile.Bind(_otherSection, "Max value to calculate rarity", 400.0f, "This value helps calculating the spawn rarity, the rarity is calculated by the credit cost of the shop item. \nThis caps the maximum cost of an item and setting it as min spawn rarity if it is the same or higher than this value. \nThe more an item cost, the less spawn chance/spawn rarity it has.");
             MaxRemnantItemCost.Value = Mathf.Clamp(MaxRemnantItemCost.Value, _minItemCost, _maxItemStoreCost);
 
             _bannedNamesFromRegistering = _configFile.Bind(_otherSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice,Key,Error", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
             _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Scrap-example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
+            UseBeltBagTranspiler = _configFile.Bind(_otherSection, "Beltbag can store remnant items", true, "Make the beltbag item able to store remnant items. You can disable this feature to make other mods for the beltbag item more compatible.");
+
 
 
             MinRemnantItemsSpawning = _configFile.Bind(_spawningSection, "Minimum remnant items spawned on a moon", 3, "The minimum remnant items that can spawn on a moon. \nThis value gets increased by the threat level a moon has, along the down below modifier.");
@@ -337,8 +344,11 @@ namespace Remnants.Data
             var bodySpawnModifierRiskLeveSlider = new FloatSliderConfigItem(BodySpawnModifierRiskLevel, new FloatSliderOptions { Min = 0.0f, Max = _maxModifierWithMoonThreath, RequiresRestart = false });
             LethalConfigManager.AddConfigItem(bodySpawnModifierRiskLeveSlider);
            
-            var bodyScrapValueSlider = new IntSliderConfigItem(BodyScrapValue, new IntSliderOptions { Min = 0, Max = (int)_maxItemCost, RequiresRestart = false });
-            LethalConfigManager.AddConfigItem(bodyScrapValueSlider);
+            var minBodyScrapValueSlider = new IntSliderConfigItem(MinBodyScrapValue, new IntSliderOptions { Min = 0, Max = (int)_maxItemCost, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(minBodyScrapValueSlider);
+
+            var maxBodyScrapValueSlider = new IntSliderConfigItem(MaxBodyScrapValue, new IntSliderOptions { Min = MinBodyScrapValue.Value, Max = (int)_maxItemCost, RequiresRestart = false });
+            LethalConfigManager.AddConfigItem(maxBodyScrapValueSlider);
             //Spawning section
             var minRemnantItemsSpawningSlider = new IntSliderConfigItem(MinRemnantItemsSpawning, new IntSliderOptions { Min = 1, Max = _maxRemnantItemsSpawned, RequiresRestart = false });
             LethalConfigManager.AddConfigItem(minRemnantItemsSpawningSlider);
@@ -382,6 +392,9 @@ namespace Remnants.Data
 
             var overriddenScrapItemsInput = new TextInputFieldConfigItem(_overriddenScrapItems, false);
             LethalConfigManager.AddConfigItem(overriddenScrapItemsInput);
+            
+            var UseBeltBagTranspilerCheckBox =new BoolCheckBoxConfigItem(UseBeltBagTranspiler, true);
+            LethalConfigManager.AddConfigItem(UseBeltBagTranspilerCheckBox);
             //Remnant items section
             for (int i = 0; i < ConfigScrapDataList.Count; i++)
             {
@@ -586,6 +599,42 @@ namespace Remnants.Data
             configData.StringValue = line.Remove(0, startIndex + itemValueDetect.Length - 1);
             list.Add(configData);
         }
+
+        
+       public bool CheckIsStoreOrRemnantItem(GrabbableObject grabbableObject)
+        {
+            var mls = Remnants.Instance.Mls;
+            if (grabbableObject == null || grabbableObject.itemProperties == null)
+            {
+                mls.LogError("GrabbableObject is null!");
+                return false;
+            }
+            if (!grabbableObject.itemProperties.isScrap)
+            {
+                mls.LogError("GrabbableObject is not scrap!");
+                return true;
+            }
+            mls.LogInfo("ConfigScrapDataList lengt: " + ConfigScrapDataList.Count);
+            foreach (var item in ConfigScrapDataList)//IS EMPTY? :O
+            {
+                mls.LogInfo(item.Definition.Key);
+            }
+
+            mls.LogWarning(grabbableObject.itemProperties.itemName + " " + grabbableObject.itemProperties.name);
+
+
+             if (ConfigScrapDataList.FindIndex(configEntry => configEntry.Definition.Key == grabbableObject.itemProperties.itemName 
+             || configEntry.Definition.Key == grabbableObject.itemProperties.name) != -1)
+
+            {
+                mls.LogError("GrabbableObject is a remnant item!");
+                return true;
+            }
+            mls.LogError("GrabbableObject is a normal scrap item!");
+            return false;
+        }
+
+
         #endregion
     }
 }

@@ -166,3 +166,7 @@
 
 #1.3.6
 - Fixed bug where some remnant items and bodies don't spawn due to compatibility issue on modded maps.
+
+#1.3.7
+- Added feature that makes remnant items to be stored in the beltbag item, this includes a config feature that you can disable it.
+- Changed config feature now body scrap value from this mod have a minimum and maximum.

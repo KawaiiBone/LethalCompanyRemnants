@@ -120,6 +120,7 @@
     <Compile Include="Data\LoadAssetsBodies.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Patches\AddRemnantItemsToItemList.cs" />
+    <Compile Include="Patches\BeltBagTranspiler.cs" />
     <Compile Include="Patches\DespawnRemnantsPatch.cs" />
     <Compile Include="Patches\RegisterSuitsPatch.cs" />
     <Compile Include="Patches\RemnantItemsPatch.cs" />

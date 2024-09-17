@@ -103,10 +103,10 @@ namespace Remnants.Behaviours
                 GameObject gameObj = UnityEngine.Object.Instantiate(remnantItemToSpawn.item.spawnPrefab, spawnPosition, Quaternion.identity, roundManager.spawnedScrapContainer);
                 var networkObj = gameObj.GetComponent<NetworkObject>();
                 networkObj.Spawn();
-                int rarity = (int)((float)_random.Next(remnantItemToSpawn.item.minValue, remnantItemToSpawn.item.maxValue) * roundManager.scrapAmountMultiplier);
+                int scrapValue = (int)((float)_random.Next(remnantItemToSpawn.item.minValue, remnantItemToSpawn.item.maxValue) * roundManager.scrapAmountMultiplier);
                 _randomizeBatteriesBeh.RandomizeItemBattery(gameObj);
                 NetworkObjectReferenceList.Add(networkObj);
-                scrapValueList.Add(rarity);
+                scrapValueList.Add(scrapValue);
                 Remnants.Instance.RemnantItemsBeh.AddFoundRemnantItemObject(gameObj);
             }
 
@@ -137,7 +137,7 @@ namespace Remnants.Behaviours
         }
 
         private int CalculateAmountItemsToSpawn(RoundManager roundManager)
-        {
+        {    
             int minRemnantItemsSpawn = Remnants.Instance.RemnantsConfig.MinRemnantItemsSpawning.Value;
             int maxRemnantItemsSpawn = Mathf.Clamp( Remnants.Instance.RemnantsConfig.MaxRemnantItemsSpawning.Value, minRemnantItemsSpawn, int.MaxValue);
             float spawnRemnantItemsModifier = Remnants.Instance.RemnantsConfig.RemnantItemsSpawningModifier.Value;

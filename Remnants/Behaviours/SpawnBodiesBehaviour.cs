@@ -100,7 +100,8 @@ namespace Remnants.Behaviours
                 {
                     netBodyObject = SpawnScrapBody(bodiesRarityList[bodyIndex].Key, spawnPosition, roundManager.spawnedScrapContainer);
                     NetworkObjectReferenceList.Add(netBodyObject);
-                    scrapValueList.Add(Remnants.Instance.RemnantsConfig.BodyScrapValue.Value);
+                    int scrapValue = (int)((float)_random.Next(Remnants.Instance.RemnantsConfig.MinBodyScrapValue.Value, Remnants.Instance.RemnantsConfig.MaxBodyScrapValue.Value) * roundManager.scrapAmountMultiplier);
+                    scrapValueList.Add(scrapValue);
                 }
 
                 if (suitsIndexList.Count != 0)

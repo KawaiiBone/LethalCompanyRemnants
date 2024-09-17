@@ -16,6 +16,7 @@ Along this, there is a small chance that you will find a corpse along the scrap 
 This mod takes the game's store items and registers them as scrap, so you can find these store items on moons alongside other scrap.
 Remnant items that use a battery will have a random battery charge to make it seem as if they have been used.
 This mod is also compatible with other mods that add more items to the game, which means that you can find modded store items on moons as well.
+With that, remnant items can now be stored in the beltbag.
 
 #### Spawn bodies near remnant items.
 Now there is a chance that a body will spawn near a remnant item. There are four different types of bodies (default body, cocooned body, spring body, and head burst body). Each of these body types have unique enemies ascribed to them to determine which body is spawned in. As such, depending on the moon and the enemies that spawn there, a different body will spawn. Based on the enemy's spawn rate, their linked body types will also spawn more or less. For example: on your current moon, there is a high chance for a spider to spawn, so, when a body spawns, it is far more likely to be a cocooned body.
@@ -35,6 +36,7 @@ Remnant items:
 - Choosing spawn options per item, using credit cost, choosing your own spawn rarity or disabling spawning entirely.
 - Makes you able to edit the minimum and maximum scrap cost of remnant items via the config.
 - A list of scrap items that you can add in acting as remnant items for body spawning and randomizing batteries.
+- Disable or enable the remnant items to be stored in the beltbag item.
 
 Spawning remnant items:
 - The minimum and maximum remnant items spawned on moons.
@@ -48,7 +50,7 @@ Spawning remnant items: (legacy spawning)
 
 Body spawning:
 - To make them grabbbable with a scrap value or have them just as a prop and non interactable.
-- The scrap value of a body.
+- The minimum and maximum scrap value of a body.
 - The spawn chance of bodies.
 - The body spawn modifier in relation to the moon risk level.
 - Banning suits from being put on bodies.
