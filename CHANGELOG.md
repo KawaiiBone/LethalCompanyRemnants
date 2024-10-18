@@ -170,3 +170,7 @@
 #1.3.7
 - Added feature that makes remnant items to be stored in the beltbag item, this includes a config feature that you can disable it.
 - Changed config feature now body scrap value from this mod have a minimum and maximum.
+
+#1.3.7
+- Fixed issue where scanning the items via the terminal would not show the true amount and value, due to not being able to find remnant items in the scan.
+- Added config feature where you can disable the fix of having the terminal be able to scan remnant items.

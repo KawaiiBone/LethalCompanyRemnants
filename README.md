@@ -37,6 +37,7 @@ Remnant items:
 - Makes you able to edit the minimum and maximum scrap cost of remnant items via the config.
 - A list of scrap items that you can add in acting as remnant items for body spawning and randomizing batteries.
 - Disable or enable the remnant items to be stored in the beltbag item.
+- Disable or enable the terminal to be able to scan remnant items.
 
 Spawning remnant items:
 - The minimum and maximum remnant items spawned on moons.
