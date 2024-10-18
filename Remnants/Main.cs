@@ -58,6 +58,7 @@ namespace Remnants
             _harmony.PatchAll(typeof(BodySuitBehaviour));
             _harmony.PatchAll(typeof(RegisterSuitsPatch));
             _harmony.PatchAll(typeof(AddRemnantItemsToItemList));
+            _harmony.PatchAll(typeof(TerminalScanItemsPatch));
             _harmony.PatchAll(typeof(BeltBagTranspiler));
             _harmony.PatchAll(typeof(SaveGameTranspiler));
             _harmony.PatchAll(typeof(Remnants));

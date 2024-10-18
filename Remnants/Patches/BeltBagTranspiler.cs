@@ -1,14 +1,10 @@
 ﻿using HarmonyLib;
-using Remnants.Behaviours;
-using Remnants.Data;
 using Remnants.utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using UnityEngine;
-using UnityEngine.Diagnostics;
 
 
 namespace Remnants.Patches
@@ -67,7 +63,8 @@ namespace Remnants.Patches
             return codes.AsEnumerable();
         }
 
-
+        #endregion
+        #region Methods
 
         public bool CheckIsStoreOrRemnantItem(GrabbableObject grabbableObject)
         {
