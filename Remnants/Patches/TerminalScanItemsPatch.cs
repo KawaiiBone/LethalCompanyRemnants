@@ -20,7 +20,7 @@ namespace Remnants.Patches
         static IEnumerable<CodeInstruction> TerminalScanItemsTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
         {
             var mls = Remnants.Instance.Mls;
-            if (Remnants.Instance.RemnantsConfig.UseBeltBagTranspiler.Value == false)
+            if (Remnants.Instance.RemnantsConfig.UseTerminalScanItemsTranspiler.Value == false)
             {
                 mls.LogWarning("Terminal scan items feature disabled, terminal can now not find remnant items when scanning.");
                 return instructions;

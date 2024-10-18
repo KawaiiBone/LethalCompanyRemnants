@@ -46,6 +46,7 @@ namespace Remnants.Data
         public ConfigEntry<int> MinItemsFoundOnBodies;
         public ConfigEntry<int> MaxItemsFoundOnBodies;
         public ConfigEntry<bool> UseBeltBagTranspiler;
+        public ConfigEntry<bool> UseTerminalScanItemsTranspiler;
         #endregion
 
         #region PrivateData
@@ -177,8 +178,7 @@ namespace Remnants.Data
             _bannedNamesFromRegistering = _configFile.Bind(_otherSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice,Key,Error", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
             _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Scrap-example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
             UseBeltBagTranspiler = _configFile.Bind(_otherSection, "Beltbag can store remnant items", true, "Make the beltbag item able to store remnant items. You can disable this feature to make other mods for the beltbag item more compatible.");
-
-
+            UseTerminalScanItemsTranspiler = _configFile.Bind(_otherSection, "Terminal can scan remnant items", true, "Make the Terminal able to  scan remnant items. You can disable this feature to make other mods that interact with the terminal more compatible.");
 
             MinRemnantItemsSpawning = _configFile.Bind(_spawningSection, "Minimum remnant items spawned on a moon", 3, "The minimum remnant items that can spawn on a moon. \nThis value gets increased by the threat level a moon has, along the down below modifier.");
             MinRemnantItemsSpawning.Value = Mathf.Clamp(MinRemnantItemsSpawning.Value, 1, _maxRemnantItemsSpawned);
@@ -395,12 +395,16 @@ namespace Remnants.Data
             
             var UseBeltBagTranspilerCheckBox =new BoolCheckBoxConfigItem(UseBeltBagTranspiler, true);
             LethalConfigManager.AddConfigItem(UseBeltBagTranspilerCheckBox);
+
+            var UseTerminalScanItemsTranspilerCheckBox = new BoolCheckBoxConfigItem(UseTerminalScanItemsTranspiler, true);
+            LethalConfigManager.AddConfigItem(UseTerminalScanItemsTranspilerCheckBox);
             //Remnant items section
             for (int i = 0; i < ConfigScrapDataList.Count; i++)
             {
                 var remnantItemSpawnData = new IntSliderConfigItem(ConfigScrapDataList[i], new IntSliderOptions { Min = -1, Max = _maxPercentage });
                 LethalConfigManager.AddConfigItem(remnantItemSpawnData);
             }
+
             //Moons vanilla section
             var useSpecificLevelRaritiesInput = new BoolCheckBoxConfigItem(UseSpecificLevelRarities);
             LethalConfigManager.AddConfigItem(useSpecificLevelRaritiesInput);
