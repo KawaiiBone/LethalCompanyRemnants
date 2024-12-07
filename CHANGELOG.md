@@ -174,3 +174,8 @@
 #1.3.8
 - Fixed issue where scanning the items via the terminal would not show the true amount and value, due to not being able to find remnant items in the scan.
 - Added config feature where you can disable the fix of having the terminal be able to scan remnant items.
+
+#1.3.9
+- Overhaul for pooling remnants item along with other grabbable objects/items. To increase compatibility with other mods.
+- Updated feature, now you can spawn 0 remnant items on a moon rather than the minimum of 1.
+- Fixed issue: end of round report now shows accurate info regarding scrap items collected and amount of scrap value was on that moon.

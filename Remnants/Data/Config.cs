@@ -181,7 +181,7 @@ namespace Remnants.Data
             UseTerminalScanItemsTranspiler = _configFile.Bind(_otherSection, "Terminal can scan remnant items", true, "Make the Terminal able to  scan remnant items. You can disable this feature to make other mods that interact with the terminal more compatible.");
 
             MinRemnantItemsSpawning = _configFile.Bind(_spawningSection, "Minimum remnant items spawned on a moon", 3, "The minimum remnant items that can spawn on a moon. \nThis value gets increased by the threat level a moon has, along the down below modifier.");
-            MinRemnantItemsSpawning.Value = Mathf.Clamp(MinRemnantItemsSpawning.Value, 1, _maxRemnantItemsSpawned);
+            MinRemnantItemsSpawning.Value = Mathf.Clamp(MinRemnantItemsSpawning.Value, 0, _maxRemnantItemsSpawned);
             MaxRemnantItemsSpawning = _configFile.Bind(_spawningSection, "Maximum remnant items spawned on a moon", 8, "The maximum remnant items that can spawn on a moon. \nThis value gets increased by the threat level a moon has, along the down below modifier.");
             MaxRemnantItemsSpawning.Value = Mathf.Clamp(MaxRemnantItemsSpawning.Value, MinRemnantItemsSpawning.Value, _maxRemnantItemsSpawned);
 

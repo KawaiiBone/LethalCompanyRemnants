@@ -7,17 +7,16 @@ using Remnants.Behaviours;
 
 namespace Remnants.Patches
 {
-    internal class TerminalScanItemsPatch
+    internal class TerminalScanItemsTranspiler
     {
         #region Variables
-        private static MethodInfo _findFirstGrabbableObjectMethod = SymbolExtensions.GetMethodInfo(() => UnityEngine.Object.FindObjectsOfType<GrabbableObject>());
-        static FieldInfo _itemIsScrapField = AccessTools.Field(typeof(GrabbableObject), nameof(GrabbableObject.itemProperties));
+        private static MethodInfo _findFirstGrabbableObjecArraytMethod = SymbolExtensions.GetMethodInfo(() => UnityEngine.Object.FindObjectsOfType<GrabbableObject>());
         #endregion
 
         #region HarmonyMethods
         [HarmonyPatch(typeof(Terminal), "TextPostProcess")]
         [HarmonyTranspiler]
-        static IEnumerable<CodeInstruction> TerminalScanItemsTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
+        static IEnumerable<CodeInstruction> TextPostProcessScanItemsTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
         {
             var mls = Remnants.Instance.Mls;
             if (Remnants.Instance.RemnantsConfig.UseTerminalScanItemsTranspiler.Value == false)
@@ -29,7 +28,7 @@ namespace Remnants.Patches
             int indexCallGrabObjects = -1;
             for (int i = 0; i < codes.Count; ++i)
             {
-                if (codes[i].opcode == OpCodes.Call && codes[i].Calls(_findFirstGrabbableObjectMethod))
+                if (codes[i].opcode == OpCodes.Call && codes[i].Calls(_findFirstGrabbableObjecArraytMethod))
                 {
                     indexCallGrabObjects = i;
                     break;
@@ -42,7 +41,7 @@ namespace Remnants.Patches
                 return codes.AsEnumerable();
             }
             //Insert the function, just after the default method to replace it
-            codes.Insert(indexCallGrabObjects+1, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RemnantItemsLocationsBehaviour), "GetAllItems")));
+            codes.Insert(indexCallGrabObjects+1, new CodeInstruction(OpCodes.Call, typeof(GrabbableObjsSpawnListBehaviour).GetMethod(nameof(GrabbableObjsSpawnListBehaviour.GetSpawnedGrabbableObjects))));
             mls.LogInfo("Transpiler succes with function: TextPostProcess for scanning remnant items via the terminal.");
             return codes.AsEnumerable();
         }

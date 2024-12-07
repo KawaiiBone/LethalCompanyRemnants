@@ -21,13 +21,14 @@ namespace Remnants.Patches
                 mls.LogWarning("spawnedScrap IS NULL");
                 return;
             }
+            
             var remnantItemsBehaviour = Remnants.Instance.RemnantItemsBeh;
-            remnantItemsBehaviour.RemoveDespawnedAndNullItems();
             var itemsBatteriesBeh = Remnants.Instance.ItemsBatteriesBeh;
             var spawnBodiesBeh = Remnants.Instance.SpawningBodyBeh;
             List<GameObject> newRemnantItemsList = new List<GameObject>();
             List<RemnantData> scrapItemDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList();
             List<string> itemScrapList = Remnants.Instance.RemnantsConfig.GetOverriddenScrapItems();
+    
             for (int i = 0; i < spawnedScrap.Length; i++)
             {
                 if (!spawnedScrap[i].TryGet(out var networkObject))
@@ -43,12 +44,12 @@ namespace Remnants.Patches
                     continue;
                 else
                 {
-                    remnantItemsBehaviour.AddFoundRemnantItemObject(grabbableObject.gameObject);
                     newRemnantItemsList.Add(grabbableObject.gameObject);
                 }
             }
             itemsBatteriesBeh.RandomizeItemsBattery(newRemnantItemsList);
             spawnBodiesBeh.SpawnBodiesOnItems(newRemnantItemsList);
+       
         }
         #endregion
     }

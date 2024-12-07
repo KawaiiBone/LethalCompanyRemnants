@@ -36,7 +36,7 @@ namespace Remnants.Patches
                 mls.LogError("Could not find first call to edit, unable to save remnant items.");
                 return codes.AsEnumerable();
             }
-            MethodInfo ItemsToSaveMethod = typeof(RemnantItemsLocationsBehaviour).GetMethod(nameof(RemnantItemsLocationsBehaviour.GetItemsToSave));
+            MethodInfo ItemsToSaveMethod = typeof(GrabbableObjsSpawnListBehaviour).GetMethod(nameof(GrabbableObjsSpawnListBehaviour.GetGrabbableObjectsToSave));
             codes.Insert(indexFirstCall + 1, new CodeInstruction(OpCodes.Call, ItemsToSaveMethod));
             mls.LogInfo("Transpiler succes with function: Save Items In Ship.");
             return codes.AsEnumerable();

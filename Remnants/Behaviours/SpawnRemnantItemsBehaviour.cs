@@ -59,7 +59,8 @@ namespace Remnants.Behaviours
             _bodySpawnPositions.Clear();
             float spawnChance = CalculateBodySpawnChance(StartOfRound.Instance.currentLevel.riskLevel);
             bool hasNotSpawnedItemOnABody = true;
-            int currentAmountItemsSpawnOnBody = 0;  
+            int currentAmountItemsSpawnOnBody = 0;
+            int totalscrapValue = 0;
             for (int spawnIndex = 0; spawnIndex < amountRemnantItemsToSpawn; spawnIndex++)
             {
                 if (totalRarity <= 0 || remnantItemsContainer.Count == 0)
@@ -107,9 +108,10 @@ namespace Remnants.Behaviours
                 _randomizeBatteriesBeh.RandomizeItemBattery(gameObj);
                 NetworkObjectReferenceList.Add(networkObj);
                 scrapValueList.Add(scrapValue);
-                Remnants.Instance.RemnantItemsBeh.AddFoundRemnantItemObject(gameObj);
+                totalscrapValue += scrapValue;
             }
 
+            roundManager.totalScrapValueInLevel += totalscrapValue;
             if (NetworkObjectReferenceList.Count == 0)
                 return;
             //Here do courotine for sync scrap      

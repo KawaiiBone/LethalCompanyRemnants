@@ -68,19 +68,12 @@ namespace Remnants.Patches
             if (Remnants.Instance.RemnantsConfig.ShouldAlwaysDespawnRemnantItems.Value == true)
                 despawnAllItems = true;
             //The game cannot detect remnant items with simple means as GameObject.Find<GrabbableObject>() 
-            //So this is the best way to find it by this mod self
-            var remnantItemsBehaviour = Remnants.Instance.RemnantItemsBeh;
-            var itemsLocationBeh = Remnants.Instance.RegisterItemLocationsBeh;
+            KeyValuePair<GrabbableObject[], GrabbableObject[]> seperatedGrabbableObjectsArrays = Remnants.Instance.GrabbableObjsSpawnListBeh.GetGrabbableObjectShipAndRest();
             if (despawnAllItems || (StartOfRound.Instance.allPlayersDead && Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItemsOnPartyWipe.Value == true))
             {
-                DespawnItems(itemsLocationBeh.GetShipRemnantItems(), !itemsLocationBeh.ShipObjectLocation.IsShipRoom, despawnAllItems, itemsLocationBeh.ShipObjectLocation.ObjectLocationsNames.Last());
+                DespawnItems(seperatedGrabbableObjectsArrays.Key, false, despawnAllItems, "In ship");
             }
-            DespawnItems(itemsLocationBeh.GetItemsInProps(), !itemsLocationBeh.PropObjectLocation.IsShipRoom, despawnAllItems, itemsLocationBeh.PropObjectLocation.ObjectLocationsNames.Last());
-            DespawnItems(itemsLocationBeh.GetItemsInRoot(), !itemsLocationBeh.RootObjectLocation.IsShipRoom, despawnAllItems, "Root objects");
-            remnantItemsBehaviour.RemoveDespawnedAndNullItems();
-            GrabbableObject[] grabbableObjectsArray = RemnantItemsBehaviour.FoundRemnantItems.ConvertAll(remnantOBJ => remnantOBJ.GetComponent<GrabbableObject>()).ToArray();
-            DespawnItems(grabbableObjectsArray, true, despawnAllItems, "Unknown place");
-            remnantItemsBehaviour.RemoveDespawnedAndNullItems();
+            DespawnItems(seperatedGrabbableObjectsArrays.Value, true, despawnAllItems, "Not in ship");
         }
 
 
@@ -130,7 +123,7 @@ namespace Remnants.Patches
                 _canUseTranspiler = false;
                 return codes.AsEnumerable();
             }
-            MethodInfo methodInfoGetAllItems = typeof(RemnantItemsLocationsBehaviour).GetMethod(nameof(RemnantItemsLocationsBehaviour.GetAllItems));
+            MethodInfo methodInfoGetAllItems = typeof(GrabbableObjsSpawnListBehaviour).GetMethod(nameof(GrabbableObjsSpawnListBehaviour.GetSpawnedGrabbableObjects));
             codes.Insert(indexFirstCall + 1, new CodeInstruction(OpCodes.Call, methodInfoGetAllItems));
             mls.LogInfo("Transpiler succes with function: Despawn Props At End Of Round.");
             return codes.AsEnumerable();
@@ -176,12 +169,7 @@ namespace Remnants.Patches
         {
             var mls = Remnants.Instance.Mls;
             mls.LogInfo("Patching ownership of Remnant Items at start disconnect.");
-            //Get all remnant items that should be in ship from root
-            var itemsLocationBeh = Remnants.Instance.RegisterItemLocationsBeh;
-            var grabbableObjectsList = itemsLocationBeh.GetShipItems().ToList();
-            grabbableObjectsList.AddRange(itemsLocationBeh.GetItemsInProps());
-            grabbableObjectsList.AddRange(itemsLocationBeh.GetItemsInRoot());
-
+            GrabbableObject[] grabbableObjectsList = Remnants.Instance.GrabbableObjsSpawnListBeh.GetSpawnedGrabbableObjects();
             foreach (var grabbableObject in grabbableObjectsList)
             {
                 var networkOBJ = grabbableObject.GetComponent<NetworkObject>();

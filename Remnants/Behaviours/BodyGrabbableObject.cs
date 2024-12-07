@@ -19,7 +19,7 @@ namespace Remnants.Behaviours
 
         }
 
-        private void Start()
+        public override void Start()
         {     
             propColliders = base.gameObject.GetComponentsInChildren<Collider>();
             originalScale = base.transform.localScale;

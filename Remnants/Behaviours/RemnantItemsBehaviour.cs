@@ -9,12 +9,7 @@ namespace Remnants.Behaviours
     {
         #region Variables
         private bool _hasInitialized = false;
-        private static List<GameObject> _foundRemnantItemsObjects = new List<GameObject>();
         private List<Items.ScrapItem> _networkRemnantItems = new List<Items.ScrapItem>();
-        public static List<GameObject> FoundRemnantItems
-        {
-            get { return _foundRemnantItemsObjects; }
-        }
 
         public List<Items.ScrapItem> NetworkRemnantItems
         {
@@ -33,25 +28,6 @@ namespace Remnants.Behaviours
         #endregion
 
         #region Methods
-        public void AddFoundRemnantItemObject(GameObject gameObj)
-        {
-            if (gameObj == null)
-                return;
-
-            if (_foundRemnantItemsObjects.Contains(gameObj))
-                return;
-
-            _foundRemnantItemsObjects.Add(gameObj);
-        }
-
-        public void RemoveDespawnedAndNullItems()
-        {
-            _foundRemnantItemsObjects.RemoveAll(remnantItem =>
-            remnantItem == null ||
-            remnantItem.GetComponent<NetworkObject>().IsSpawned == false
-            );
-        }
-
         public void AddNetworkRemnantItem(Items.ScrapItem scrapItem)
         {
             if (scrapItem == null)
