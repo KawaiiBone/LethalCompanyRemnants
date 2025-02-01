@@ -37,7 +37,6 @@ Remnant items:
 - Makes you able to edit the minimum and maximum scrap cost of remnant items via the config.
 - A list of scrap items that you can add in acting as remnant items for body spawning and randomizing batteries.
 - Disable or enable the remnant items to be stored in the beltbag item.
-- Disable or enable the terminal to be able to scan remnant items.
 
 Spawning remnant items:
 - The minimum and maximum remnant items spawned on moons.
@@ -57,9 +56,7 @@ Body spawning:
 - Banning suits from being put on bodies.
 
 Save/Load:
-- Save remnant items.
 - Despawn remnant items on party wipe, do take note that this feature uses the old despawning method and may cause issues.
-- Despawn all remnant items regardless where they are when leaving a moon.
 - A list of banned items, preventing these items from being saved on the ship.
 
 Now also compatible with Lethal Config.
@@ -81,10 +78,6 @@ This is because the bodies shake too much before setting into position.
 If anyone has a good way of fixing this issue, be sure to let me know.
 
 ### Possible incompatibilities 
-This mod has an issue that the normal game does not detect remnant items that easily, so to fix this issue it has to edit the despawning and saving of items.
-By doing so, it can create some incompatibilities with other mods, normally the despawning of remnant items should be fine.
-But saving can cause some issues and make it so that remnant items are not saved at all due to incompatibilities with other mods.
-Normally this should not break the gameplay of that mod, if you want to be sure you can go and disable remnant items from saving in the config.
 If there are other compatibility issues with other mods, there is a big chance that it can be fixed via the config.
 
 ## Credits
@@ -101,6 +94,8 @@ The following mods were a great inspiration for the creation of the Remnants Mod
 - [BuyableShotgunShells](https://github.com/MegaPiggy/LethalCompanyBuyableShotgunShells): An easy way to find objects in the game.
 - [Monsterdrops](https://github.com/fardin2000/MonsterDrops): Making it easier to synchronize scrap values on the network.
 - [Batteries](https://github.com/eXish/lc-batteries): For finding a way to make items spawn in a more unique and separate way.
+
+My endless gratitude to [Zaggy1024](https://github.com/Zaggy1024) for discovering the source of the biggest bug in this mod that has been haunting this mod since the beginning.
 
 A special thanks to Sapphy for supporting and aiding me with editing and cleaning up the public texts. If you want to support her or check out her work, you can find her on [Amazon](https://www.amazon.com/stores/Sapphire-Bellatora/author/B0CNHGCP4S?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true)! 
 

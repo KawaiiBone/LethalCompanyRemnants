@@ -9,22 +9,21 @@ using System.Reflection.Emit;
 
 namespace Remnants.Patches
 {
-    internal class BeltBagTranspiler
+    internal class PartyWipeRemnantItemsTranspiler
     {
         #region Variables
         static FieldInfo _itemIsScrapField = AccessTools.Field(typeof(GrabbableObject), nameof(GrabbableObject.itemProperties));
-        private List<RemnantData> _remnantItemDataList = null;
         #endregion
 
         #region HarmonyMethods
-        [HarmonyPatch(typeof(BeltBagItem), "ItemInteractLeftRight")]
+        [HarmonyPatch(typeof(RoundManager), "DespawnPropsAtEndOfRound")]
         [HarmonyTranspiler]
-        static IEnumerable<CodeInstruction> SaveItemsInShipTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
+        static IEnumerable<CodeInstruction> RemnantItemsOnPartyWipeTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
         {
             var mls = Remnants.Instance.Mls;
-            if(Remnants.Instance.RemnantsConfig.UseBeltBagTranspiler.Value == false)
+            if (Remnants.Instance.RemnantsConfig.ShouldDespawnRemnantItemsOnPartyWipe.Value == true)
             {
-                mls.LogWarning("Beltbag feature disabled, beltbag can now not pickup remnant items.");
+                mls.LogWarning("Despawm remnant items on party wipe feature disabled, remnant items will now despawn on party wipe like scrap on the ship.");
                 return instructions;
             }
             var codes = new List<CodeInstruction>(instructions);
@@ -36,7 +35,7 @@ namespace Remnants.Patches
                 {
                     indexOfFirstItemProperties = i;
                 }
-                else if(indexOfFirstItemProperties > -1 && codes[i].opcode == OpCodes.Brtrue)
+                else if (indexOfFirstItemProperties > -1 && codes[i].opcode == OpCodes.Brfalse)//OpCodes.Brtrue
                 {
                     indexOfReturnItemProperties = i;
                     break;
@@ -45,7 +44,7 @@ namespace Remnants.Patches
 
             if (indexOfFirstItemProperties == -1 || indexOfReturnItemProperties == -1)
             {
-                mls.LogError("Could not find place in if statement to edit, unable to use BeltBagItem with remnant items.");
+                mls.LogError("Could not find place in if statement to edit, unable to keep remnant items on ship on party wipe.");
                 return codes.AsEnumerable();
             }
 
@@ -59,29 +58,12 @@ namespace Remnants.Patches
             codes[indexOfReturnItemProperties].opcode = OpCodes.Brfalse_S;
             //Insert value on the stack and add the function
             codes.Insert(indexOfFirstItemProperties, new CodeInstruction(OpCodes.Ldloc_1));
-            codes.Insert(indexOfFirstItemProperties+1, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BeltBagTranspiler), "CheckIsStoreOrRemnantItem", new Type[] { typeof(GrabbableObject)})));
-            mls.LogInfo("Transpiler succes with function: ItemInteractLeftRight for BeltBagItem.");
+            codes.Insert(indexOfFirstItemProperties + 1, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BeltBagTranspiler), "CheckIsStoreOrRemnantItem", new Type[] { typeof(GrabbableObject) })));
+            mls.LogInfo("Transpiler succes with function: DespawnPropsAtEndOfRound for not despawning remnant items on party wipe.");
             return codes.AsEnumerable();
         }
-
         #endregion
-        #region Methods
 
-        public bool CheckIsStoreOrRemnantItem(GrabbableObject grabbableObject)
-        {
-            if (grabbableObject == null || grabbableObject.itemProperties == null)
-                return false;
-            if (!grabbableObject.itemProperties.isScrap)
-                return true;
-            if (_remnantItemDataList == null)
-                _remnantItemDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList(false);
-
-            if (_remnantItemDataList.FindIndex(configEntry => configEntry.RemnantItemName == grabbableObject.itemProperties.itemName
-            || configEntry.RemnantItemName == grabbableObject.itemProperties.name) != -1)
-                return true;
-            return false;
-        }
-        #endregion
 
     }
 }

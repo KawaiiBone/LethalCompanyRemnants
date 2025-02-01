@@ -95,7 +95,7 @@ namespace Remnants.Behaviours
         {
             var mls = Remnants.Instance.Mls;
             try
-            {
+            {    
                 foreach (Item item in allItems)
                 {
                     if (item == null)
@@ -222,8 +222,12 @@ namespace Remnants.Behaviours
             Items.scrapItems[scrapItemIndex].item.itemSpawnsOnGround = true;
             LethalLib.Modules.Utilities.FixMixerGroups(Items.scrapItems[scrapItemIndex].item.spawnPrefab);
             GrabbableObject grabbable = Items.scrapItems[scrapItemIndex].item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
+            Items.scrapItems[scrapItemIndex].item.spawnPrefab.hideFlags = HideFlags.None;
             if (grabbable != null)
+            {
                 grabbable.isInFactory = true;
+                grabbable.hideFlags = HideFlags.None;
+            }
         }
 
         private Items.ScrapItem CreateScrapitemData(Items.ScrapItem scrapItem, int creditsWorth)
@@ -235,8 +239,12 @@ namespace Remnants.Behaviours
             scrapItem.item.itemSpawnsOnGround = true;
             LethalLib.Modules.Utilities.FixMixerGroups(scrapItem.item.spawnPrefab);
             GrabbableObject grabbable = scrapItem.item.spawnPrefab.GetComponentInChildren<GrabbableObject>();
+            scrapItem.item.spawnPrefab.hideFlags = HideFlags.None;
             if (grabbable != null)
+            {
                 grabbable.isInFactory = true;
+                grabbable.hideFlags = HideFlags.None;
+            }
             return scrapItem;
         }
 
@@ -273,6 +281,9 @@ namespace Remnants.Behaviours
             }
             return new KeyValuePair<Dictionary<Levels.LevelTypes, int>, Dictionary<string, int>>(levelRarities, customLevelRarities);
         }
+
+
+    
         #endregion
     }
 }

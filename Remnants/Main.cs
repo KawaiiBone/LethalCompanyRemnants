@@ -16,7 +16,7 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.3.9";
+        private const string modVersion = "1.4.0";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);
@@ -29,7 +29,6 @@ namespace Remnants
         public SpawnBodiesBehaviour SpawningBodyBeh = new SpawnBodiesBehaviour();
         public RemnantItemsBehaviour RemnantItemsBeh = new RemnantItemsBehaviour();
         public RandomizeBatteriesBehaviour ItemsBatteriesBeh = new RandomizeBatteriesBehaviour();
-        public GrabbableObjsSpawnListBehaviour GrabbableObjsSpawnListBeh = new GrabbableObjsSpawnListBehaviour();
         public SpawnRemnantItemsBehaviour SpawnRemnantItemsBeh = new SpawnRemnantItemsBehaviour();
 
         private RegisterItemsBehaviour _registerItemsBehaviour = new RegisterItemsBehaviour();
@@ -54,15 +53,12 @@ namespace Remnants
             _harmony.PatchAll(typeof(RemnantItemsPatch));
             _harmony.PatchAll(typeof(SpawnRemnantItemsPatch));
             _harmony.PatchAll(typeof(SpawnableScrapPatch));
-            _harmony.PatchAll(typeof(DespawnRemnantsPatch));
             _harmony.PatchAll(typeof(BodySuitBehaviour));
             _harmony.PatchAll(typeof(RegisterSuitsPatch));
             _harmony.PatchAll(typeof(AddRemnantItemsToItemList));
-            _harmony.PatchAll(typeof(TerminalScanItemsTranspiler));
             _harmony.PatchAll(typeof(EndRoundStatsPatch));
             _harmony.PatchAll(typeof(BeltBagTranspiler));
-            _harmony.PatchAll(typeof(SaveGameTranspiler));
-            _harmony.PatchAll(typeof(GrabbableObjToListStartPatch));
+            _harmony.PatchAll(typeof(PartyWipeRemnantItemsTranspiler));
             _harmony.PatchAll(typeof(Remnants));
             _registerItemsBehaviour.Initialize();
             RegisterBodiesSpawn.Initialize();
@@ -70,7 +66,6 @@ namespace Remnants
             RegisterBodySuits.Initialize();
             SpawningBodyBeh.Initialize();
             ItemsBatteriesBeh.Initialize();
-            GrabbableObjsSpawnListBeh.Initialize();
             SpawnRemnantItemsBeh.Initialize();
             Mls.LogInfo("modGUID has loaded");
         }

@@ -106,7 +106,6 @@
     <Compile Include="Behaviours\BodyGrabbableObject.cs" />
     <Compile Include="Behaviours\BodyMovementBehaviour.cs" />
     <Compile Include="Behaviours\BodySuitBehaviour.cs" />
-    <Compile Include="Behaviours\GrabbableObjsSpawnListBehaviour.cs" />
     <Compile Include="Behaviours\PositionOnNavMeshBehaviour.cs" />
     <Compile Include="Behaviours\RandomizeBatteriesBehaviour.cs" />
     <Compile Include="Behaviours\RemnantItemsBehaviour.cs" />
@@ -119,14 +118,11 @@
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\LoadAssetsBodies.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Patches\GrabbableObjToListStartPatch.cs" />
     <Compile Include="Patches\AddRemnantItemsToItemList.cs" />
     <Compile Include="Patches\BeltBagTranspiler.cs" />
-    <Compile Include="Patches\DespawnRemnantsPatch.cs" />
+    <Compile Include="Patches\PartyWipeRemnantItemsTranspiler.cs" />
     <Compile Include="Patches\RegisterSuitsPatch.cs" />
     <Compile Include="Patches\RemnantItemsPatch.cs" />
-    <Compile Include="Patches\SaveGameTranspiler.cs" />
-    <Compile Include="Patches\TerminalScanItemsTranspiler.cs" />
     <Compile Include="Patches\SpawnableScrapPatch.cs" />
     <Compile Include="Patches\SpawnRemnantItemsPatch.cs" />
     <Compile Include="Patches\EndRoundStatsPatch.cs" />

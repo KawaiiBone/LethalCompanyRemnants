@@ -29,9 +29,7 @@ namespace Remnants.Data
         public ConfigEntry<float> BodySpawnModifierRiskLevel;
         public ConfigEntry<int> RemnantScrapMinCostPercentage;
         public ConfigEntry<int> RemnantScrapMaxCostPercentage;
-        public ConfigEntry<bool> ShouldSaveRemnantItems;
         public ConfigEntry<bool> ShouldDespawnRemnantItemsOnPartyWipe;
-        public ConfigEntry<bool> ShouldAlwaysDespawnRemnantItems;
         public ConfigEntry<bool> ShouldBodiesBeScrap;
         public ConfigEntry<int> MinBodyScrapValue;
         public ConfigEntry<int> MaxBodyScrapValue;
@@ -46,7 +44,7 @@ namespace Remnants.Data
         public ConfigEntry<int> MinItemsFoundOnBodies;
         public ConfigEntry<int> MaxItemsFoundOnBodies;
         public ConfigEntry<bool> UseBeltBagTranspiler;
-        public ConfigEntry<bool> UseTerminalScanItemsTranspiler;
+        public ConfigEntry<bool> UseEndRoundPatchFix;
         #endregion
 
         #region PrivateData
@@ -178,7 +176,8 @@ namespace Remnants.Data
             _bannedNamesFromRegistering = _configFile.Bind(_otherSection, "Item list banned from registering as scrap", "Clipboard,StickyNote,Binoculars,MapDevice,Key,Error", "List of items that are barred from registering as scrap/remnant item. \nThese default items are there to avoid adding scrap that are left out of the vanilla version, don't work, or cause crashes. \nTo add more names to the list, be sure to add a comma between names.");
             _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Scrap-example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
             UseBeltBagTranspiler = _configFile.Bind(_otherSection, "Beltbag can store remnant items", true, "Make the beltbag item able to store remnant items. You can disable this feature to make other mods for the beltbag item more compatible.");
-            UseTerminalScanItemsTranspiler = _configFile.Bind(_otherSection, "Terminal can scan remnant items", true, "Make the Terminal able to  scan remnant items. You can disable this feature to make other mods that interact with the terminal more compatible.");
+            UseEndRoundPatchFix = _configFile.Bind(_otherSection, "Use end of round score fix", true, "Due the spawning of remnnant items and bodies separately the end round score is not accurate, this feature fixes this issue.");
+
 
             MinRemnantItemsSpawning = _configFile.Bind(_spawningSection, "Minimum remnant items spawned on a moon", 3, "The minimum remnant items that can spawn on a moon. \nThis value gets increased by the threat level a moon has, along the down below modifier.");
             MinRemnantItemsSpawning.Value = Mathf.Clamp(MinRemnantItemsSpawning.Value, 0, _maxRemnantItemsSpawned);
@@ -220,9 +219,7 @@ namespace Remnants.Data
                     new Tuple<int, int>(_minRemnantLevelRarities.Last().Value, _maxRemnantLevelRarities.Last().Value));
             }
 
-            ShouldSaveRemnantItems = _configFile.Bind(_saveLoadSection, "Save remnant items", true, "This ensures that the remnant items are saved in the ship when you reload the lobby.");
             ShouldDespawnRemnantItemsOnPartyWipe = _configFile.Bind(_saveLoadSection, "Despawn remnant items on party wipe", true, "On party wipe all items are despawned from the ship, this ensures that remnant items also are despawned. \nIf you use a mod that prevents items from being despawned, here you can edit it too for remnant items. \nThis will not use the transpiler for cleaning up items, and may cause issues.");
-            ShouldAlwaysDespawnRemnantItems = _configFile.Bind(_saveLoadSection, "Always despawn remnant items", false, "Despawns all remnant items when going away from moons, even if it is in the shiproom and you are holding it.");
             _bannedItemsFromSaving = _configFile.Bind(_saveLoadSection, "Item list banned from saving", "Clipboard,StickyNote,Binoculars,MapDevice,Error", "List of items that are barred saving on the ship. \nThese default items are there to avoid issues with saving items on the ship. \nTo add more names to the list, be sure to add a comma between names.");
 
             ConfigScrapDataList = _configRemnantDataPairList.ConvertAll(itemData =>
@@ -372,14 +369,9 @@ namespace Remnants.Data
             var increasedScrapSpawnPoolSlider = new IntSliderConfigItem(IncreasedScrapSpawnPool, new IntSliderOptions { Min = 0, Max = _maximumScrapSpawnPoolIncrease, RequiresRestart = false });
             LethalConfigManager.AddConfigItem(increasedScrapSpawnPoolSlider);
             //Saving section
-            var shouldSaveRemnantItemsBox = new BoolCheckBoxConfigItem(ShouldSaveRemnantItems);
-            LethalConfigManager.AddConfigItem(shouldSaveRemnantItemsBox);
-
             var shouldDespawnRemnantItemsOnPartyWipeBox = new BoolCheckBoxConfigItem(ShouldDespawnRemnantItemsOnPartyWipe);
             LethalConfigManager.AddConfigItem(shouldDespawnRemnantItemsOnPartyWipeBox);
 
-            var shouldAlwaysDespawnRemnantItemsBox = new BoolCheckBoxConfigItem(ShouldAlwaysDespawnRemnantItems);
-            LethalConfigManager.AddConfigItem(shouldAlwaysDespawnRemnantItemsBox);
 
             var bannedItemsFromSavingInput = new TextInputFieldConfigItem(_bannedItemsFromSaving);
             LethalConfigManager.AddConfigItem(bannedItemsFromSavingInput);
@@ -393,11 +385,12 @@ namespace Remnants.Data
             var overriddenScrapItemsInput = new TextInputFieldConfigItem(_overriddenScrapItems, false);
             LethalConfigManager.AddConfigItem(overriddenScrapItemsInput);
             
-            var UseBeltBagTranspilerCheckBox =new BoolCheckBoxConfigItem(UseBeltBagTranspiler, true);
-            LethalConfigManager.AddConfigItem(UseBeltBagTranspilerCheckBox);
+            var useBeltBagTranspilerCheckBox =new BoolCheckBoxConfigItem(UseBeltBagTranspiler, true);
+            LethalConfigManager.AddConfigItem(useBeltBagTranspilerCheckBox);
 
-            var UseTerminalScanItemsTranspilerCheckBox = new BoolCheckBoxConfigItem(UseTerminalScanItemsTranspiler, true);
-            LethalConfigManager.AddConfigItem(UseTerminalScanItemsTranspilerCheckBox);
+            var useEndRoundPatchFixCheckBox = new BoolCheckBoxConfigItem(UseEndRoundPatchFix, true);
+            LethalConfigManager.AddConfigItem(useEndRoundPatchFixCheckBox);
+
             //Remnant items section
             for (int i = 0; i < ConfigScrapDataList.Count; i++)
             {
