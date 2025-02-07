@@ -347,7 +347,7 @@ namespace Remnants.Data
             var maxBodyScrapValueSlider = new IntSliderConfigItem(MaxBodyScrapValue, new IntSliderOptions { Min = MinBodyScrapValue.Value, Max = (int)_maxItemCost, RequiresRestart = false });
             LethalConfigManager.AddConfigItem(maxBodyScrapValueSlider);
             //Spawning section
-            var minRemnantItemsSpawningSlider = new IntSliderConfigItem(MinRemnantItemsSpawning, new IntSliderOptions { Min = 1, Max = _maxRemnantItemsSpawned, RequiresRestart = false });
+            var minRemnantItemsSpawningSlider = new IntSliderConfigItem(MinRemnantItemsSpawning, new IntSliderOptions { Min = 0, Max = _maxRemnantItemsSpawned, RequiresRestart = false });
             LethalConfigManager.AddConfigItem(minRemnantItemsSpawningSlider);
             var maxRemnantItemsSpawningSlider = new IntSliderConfigItem(MaxRemnantItemsSpawning, new IntSliderOptions { Min = MinRemnantItemsSpawning.Value, Max = _maxRemnantItemsSpawned, RequiresRestart = false });
             LethalConfigManager.AddConfigItem(maxRemnantItemsSpawningSlider);

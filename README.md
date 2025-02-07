@@ -69,7 +69,7 @@ If you want to download this mod manually, you should know that it is dependent 
 When the dependencies are added, you can just copy the files in the plugins folder and add them in the BepInEx plugins folder.
 
 ## Feedback and issues
-If you find any bugs, issues, or have any feedback on how to improve the mod, you are always welcome to share it here on [Github](https://github.com/KawaiiBone/LethalCompanyRemnants/issues), [Unofficial Lethal Company discord](https://discord.com/invite/nYcQFEpXfU) or on the [LC Modding discord](https://discord.com/invite/lcmod). When you report an issue, please be sure to add the error in question and what other mods you were using at the time of the error. This way I can easily find the bug and patch it.
+If you find any bugs, issues, or have any feedback on how to improve the mod, you are always welcome to share it here on [Github](https://github.com/KawaiiBone/LethalCompanyRemnants/issues), [Unofficial Lethal Company discord](https://discord.com/invite/nYcQFEpXfU) or on the [LC Modding discord](discord.gg/XeyYqRdRGC). When you report an issue, please be sure to add the error in question and what other mods you were using at the time of the error. This way I can easily find the bug and patch it.
 
 ## Known Issues
 

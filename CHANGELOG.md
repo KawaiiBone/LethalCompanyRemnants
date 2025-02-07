@@ -184,3 +184,6 @@
 - Thanks to the help of [Zaggy1024](https://github.com/Zaggy1024), the despawn issues are fixed and it increased the compatibility with others mods drastrictly. 
 - Fixed beltbag bug, now it properly works. (can be changed in the config)
 - The end of round patch gives accurate total scrap collected. (can be changed in the config)
+
+#1.4.1
+- Fixed crash with beltbag when picking up items.

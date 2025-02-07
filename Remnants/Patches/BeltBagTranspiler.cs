@@ -13,7 +13,7 @@ namespace Remnants.Patches
     {
         #region Variables
         static FieldInfo _itemIsScrapField = AccessTools.Field(typeof(GrabbableObject), nameof(GrabbableObject.itemProperties));
-        private List<RemnantData> _remnantItemDataList = null;
+        private static List<RemnantData> _remnantItemDataList = null;
         #endregion
 
         #region HarmonyMethods
@@ -75,7 +75,6 @@ namespace Remnants.Patches
                 return true;
             if (_remnantItemDataList == null)
                 _remnantItemDataList = Remnants.Instance.RemnantsConfig.GetRemnantItemList(false);
-
             if (_remnantItemDataList.FindIndex(configEntry => configEntry.RemnantItemName == grabbableObject.itemProperties.itemName
             || configEntry.RemnantItemName == grabbableObject.itemProperties.name) != -1)
                 return true;
