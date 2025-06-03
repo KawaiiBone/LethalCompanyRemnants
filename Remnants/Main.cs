@@ -7,7 +7,7 @@ using Remnants.Data;
 
 namespace Remnants
 {
-    [BepInDependency("evaisa.lethallib", "0.16.1")]
+    [BepInDependency("evaisa.lethallib", "1.1.0")]
     [BepInDependency("ainavt.lc.LethalConfig", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin(modGUID, modName, modVersion)]
 
@@ -16,7 +16,7 @@ namespace Remnants
         #region Variables
         private const string modGUID = "KawaiiBone.Remnants";
         private const string modName = "Remnants";
-        private const string modVersion = "1.4.1";
+        private const string modVersion = "1.4.2";
 
         public static Remnants Instance;
         private readonly Harmony _harmony = new Harmony(modGUID);

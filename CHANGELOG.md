@@ -187,3 +187,6 @@
 
 #1.4.1
 - Fixed crash with beltbag when picking up items.
+
+#1.4.2
+- Updated to latest Lethal Lib version to work with v70
