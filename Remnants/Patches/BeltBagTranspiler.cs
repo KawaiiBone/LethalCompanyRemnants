@@ -22,7 +22,7 @@ namespace Remnants.Patches
         static IEnumerable<CodeInstruction> SaveItemsInShipTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
         {
             var mls = Remnants.Instance.Mls;
-            if(Remnants.Instance.RemnantsConfig.UseBeltBagTranspiler.Value == false)
+            if (Remnants.Instance.RemnantsConfig.UseBeltBagTranspiler.Value == false)
             {
                 mls.LogWarning("Beltbag feature disabled, beltbag can now not pickup remnant items.");
                 return instructions;
@@ -36,7 +36,7 @@ namespace Remnants.Patches
                 {
                     indexOfFirstItemProperties = i;
                 }
-                else if(indexOfFirstItemProperties > -1 && codes[i].opcode == OpCodes.Brtrue)
+                else if (indexOfFirstItemProperties > -1 && codes[i].opcode == OpCodes.Brtrue)
                 {
                     indexOfReturnItemProperties = i;
                     break;
@@ -59,7 +59,7 @@ namespace Remnants.Patches
             codes[indexOfReturnItemProperties].opcode = OpCodes.Brfalse_S;
             //Insert value on the stack and add the function
             codes.Insert(indexOfFirstItemProperties, new CodeInstruction(OpCodes.Ldloc_1));
-            codes.Insert(indexOfFirstItemProperties+1, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BeltBagTranspiler), "CheckIsStoreOrRemnantItem", new Type[] { typeof(GrabbableObject)})));
+            codes.Insert(indexOfFirstItemProperties + 1, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BeltBagTranspiler), nameof(CheckIsStoreOrRemnantItem), new Type[] { typeof(GrabbableObject) })));
             mls.LogInfo("Transpiler succes with function: ItemInteractLeftRight for BeltBagItem.");
             return codes.AsEnumerable();
         }
@@ -69,7 +69,7 @@ namespace Remnants.Patches
 
         public bool CheckIsStoreOrRemnantItem(GrabbableObject grabbableObject)
         {
-            if (grabbableObject == null || grabbableObject.itemProperties == null)
+            if (grabbableObject == null || grabbableObject.itemProperties == null || !grabbableObject.isActiveAndEnabled)
                 return false;
             if (!grabbableObject.itemProperties.isScrap)
                 return true;

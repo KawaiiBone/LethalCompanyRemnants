@@ -35,12 +35,11 @@ namespace Remnants.Behaviours
         #endregion
 
         #region networkMethods
-        [HarmonyPrepare]
-        [RuntimeInitializeOnLoadMethod]
-        internal static void InitializeRPCS_GrabbableObject()
+        protected override void __initializeRpcs()
         {
-            NetworkManager.__rpc_func_table.Add(3184508696u, __rpc_handler_3184508696);
-            NetworkManager.__rpc_func_table.Add(2170264864u, __rpc_handler_2170264864);
+            __registerRpc(3184508696u, __rpc_handler_3184508696, nameof(SyncIndexSuitServerRpc));
+            __registerRpc(269264864u, __rpc_handler_269264864, nameof(SyncIndexSuitClientRpc));
+            base.__initializeRpcs();
         }
 
 
@@ -87,9 +86,9 @@ namespace Remnants.Behaviours
                 if (__rpc_exec_stage != __RpcExecStage.Client && (networkManager.IsServer || networkManager.IsHost))
                 {
                     ClientRpcParams clientRpcParams = default(ClientRpcParams);
-                    FastBufferWriter bufferWriter = __beginSendClientRpc(2170264864u, clientRpcParams, RpcDelivery.Reliable);
+                    FastBufferWriter bufferWriter = __beginSendClientRpc(269264864u, clientRpcParams, RpcDelivery.Reliable);
                     BytePacker.WriteValueBitPacked(bufferWriter, indexSuit);
-                    __endSendClientRpc(ref bufferWriter, 2170264864u, clientRpcParams, RpcDelivery.Reliable);
+                    __endSendClientRpc(ref bufferWriter, 269264864u, clientRpcParams, RpcDelivery.Reliable);
                 }
 
                 if (__rpc_exec_stage == __RpcExecStage.Client && (networkManager.IsClient || networkManager.IsHost))
@@ -125,7 +124,7 @@ namespace Remnants.Behaviours
         }
 
 
-        private static void __rpc_handler_2170264864(NetworkBehaviour target, FastBufferReader reader, __RpcParams rpcParams)
+        private static void __rpc_handler_269264864(NetworkBehaviour target, FastBufferReader reader, __RpcParams rpcParams)
         {
             NetworkManager networkManager = target.NetworkManager;
             if ((object)networkManager != null && networkManager.IsListening)

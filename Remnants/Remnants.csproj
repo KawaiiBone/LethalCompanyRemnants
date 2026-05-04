@@ -120,6 +120,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="Patches\AddRemnantItemsToItemList.cs" />
     <Compile Include="Patches\BeltBagTranspiler.cs" />
+    <Compile Include="Patches\ItemOnlySlotTranspiler.cs" />
     <Compile Include="Patches\PartyWipeRemnantItemsTranspiler.cs" />
     <Compile Include="Patches\RegisterSuitsPatch.cs" />
     <Compile Include="Patches\RemnantItemsPatch.cs" />
