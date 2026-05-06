@@ -1,6 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,9 +8,10 @@ using System.Reflection.Emit;
 
 namespace Remnants.Patches
 {
-    internal class ItemOnlySlotTranspiler
+    internal class UtilitySlotTranspiler
     {
         static FieldInfo _itemIsScrapField = AccessTools.Field(typeof(GrabbableObject), nameof(GrabbableObject.itemProperties));
+        private static List<string> _remnantUtilityNameList = null;
 
         [HarmonyPatch(typeof(PlayerControllerB), "FirstEmptyItemSlot")]
         [HarmonyTranspiler]
@@ -55,7 +56,7 @@ namespace Remnants.Patches
                 new CodeInstruction(
                     OpCodes.Call,
                     AccessTools.Method(
-                        typeof(ItemOnlySlotTranspiler),
+                        typeof(UtilitySlotTranspiler),
                         nameof(IsRemnantFlashlightOrScrap),
                         new[] { typeof(GrabbableObject) }
                     )));
@@ -67,8 +68,15 @@ namespace Remnants.Patches
 
         public static bool IsRemnantFlashlightOrScrap(GrabbableObject attemptingGrab)
         {
-            return !((attemptingGrab is FlashlightItem) || !attemptingGrab.itemProperties.isScrap);
-            //if this does not work anymore in the future, it should be: attemptingGrab.itemProperties.itemId == 1 || 6
+            if (_remnantUtilityNameList == null)
+            {
+                List<string> remnantItems = Remnants.Instance.RemnantsConfig.GetRemnantItemList(false).Select(c => c.RemnantItemName.ToLower()).ToList();
+                List<string> bannedList = Remnants.Instance.RemnantsConfig.GetBannedFromUtilitySlotItemNames().ConvertAll(c => c.ToLower());
+                _remnantUtilityNameList = remnantItems.Except(bannedList).ToList();      
+            }
+
+            return !((_remnantUtilityNameList.FindIndex(ul => ul == attemptingGrab.itemProperties.itemName.ToLower()
+            || ul == attemptingGrab.itemProperties.name.ToLower()) != -1) || !attemptingGrab.itemProperties.isScrap);
         }
     }
 }

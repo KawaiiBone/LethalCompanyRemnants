@@ -59,6 +59,7 @@ namespace Remnants.Data
         private ConfigEntry<string> _bannedNamesFromRegistering;
         private ConfigEntry<string> _overriddenScrapItems;
         private ConfigEntry<string> _bannedItemsFromSaving;
+        private ConfigEntry<string> _bannedItemsFromUtilitySlot;
         private ConfigFile _configFile;
         private string _bannedPlanetName = "71 Gordion";
         private const string _LethalConfigName = "ainavt.lc.lethalconfig";
@@ -177,6 +178,8 @@ namespace Remnants.Data
             _overriddenScrapItems = _configFile.Bind(_otherSection, "Scrap item list to be used as remnant items", "Example scrap,Scrap-example", "In here you can add scrap items to be treated as remnant items, to spawn bodies on and to randomize batteries. \nTo add more names to the list, be sure to add a comma between names.");
             UseBeltBagTranspiler = _configFile.Bind(_otherSection, "Beltbag can store remnant items", true, "Make the beltbag item able to store remnant items. You can disable this feature to make other mods for the beltbag item more compatible.");
             UseEndRoundPatchFix = _configFile.Bind(_otherSection, "Use end of round score fix", true, "Due the spawning of remnnant items and bodies separately the end round score is not accurate, this feature fixes this issue.");
+            _bannedItemsFromUtilitySlot = _configFile.Bind(_otherSection, "Remnant item list banned from the utility slot", "Shovel,example", "List of Remnant items that are barred from the utility slot. \nThese default items are vanilla shop items that are banned from the utility slot.");
+
 
 
             MinRemnantItemsSpawning = _configFile.Bind(_spawningSection, "Minimum remnant items spawned on a moon", 3, "The minimum remnant items that can spawn on a moon. \nThis value gets increased by the threat level a moon has, along the down below modifier.");
@@ -391,6 +394,9 @@ namespace Remnants.Data
             var useEndRoundPatchFixCheckBox = new BoolCheckBoxConfigItem(UseEndRoundPatchFix, true);
             LethalConfigManager.AddConfigItem(useEndRoundPatchFixCheckBox);
 
+            var bannedNamesFromUtilitySlot = new TextInputFieldConfigItem(_bannedItemsFromUtilitySlot);
+            LethalConfigManager.AddConfigItem(bannedNamesFromUtilitySlot);
+
             //Remnant items section
             for (int i = 0; i < ConfigScrapDataList.Count; i++)
             {
@@ -426,6 +432,13 @@ namespace Remnants.Data
             if (_bannedNamesFromRegistering.Value.IsNullOrWhiteSpace())
                 return new List<string>();
             return _bannedNamesFromRegistering.Value.Split(',').ToList();
+        }
+
+        public List<string> GetBannedFromUtilitySlotItemNames()
+        {
+            if (_bannedItemsFromUtilitySlot.Value.IsNullOrWhiteSpace())
+                return new List<string>();
+            return _bannedItemsFromUtilitySlot.Value.Split(',').ToList();
         }
 
         public List<string> GetBannedFromSavingItemNames()
